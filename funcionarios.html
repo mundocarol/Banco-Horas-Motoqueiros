@@ -13,32 +13,26 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ============ TOPBAR ============ */
+  /* TOPBAR */
   .topbar {
-    background: #0f172a; color: white;
-    padding: 14px 24px;
+    background: #0f172a; color: white; padding: 14px 24px;
     display: flex; justify-content: space-between; align-items: center;
     position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    flex-wrap: wrap; gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 12px;
   }
   .topbar h1 { font-size: 18px; font-weight: 700; }
   .topbar h1 span { color: #60a5fa; }
-  .topbar-user {
-    font-size: 13px; color: #94a3b8;
-  }
+  .topbar-user { font-size: 13px; color: #94a3b8; }
   .logout-btn {
     background: #475569; color: white;
-    border: none; padding: 8px 18px;
-    border-radius: 8px; font-size: 13px; font-weight: 600;
-    cursor: pointer;
+    border: none; padding: 8px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
   }
   .logout-btn:hover { background: #334155; }
 
-  /* ============ CONTEÚDO ============ */
   .content { padding: 24px; max-width: 1100px; margin: 0 auto; }
 
-  /* ============ BANNER ============ */
+  /* BANNER */
   .banner {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white; padding: 24px 28px;
@@ -48,7 +42,7 @@
   .banner h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .banner p { font-size: 13px; opacity: 0.9; }
 
-  /* ============ RESUMO ============ */
+  /* RESUMO */
   .resumo-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
     gap: 16px; margin-bottom: 24px;
@@ -56,28 +50,26 @@
   .resumo-card {
     background: white; padding: 22px;
     border-radius: 16px; border: 1px solid #eef2f6;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center;
   }
   .resumo-label {
     font-size: 11px; color: #64748b; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
   }
   .resumo-valor {
-    font-size: 34px; font-weight: 800; color: #0f172a;
-    line-height: 1.1;
+    font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.1;
   }
   .resumo-valor.pos { color: #16a34a; }
   .resumo-valor.neg { color: #dc2626; }
+  .resumo-valor.warn { color: #dc2626; }
+  .resumo-valor.ok { color: #16a34a; }
   .resumo-unidade { font-size: 14px; color: #64748b; font-weight: 500; margin-top: 4px; }
 
-  /* ============ CARD SEÇÃO ============ */
+  /* CARD */
   .card {
     background: white; padding: 22px 24px;
     border-radius: 16px; border: 1px solid #eef2f6;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); margin-bottom: 20px;
   }
   .card h3 {
     font-size: 16px; font-weight: 700; margin-bottom: 16px;
@@ -85,7 +77,7 @@
     display: flex; align-items: center; gap: 8px;
   }
 
-  /* ============ STATS INTERNOS ============ */
+  /* STATS */
   .stats-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
     gap: 12px;
@@ -96,31 +88,25 @@
   }
   .stat-label {
     font-size: 10px; color: #64748b; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
   }
   .stat-value { font-size: 22px; font-weight: 700; color: #0f172a; }
-  .stat-value.pos { color: #16a34a; }
-  .stat-value.neg { color: #dc2626; }
 
-  /* ============ FÉRIAS ============ */
+  /* FÉRIAS */
   .ferias-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
     gap: 14px;
   }
   .ferias-item {
     background: #f0f9ff; padding: 16px;
-    border-radius: 12px; border: 1px solid #bae6fd;
-    text-align: center;
+    border-radius: 12px; border: 1px solid #bae6fd; text-align: center;
   }
   .ferias-item strong {
     display: block; font-size: 10px; color: #0369a1;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;
   }
   .ferias-item span { font-size: 15px; font-weight: 700; color: #0f172a; }
 
-  /* ============ COUNTDOWN FÉRIAS ============ */
   .countdown {
     padding: 14px 18px; border-radius: 12px;
     margin-top: 14px; font-weight: 600; font-size: 13px;
@@ -129,18 +115,17 @@
   .countdown.warning { background: #fefce8; color: #854d0e; border-left: 4px solid #eab308; }
   .countdown.danger { background: #fef2f2; color: #dc2626; border-left: 4px solid #ef4444; }
 
-  /* ============ FOLGAS ============ */
-  .folgas-list {
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
+  /* FOLGAS */
+  .folgas-list { display: flex; flex-wrap: wrap; gap: 8px; }
   .folga-tag {
     background: #f0fdf4; color: #166534;
     padding: 8px 14px; border-radius: 10px;
-    font-size: 13px; font-weight: 600;
-    border: 1px solid #bbf7d0;
+    font-size: 13px; font-weight: 600; border: 1px solid #bbf7d0;
   }
+  .folga-tag.feriado { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+  .folga-tag.banco { background: #e0e7ff; color: #3730a3; border-color: #c7d2fe; }
 
-  /* ============ TABELA MENSAL ============ */
+  /* TABELAS */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
   th {
@@ -150,7 +135,15 @@
   }
   tr:hover { background: #f8fafc; }
 
-  /* ============ LEGAL NOTICE ============ */
+  .badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 8px; font-size: 11px; font-weight: 600;
+  }
+  .badge.red { background: #fee2e2; color: #991b1b; }
+  .badge.green { background: #dcfce7; color: #166534; }
+  .badge.yellow { background: #fef9c3; color: #854d0e; }
+
+  /* LEGAL */
   .legal-notice {
     font-size: 12px; color: #64748b;
     background: #f8fafc; padding: 12px 16px;
@@ -158,13 +151,12 @@
     border-left: 3px solid #cbd5e1;
   }
 
-  /* ============ EMPTY ============ */
   .empty {
     text-align: center; padding: 30px;
     color: #94a3b8; font-size: 14px;
   }
 
-  /* ============ LOADING ============ */
+  /* LOADING */
   .loading { display: none; text-align: center; padding: 40px; color: #64748b; }
   .loading.show { display: block; }
   .spinner {
@@ -179,13 +171,12 @@
   @media (max-width: 768px) {
     .content { padding: 14px; }
     .resumo-grid { grid-template-columns: 1fr; }
-    .resumo-valor { font-size: 28px; }
+    .resumo-valor { font-size: 26px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ============ TOPBAR ============ -->
 <div class="topbar">
   <h1>🏦 <span>Meu Banco de Horas</span></h1>
   <div style="display:flex; align-items:center; gap:14px">
@@ -196,65 +187,61 @@
 
 <div class="content">
 
-  <!-- BANNER -->
   <div class="banner">
     <h2 id="banner-nome">Olá!</h2>
-    <p id="banner-info">Aqui você acompanha seu banco de horas, faltas, férias e folgas.</p>
+    <p id="banner-info">Acompanhe seu banco de horas, faltas, férias, folgas e feriados.</p>
   </div>
 
-  <!-- LOADING -->
   <div class="loading" id="loading"><span class="spinner"></span> Carregando seus dados...</div>
 
-  <!-- CONTEÚDO -->
   <div id="conteudo" style="display:none">
 
     <!-- RESUMO -->
     <div class="resumo-grid">
       <div class="resumo-card">
         <div class="resumo-label">💰 Saldo Banco de Horas</div>
-        <div class="resumo-valor" id="saldo">0.00</div>
-        <div class="resumo-unidade">horas</div>
+        <div class="resumo-valor" id="r-bh">0,00h</div>
+        <div class="resumo-unidade">para folgas</div>
       </div>
       <div class="resumo-card">
-        <div class="resumo-label">⏳ Feriados Pendentes</div>
-        <div class="resumo-valor" id="feriados-pend">0</div>
-        <div class="resumo-unidade">dias a compensar</div>
+        <div class="resumo-label">💵 Horas Extras</div>
+        <div class="resumo-valor" id="r-he">0,00h</div>
+        <div class="resumo-unidade">para receber</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-label">🏖️ Feriados a Compensar</div>
+        <div class="resumo-valor" id="r-fer">0</div>
+        <div class="resumo-unidade">folga(s) pendente(s)</div>
       </div>
     </div>
 
-    <!-- FALTAS E ADVERTÊNCIAS -->
+    <!-- HISTÓRICO DISCIPLINAR -->
     <div class="card">
       <h3>📋 Histórico Disciplinar</h3>
       <div class="stats-grid">
-        <div class="stat">
-          <div class="stat-label">✅ Faltas Justificadas</div>
-          <div class="stat-value" id="faltas-just">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">❌ Faltas Injustificadas</div>
-          <div class="stat-value" id="faltas-injust">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">⚖️ Advertências</div>
-          <div class="stat-value" id="advertencias">0</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">📆 Folgas no Banco</div>
-          <div class="stat-value" id="folgas-banco">0</div>
-        </div>
+        <div class="stat"><div class="stat-label">✅ Faltas Justificadas</div><div class="stat-value" id="s-fj">0</div></div>
+        <div class="stat"><div class="stat-label">❌ Faltas Injustificadas</div><div class="stat-value" id="s-fi">0</div></div>
+        <div class="stat"><div class="stat-label">⚖️ Advertências</div><div class="stat-value" id="s-adv">0</div></div>
+        <div class="stat"><div class="stat-label">📆 Folgas</div><div class="stat-value" id="s-folg">0</div></div>
       </div>
+    </div>
+
+    <!-- FERIADOS TRABALHADOS -->
+    <div class="card">
+      <h3>🏖️ Feriados Trabalhados</h3>
+      <div id="feriados-container"></div>
+    </div>
+
+    <!-- FOLGAS -->
+    <div class="card">
+      <h3>📆 Minhas Folgas</h3>
+      <div id="folgas-container"></div>
     </div>
 
     <!-- FÉRIAS -->
     <div class="card">
-      <h3>🏖️ Agendamento de Férias</h3>
+      <h3>🌴 Agendamento de Férias</h3>
       <div id="ferias-container"></div>
-    </div>
-
-    <!-- FOLGAS AGENDADAS -->
-    <div class="card">
-      <h3>📆 Folgas Agendadas</h3>
-      <div id="folgas-container"></div>
     </div>
 
     <!-- EXTRAS MENSAIS -->
@@ -263,7 +250,6 @@
       <div id="mensal-container"></div>
     </div>
 
-    <!-- ÚLTIMA ATUALIZAÇÃO -->
     <div class="legal-notice" id="last-update"></div>
 
   </div>
@@ -271,28 +257,18 @@
 
 <script>
 /* ============================================================
-   CONFIGURAÇÃO
+   CONFIG
    ============================================================ */
 const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
 const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
-const ABA_CONTROLE = 'Controle';
 
-/* ============================================================
-   SESSÃO
-   ============================================================ */
 const sessUser = sessionStorage.getItem('gestor_user');
 const sessNome = sessionStorage.getItem('gestor_nome');
 const sessTipo = sessionStorage.getItem('gestor_tipo');
 
-if (!sessUser) {
-  location.href = 'index.html';
-}
-if (sessTipo === 'admin') {
-  location.href = 'banco-horas.html';
-}
-if (sessTipo === 'motoqueiro') {
-  location.href = 'motoqueiros-saldos.html';
-}
+if (!sessUser) location.href = 'index.html';
+if (sessTipo === 'admin') location.href = 'banco-horas.html';
+if (sessTipo === 'motoqueiro') location.href = 'motoqueiros-saldos.html';
 
 document.getElementById('topbar-user').textContent = sessNome || sessUser;
 document.getElementById('banner-nome').textContent = 'Olá, ' + (sessNome || sessUser) + '!';
@@ -303,273 +279,244 @@ document.getElementById('banner-nome').textContent = 'Olá, ' + (sessNome || ses
 function parseNum(v) {
   if (v === '' || v === null || v === undefined) return 0;
   if (typeof v === 'number') return v;
-  return parseFloat(String(v).replace(/\s/g, '').replace(',', '.')) || 0;
+  return parseFloat(String(v).replace(/\s/g,'').replace(',','.')) || 0;
 }
+
+function fmtHoras(h) { return h.toFixed(2).replace('.', ',') + 'h'; }
 
 function getDayOfWeek(dateStr) {
   if (!dateStr || !dateStr.includes('/')) return '';
   try {
-    const [d, m, y] = dateStr.split('/');
-    const dt = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+    const [d,m,y] = dateStr.split('/');
+    const dt = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
     return ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'][dt.getDay()];
   } catch(e) { return ''; }
 }
 
-function isFutureDate(dateStr) {
-  if (!dateStr) return false;
+function dataToNum(dateStr) {
+  if (!dateStr) return 0;
   try {
-    const [d, m, y] = dateStr.split('/');
-    const dt = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-    const today = new Date(); today.setHours(0,0,0,0);
-    return dt >= today;
-  } catch(e) { return false; }
-}
-
-function hojeStr() {
-  const d = new Date();
-  const dd = String(d.getDate()).padStart(2,'0');
-  const mm = String(d.getMonth()+1).padStart(2,'0');
-  return `${dd}/${mm}/${d.getFullYear()}`;
+    const [d,m,y] = dateStr.split('/');
+    return new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime();
+  } catch(e) { return 0; }
 }
 
 /* ============================================================
-   LER CONTROLE
+   API
    ============================================================ */
-async function lerControle() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ABA_CONTROLE}!A2:L?key=${API_KEY}`;
+async function lerAba(nome) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nome}!A2:Z?key=${API_KEY}`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error('HTTP ' + resp.status);
-  const data = await resp.json();
-  const linhas = data.values || [];
-
-  // Filtra só as linhas do funcionário logado (pelo nome)
-  const nomeLower = (sessNome || '').toLowerCase();
-  return linhas
-    .filter(r => (r[0]||'').toString().trim().toLowerCase() === nomeLower)
-    .map(r => ({
-      funcionario:        (r[0]||'').toString().trim(),
-      date:               (r[1]||'').toString().trim(),
-      bankHours:          parseNum(r[2]),
-      advertencia:        r[3] === '1',
-      holidayWorked:      r[4] === '1',
-      dayOffValue:        (r[5]||'').toString().trim(),
-      vacationStart:      (r[6]||'').toString().trim(),
-      vacationDays:       (r[7]||'').toString().trim(),
-      admissionDate:      (r[8]||'').toString().trim(),
-      justifiedAbsence:   r[9] === '1',
-      unjustifiedAbsence: r[10] === '1',
-      observation:        (r[11]||'').toString().trim()
-    }));
+  return (await resp.json()).values || [];
 }
 
 /* ============================================================
-   PROCESSAR (mesma lógica do admin)
+   CARREGAR TODAS AS ABAS
    ============================================================ */
-function processar(eventos) {
-  let totalBank = 0;
-  const holidaysWorked = [];
-  const bankDayOffs = [];
-  const purchasedHours = [];
+async function carregarTudo() {
+  const [ctrl, falt, adv, fer, folg, fer2] = await Promise.all([
+    lerAba('Controle'),
+    lerAba('Faltas'),
+    lerAba('Advertencias'),
+    lerAba('Feriados'),
+    lerAba('Folgas'),
+    lerAba('Ferias')
+  ]);
 
-  eventos.forEach(ev => { totalBank += ev.bankHours; });
+  const nomeL = (sessNome || '').toLowerCase();
 
-  eventos.forEach(ev => {
-    const isHoliday = ev.holidayWorked;
-    const folga = ev.dayOffValue || '';
+  const dados = {
+    ctrl: ctrl.map(r => ({
+      funcionario: (r[0]||'').toString().trim(),
+      mesAno: (r[1]||'').toString().trim(),
+      saldoBanco: parseNum(r[2]),
+      horaExtra: parseNum(r[3]),
+      observacao: (r[4]||'').toString().trim()
+    })).filter(x => x.funcionario.toLowerCase() === nomeL),
 
-    if (isHoliday) {
-      if (!folga) {
-        holidaysWorked.push({ date: ev.date, compensated: false, dayOfWeek: getDayOfWeek(ev.date) });
-      } else if (folga.toUpperCase() === 'DINHEIRO') {
-        holidaysWorked.push({ date: ev.date, compensated: true, dayOfWeek: getDayOfWeek(ev.date) });
-      } else if (folga.match(/\d{2}\/\d{2}\/\d{4}/)) {
-        holidaysWorked.push({ date: ev.date, compensated: true, dayOfWeek: getDayOfWeek(ev.date), compensationDate: folga });
-      }
-    } else if (folga) {
-      if (folga.match(/\d{2}\/\d{2}\/\d{4}/)) {
-        bankDayOffs.push({ date: folga, dayOfWeek: getDayOfWeek(folga), hoursToDeduct: 8 });
-        totalBank -= 8;
-      } else if (folga.toUpperCase() === 'DINHEIRO') {
-        const h = Math.abs(ev.bankHours);
-        if (h > 0) purchasedHours.push({ date: ev.date, hoursPurchased: h });
-      }
-    }
-  });
+    faltas: falt.map(r => ({
+      data: (r[1]||'').toString().trim(),
+      comAtestado: r[2] === '1',
+      observacao: (r[3]||'').toString().trim()
+    })).filter((_, i) => (falt[i][0]||'').toString().trim().toLowerCase() === nomeL),
 
-  // Agrupa mensal
-  const mensal = new Map();
-  eventos.forEach(ev => {
-    if (ev.date && ev.bankHours !== 0) {
-      const [, m, a] = ev.date.split('/');
-      const key = `${m.padStart(2,'0')}/${a}`;
-      mensal.set(key, (mensal.get(key)||0) + ev.bankHours);
-    }
-  });
-  bankDayOffs.forEach(f => {
-    if (f.date) {
-      const [, m, a] = f.date.split('/');
-      const key = `${m.padStart(2,'0')}/${a}`;
-      mensal.set(key, (mensal.get(key)||0) - f.hoursToDeduct);
-    }
-  });
-  const mensalArr = Array.from(mensal.entries())
-    .map(([period, h]) => ({ period, hours: h }))
-    .sort((a, b) => {
-      const [ma, aa] = a.period.split('/');
-      const [mb, ab] = b.period.split('/');
-      return new Date(aa, ma-1) - new Date(ab, mb-1);
-    });
+    advertencias: adv.map(r => ({
+      data: (r[1]||'').toString().trim(),
+      motivo: (r[2]||'').toString().trim()
+    })).filter((_, i) => (adv[i][0]||'').toString().trim().toLowerCase() === nomeL),
 
-  const faltasJust = eventos.filter(e => e.justifiedAbsence);
-  const faltasInjust = eventos.filter(e => e.unjustifiedAbsence);
-  const advertencias = eventos.filter(e => e.advertencia);
-  const ferias = eventos.find(e => e.vacationStart && e.vacationDays);
-  const admissao = eventos.find(e => e.admissionDate)?.admissionDate || '';
+    feriados: fer.map(r => ({
+      data: (r[1]||'').toString().trim(),
+      status: (r[3]||'pendente').toString().trim().toLowerCase()
+    })).filter((_, i) => (fer[i][0]||'').toString().trim().toLowerCase() === nomeL),
 
-  // Folgas futuras
-  const folgasFuturas = eventos
-    .filter(e => e.dayOffValue && e.dayOffValue.match(/\d{2}\/\d{2}\/\d{4}/) && isFutureDate(e.dayOffValue) && !e.holidayWorked)
-    .map(e => ({ date: e.dayOffValue, dayOfWeek: getDayOfWeek(e.dayOffValue) }))
-    .sort((a, b) => {
-      const [da,ma,aa] = a.date.split('/');
-      const [db,mb,ab] = b.date.split('/');
-      return new Date(aa,ma-1,da) - new Date(ab,mb-1,db);
-    });
+    folgas: folg.map(r => ({
+      data: (r[1]||'').toString().trim(),
+      origem: (r[2]||'').toString().trim().toLowerCase()
+    })).filter((_, i) => (folg[i][0]||'').toString().trim().toLowerCase() === nomeL),
 
-  // Última atualização
-  let ultima = '';
-  if (eventos.length) {
-    const datas = eventos.map(e => e.date).filter(d => d && d.includes('/'))
-      .map(d => { const [dd,mm,yy] = d.split('/'); return new Date(yy,mm-1,dd); })
-      .filter(d => !isNaN(d) && d <= new Date());
-    if (datas.length) {
-      const max = new Date(Math.max(...datas));
-      const dd = String(max.getDate()).padStart(2,'0');
-      const mm = String(max.getMonth()+1).padStart(2,'0');
-      ultima = `${dd}/${mm}/${max.getFullYear()}`;
-    }
-  }
+    ferias: fer2.map(r => ({
+      inicio: (r[1]||'').toString().trim(),
+      dias: parseInt(r[2]) || 0,
+      fim: (r[3]||'').toString().trim(),
+      retorno: (r[4]||'').toString().trim(),
+      status: (r[5]||'').toString().trim().toLowerCase() || 'agendada'
+    })).filter((_, i) => (fer2[i][0]||'').toString().trim().toLowerCase() === nomeL)
+  };
+
+  return dados;
+}
+
+/* ============================================================
+   PROCESSAR
+   ============================================================ */
+function processar(d) {
+  // BH = soma dos saldos - (8h × folgas de origem banco)
+  let totalBH = d.ctrl.reduce((s,c) => s + c.saldoBanco, 0);
+  const folgasBanco = d.folgas.filter(f => f.origem === 'banco');
+  totalBH -= folgasBanco.length * 8;
+
+  const totalHE = d.ctrl.reduce((s,c) => s + c.horaExtra, 0);
+
+  const feriadosPendentes = d.feriados.filter(f => f.status === 'pendente').length;
 
   return {
-    totalBank,
-    pendingHolidays: holidaysWorked.filter(h => !h.compensated).length,
-    bankDayOffsCount: bankDayOffs.length,
-    faltasJustCount: faltasJust.length,
-    faltasInjustCount: faltasInjust.length,
-    advertenciasCount: advertencias.length,
-    ferias, admissao, mensalArr, folgasFuturas, ultima
+    totalBH, totalHE, feriadosPendentes,
+    faltasJust: d.faltas.filter(f => f.comAtestado).length,
+    faltasInjust: d.faltas.filter(f => !f.comAtestado).length,
+    advertenciasCount: d.advertencias.length,
+    folgasCount: d.folgas.length
   };
 }
 
 /* ============================================================
    RENDERIZAR
    ============================================================ */
-function renderizar(p) {
-  // Saldo
-  const saldoEl = document.getElementById('saldo');
-  saldoEl.textContent = p.totalBank.toFixed(2);
-  saldoEl.className = 'resumo-valor ' + (p.totalBank >= 0 ? 'pos' : 'neg');
+function renderizar(d, p) {
+  // Resumo
+  const bhEl = document.getElementById('r-bh');
+  bhEl.textContent = fmtHoras(p.totalBH);
+  bhEl.className = 'resumo-valor ' + (p.totalBH >= 0 ? 'pos' : 'neg');
+
+  document.getElementById('r-he').textContent = fmtHoras(p.totalHE);
+
+  const ferEl = document.getElementById('r-fer');
+  ferEl.textContent = p.feriadosPendentes;
+  ferEl.className = 'resumo-valor ' + (p.feriadosPendentes > 0 ? 'warn' : 'ok');
+
+  // Stats
+  document.getElementById('s-fj').textContent = p.faltasJust;
+  document.getElementById('s-fi').textContent = p.faltasInjust;
+  document.getElementById('s-adv').textContent = p.advertenciasCount;
+  document.getElementById('s-folg').textContent = p.folgasCount;
 
   // Feriados
-  document.getElementById('feriados-pend').textContent = p.pendingHolidays;
+  const fDiv = document.getElementById('feriados-container');
+  if (d.feriados.length) {
+    const ordenados = d.feriados.slice().sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
+    fDiv.innerHTML = `<div class="folgas-list">
+      ${ordenados.map(f => `
+        <div class="folga-tag ${f.status === 'pendente' ? '' : ''}" style="${f.status === 'pendente' ? 'background:#fee2e2; color:#991b1b; border-color:#fecaca' : 'background:#dcfce7; color:#166534; border-color:#bbf7d0'}">
+          📅 ${f.data} (${getDayOfWeek(f.data)}) · ${f.status === 'pendente' ? '⏳ Pendente' : '✅ Compensado'}
+        </div>
+      `).join('')}
+    </div>`;
+  } else {
+    fDiv.innerHTML = '<div class="empty">✅ Nenhum feriado trabalhado registrado.</div>';
+  }
 
-  // Contadores
-  document.getElementById('faltas-just').textContent = p.faltasJustCount;
-  document.getElementById('faltas-injust').textContent = p.faltasInjustCount;
-  document.getElementById('advertencias').textContent = p.advertenciasCount;
-  document.getElementById('folgas-banco').textContent = p.bankDayOffsCount;
+  // Folgas
+  const foDiv = document.getElementById('folgas-container');
+  if (d.folgas.length) {
+    const ordenadas = d.folgas.slice().sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
+    foDiv.innerHTML = `<div class="folgas-list">
+      ${ordenadas.map(f => `
+        <div class="folga-tag ${f.origem}">
+          📅 ${f.data} (${getDayOfWeek(f.data)}) · ${f.origem === 'feriado' ? '🏖️ Pagou feriado' : '📊 Banco'}
+        </div>
+      `).join('')}
+    </div>`;
+  } else {
+    foDiv.innerHTML = '<div class="empty">📭 Nenhuma folga registrada.</div>';
+  }
 
   // Férias
-  const fDiv = document.getElementById('ferias-container');
-  if (p.ferias && p.ferias.vacationStart && p.ferias.vacationDays) {
-    const start = p.ferias.vacationStart;
-    const days = parseInt(p.ferias.vacationDays) || 0;
-    const [d, m, y] = start.split('/');
-    const startDate = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + days - 1);
-    const retDate = new Date(endDate);
-    retDate.setDate(retDate.getDate() + 1);
-    if (retDate.getDay() === 0) retDate.setDate(retDate.getDate() + 1);
+  const feDiv = document.getElementById('ferias-container');
+  const feriasAtiva = d.ferias.find(x => x.status === 'agendada') || d.ferias[0];
+  if (feriasAtiva) {
+    const dias = feriasAtiva.dias;
 
-    const fmt = dt => `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
-
-    // Countdown
-    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    // Countdown — usa admissão se tiver
     let cdClasse = 'ok', cdMsg = '';
-    if (p.admissao) {
-      const [ad, am, ay] = p.admissao.split('/');
-      const admissaoDate = new Date(parseInt(ay), parseInt(am)-1, parseInt(ad));
-      const diasCorridos = Math.floor((hoje - admissaoDate) / (1000*3600*24));
-      if (diasCorridos < 365) {
-        cdMsg = `📅 Faltam ${365 - diasCorridos} dias para completar 1 ano de trabalho`;
-      } else if (diasCorridos < 395) {
+    if (feriasAtiva.status === 'agendada') {
+      const hoje = new Date(); hoje.setHours(0,0,0,0);
+      const inicio = dataToNum(feriasAtiva.inicio);
+      const diasParaInicio = Math.floor((inicio - hoje) / (1000*3600*24));
+      if (diasParaInicio > 30) {
+        cdMsg = `📅 Suas férias começam em ${diasParaInicio} dias (${feriasAtiva.inicio})`;
+      } else if (diasParaInicio > 0) {
         cdClasse = 'warning';
-        cdMsg = `⚠️ Prazo para agendar férias: ${395 - diasCorridos} dias restantes`;
+        cdMsg = `⚠️ Faltam ${diasParaInicio} dias para suas férias!`;
+      } else if (diasParaInicio === 0) {
+        cdClasse = 'ok';
+        cdMsg = '🎉 Suas férias começam hoje!';
       } else {
         cdClasse = 'danger';
-        cdMsg = `🔴 ATENÇÃO: ${diasCorridos - 365} dias em atraso para concessão de férias!`;
+        cdMsg = `ℹ️ Suas férias iniciaram em ${feriasAtiva.inicio}`;
       }
+    } else if (feriasAtiva.status === 'gozada') {
+      cdClasse = 'ok';
+      cdMsg = '✅ Férias já gozadas';
     } else {
-      cdClasse = 'warning';
-      cdMsg = '⚠️ Data de admissão não cadastrada';
+      cdClasse = 'danger';
+      cdMsg = '🚫 Férias canceladas';
     }
 
-    fDiv.innerHTML = `
+    feDiv.innerHTML = `
       <div class="ferias-grid">
-        <div class="ferias-item"><strong>📅 Início</strong><span>${fmt(startDate)}</span></div>
-        <div class="ferias-item"><strong>📆 Fim</strong><span>${fmt(endDate)}</span></div>
-        <div class="ferias-item"><strong>🔄 Retorno</strong><span>${fmt(retDate)}</span></div>
-        <div class="ferias-item"><strong>⏱️ Duração</strong><span>${days} dias</span></div>
+        <div class="ferias-item"><strong>📅 Início</strong><span>${feriasAtiva.inicio}</span></div>
+        <div class="ferias-item"><strong>📆 Fim</strong><span>${feriasAtiva.fim}</span></div>
+        <div class="ferias-item"><strong>🔄 Retorno</strong><span>${feriasAtiva.retorno}</span></div>
+        <div class="ferias-item"><strong>⏱️ Duração</strong><span>${dias} dias</span></div>
       </div>
       <div class="countdown ${cdClasse}">${cdMsg}</div>
       <div class="legal-notice">ℹ️ As datas podem ser alteradas com 30 dias de antecedência, mediante comunicação à gerência.</div>
     `;
   } else {
-    fDiv.innerHTML = '<div class="empty">📭 Nenhum agendamento de férias registrado.</div>';
+    feDiv.innerHTML = '<div class="empty">📭 Nenhum agendamento de férias registrado.</div>';
   }
 
-  // Folgas
-  const foDiv = document.getElementById('folgas-container');
-  if (p.folgasFuturas.length) {
-    foDiv.innerHTML = `
-      <div class="folgas-list">
-        ${p.folgasFuturas.map(f => `<div class="folga-tag">📅 ${f.date} (${f.dayOfWeek})</div>`).join('')}
-      </div>
-      <div class="legal-notice">ℹ️ A empresa pode alterar as folgas com 48 horas de antecedência, conforme necessidade do serviço.</div>
-    `;
-  } else {
-    foDiv.innerHTML = '<div class="empty">📭 Nenhuma folga agendada.</div>';
-  }
-
-  // Mensal
+  // Extras mensais
   const meDiv = document.getElementById('mensal-container');
-  if (p.mensalArr.length) {
+  if (d.ctrl.length) {
+    const ordenado = d.ctrl.slice().sort((a,b) => {
+      const [ma, aa] = a.mesAno.split('/');
+      const [mb, ab] = b.mesAno.split('/');
+      return new Date(aa, ma-1) - new Date(ab, mb-1);
+    });
     meDiv.innerHTML = `
       <table>
-        <thead><tr><th>📅 Mês/Ano</th><th>💰 Total Horas</th><th>Status</th></tr></thead>
+        <thead><tr><th>📅 Mês/Ano</th><th>💰 Banco Horas</th><th>💵 Hora Extra</th><th>Obs</th></tr></thead>
         <tbody>
-          ${p.mensalArr.map(m => {
-            const status = m.hours > 0 ? 'Crédito' : m.hours < 0 ? 'Débito' : 'Neutro';
-            const cor = m.hours > 0 ? '#16a34a' : m.hours < 0 ? '#dc2626' : '#64748b';
-            return `<tr>
-              <td><b>${m.period}</b></td>
-              <td style="color:${cor}; font-weight:600">${m.hours.toFixed(2)} h</td>
-              <td style="color:${cor}; font-size:12px">${status}</td>
-            </tr>`;
-          }).join('')}
+          ${ordenado.map(m => `
+            <tr>
+              <td><b>${m.mesAno}</b></td>
+              <td style="color:${m.saldoBanco >= 0 ? '#16a34a' : '#dc2626'}; font-weight:600">${fmtHoras(m.saldoBanco)}</td>
+              <td style="color:#92400e; font-weight:600">${fmtHoras(m.horaExtra)}</td>
+              <td><small>${m.observacao || '—'}</small></td>
+            </tr>
+          `).join('')}
         </tbody>
       </table>
-      <div class="legal-notice">📌 Horas positivas = crédito no banco · Horas negativas = débito no banco.</div>
+      <div class="legal-notice">📌 Banco de horas = saldo para folgas · Hora extra = valor para receber em R$</div>
     `;
   } else {
-    meDiv.innerHTML = '<div class="empty">📭 Nenhum lançamento mensal encontrado.</div>';
+    meDiv.innerHTML = '<div class="empty">📭 Nenhum lançamento mensal.</div>';
   }
 
   // Última atualização
-  document.getElementById('last-update').innerHTML = p.ultima
-    ? `🔄 Última atualização: <b>${p.ultima}</b>`
-    : '🔄 Sem lançamentos ainda.';
+  document.getElementById('last-update').innerHTML = `🔄 Última atualização: ${new Date().toLocaleString('pt-BR')}`;
 
   document.getElementById('conteudo').style.display = 'block';
 }
@@ -589,11 +536,11 @@ function logout() {
   const loading = document.getElementById('loading');
   loading.classList.add('show');
   try {
-    const eventos = await lerControle();
-    const processado = processar(eventos);
-    renderizar(processado);
-  } catch (e) {
-    loading.innerHTML = '<div style="color:#dc2626">Erro ao carregar dados: ' + e.message + '</div>';
+    const dados = await carregarTudo();
+    const processado = processar(dados);
+    renderizar(dados, processado);
+  } catch(e) {
+    loading.innerHTML = '<div style="color:#dc2626">Erro ao carregar: ' + e.message + '</div>';
   } finally {
     loading.classList.remove('show');
   }
