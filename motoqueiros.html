@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motoqueiros - Painel Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f8fafc; color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ TOPBAR ============ */
+  .topbar {
+    background: #0f172a; color: white;
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    flex-wrap: wrap; gap: 12px;
+  }
+  .topbar h1 { font-size: 18px; font-weight: 700; }
+  .topbar h1 span { color: #60a5fa; }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .nav-btn {
+    background: rgba(255,255,255,0.08); color: white;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.15); }
+  .nav-btn.active { background: #3b82f6; border-color: #3b82f6; }
+  .logout-btn {
+    background: #475569; color: white;
+    border: none; padding: 8px 18px;
+    border-radius: 8px; font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .logout-btn:hover { background: #334155; }
+
+  /* ============ CONTEÚDO ============ */
+  .content { padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+  /* ============ SELETOR DE MOTO ============ */
+  .moto-selector {
+    display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .moto-btn {
+    padding: 14px 26px;
+    border: 2px solid #e2e8f0; background: white;
+    border-radius: 12px; cursor: pointer;
+    font-weight: 700; font-size: 14px; color: #64748b;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .moto-btn:hover { border-color: #cbd5e1; }
+  .moto-btn.active {
+    border-color: #3b82f6; background: #eff6ff; color: #2563eb;
+    box-shadow: 0 4px 14px rgba(59,130,246,0.15);
+  }
+  .moto-btn .icon { font-size: 22px; }
+
+  /* ============ CARDS RESUMO ============ */
+  .resumo-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 14px; margin-bottom: 24px;
+  }
+  .resumo-card {
+    background: white; padding: 18px 20px;
+    border-radius: 14px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .resumo-label {
+    font-size: 11px; color: #64748b; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+  }
+  .resumo-valor { font-size: 24px; font-weight: 800; color: #0f172a; }
+  .resumo-valor.pos { color: #16a34a; }
+  .resumo-valor.neg { color: #dc2626; }
+
+  /* ============ SUB-TABS ============ */
+  .sub-tabs {
+    display: flex; gap: 6px; margin-bottom: 18px;
+    background: white; padding: 6px; border-radius: 12px;
+    border: 1px solid #eef2f6; width: fit-content;
+  }
+  .sub-tab {
+    padding: 10px 20px; border: none; background: none;
+    border-radius: 8px; cursor: pointer;
+    font-weight: 600; font-size: 13px; color: #64748b;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .sub-tab:hover { background: #f8fafc; color: #0f172a; }
+  .sub-tab.active { background: #0f172a; color: white; }
+
+  /* ============ ACTIONS ============ */
+  .actions {
+    display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+    justify-content: space-between; align-items: center;
+  }
+  .btn {
+    padding: 10px 20px; border: none; border-radius: 10px;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    font-family: inherit; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { transform: translateY(-1px); filter: brightness(0.95); }
+  .btn-primary { background: #3b82f6; color: white; }
+  .btn-yellow { background: #eab308; color: white; }
+  .btn-ghost { background: #f1f5f9; color: #475569; }
+  .btn-sm {
+    padding: 6px 12px; font-size: 12px; border-radius: 7px;
+    border: none; cursor: pointer; font-family: inherit;
+    font-weight: 600; transition: all 0.2s;
+  }
+  .btn-sm:hover { filter: brightness(0.95); }
+  .btn-sm.red { background: #fee2e2; color: #991b1b; }
+
+  /* ============ PAINEL ============ */
+  .panel {
+    background: white; padding: 22px;
+    border-radius: 16px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .panel h3 {
+    font-size: 16px; font-weight: 700; margin-bottom: 16px;
+    padding-bottom: 10px; border-bottom: 2px solid #f1f5f9;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+  th {
+    background: #f1f5f9; font-weight: 600;
+    font-size: 11px; text-transform: uppercase;
+    color: #475569; letter-spacing: 0.3px;
+  }
+  tr:hover { background: #f8fafc; }
+  .empty {
+    text-align: center; padding: 40px;
+    color: #94a3b8; font-size: 14px;
+  }
+
+  /* ============ FORM ============ */
+  .form-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 14px; margin-bottom: 18px;
+  }
+  .field { display: flex; flex-direction: column; }
+  .field label {
+    font-size: 11px; font-weight: 600; color: #475569;
+    margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .field input, .field select, .field textarea {
+    padding: 10px 12px; border: 1px solid #cbd5e1;
+    border-radius: 9px; font-size: 14px;
+    font-family: inherit; background: white;
+    transition: all 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+  .field textarea { min-height: 70px; resize: vertical; }
+  .field.full { grid-column: 1/-1; }
+
+  /* ============ MODAL ============ */
+  .modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(15,23,42,0.75); backdrop-filter: blur(4px);
+    z-index: 1000; padding: 20px; overflow-y: auto;
+  }
+  .modal.open { display: block; }
+  .modal-box {
+    background: white; max-width: 700px;
+    margin: 30px auto; border-radius: 16px;
+    overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  }
+  .modal-head {
+    background: #0f172a; color: white;
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-head h3 { font-size: 17px; font-weight: 700; }
+  .modal-close {
+    background: none; border: none; color: #94a3b8;
+    font-size: 26px; cursor: pointer;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.1); color: white; }
+  .modal-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
+
+  /* ============ TOAST ============ */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #0f172a; color: white;
+    padding: 14px 22px; border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    font-weight: 600; font-size: 14px;
+    display: none; z-index: 9999;
+  }
+  .toast.show { display: block; animation: slideIn 0.3s; }
+  .toast.ok { background: #16a34a; }
+  .toast.err { background: #dc2626; }
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+  }
+
+  /* ============ LOADING ============ */
+  .loading { display: none; text-align: center; padding: 40px; color: #64748b; }
+  .loading.show { display: block; }
+  .spinner {
+    display: inline-block; width: 22px; height: 22px;
+    border: 3px solid #e2e8f0; border-radius: 50%;
+    border-top-color: #3b82f6;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .content { padding: 14px; }
+    .moto-btn { padding: 12px 18px; font-size: 13px; }
+    .resumo-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOPBAR ============ -->
+<div class="topbar">
+  <h1>🏍️ <span>Painel Admin</span> — Motoqueiros</h1>
+  <div class="topbar-actions">
+    <a href="banco-horas.html" class="nav-btn">🏦 Banco de Horas</a>
+    <button class="logout-btn" onclick="logout()">🚪 Sair</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- SELETOR DE MOTO -->
+  <div class="moto-selector">
+    <button class="moto-btn active" data-moto="moto01" onclick="selecionarMoto('moto01')">
+      <span class="icon">🏍️</span>
+      <div>
+        <div>Royle Luiz Santos da Silva</div>
+        <small style="font-weight:500; opacity:.7; font-size:11px">moto01</small>
+      </div>
+    </button>
+    <button class="moto-btn" data-moto="moto02" onclick="selecionarMoto('moto02')">
+      <span class="icon">🏍️</span>
+      <div>
+        <div>Taylor Moreira do Carmo</div>
+        <small style="font-weight:500; opacity:.7; font-size:11px">moto02</small>
+      </div>
+    </button>
+  </div>
+
+  <!-- RESUMO -->
+  <div class="resumo-grid" id="resumo"></div>
+
+  <!-- SUB-TABS -->
+  <div class="sub-tabs">
+    <button class="sub-tab active" onclick="selecionarSub('corridas')">📦 Corridas / Entregas</button>
+    <button class="sub-tab" onclick="selecionarSub('pagamentos')">💰 Pagamentos / Reposições</button>
+  </div>
+
+  <!-- PAINEL -->
+  <div class="panel">
+    <div class="actions">
+      <h3 id="panel-title">Corridas / Entregas</h3>
+      <div style="display:flex; gap:10px">
+        <button class="btn btn-primary" id="btn-add" onclick="abrirForm()">＋ Nova Corrida</button>
+      </div>
+    </div>
+
+    <div class="loading" id="loading"><span class="spinner"></span> Carregando...</div>
+    <div id="tabela-container"></div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title">Título</h3>
+      <button class="modal-close" onclick="fecharModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO
+   ============================================================ */
+const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
+const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
+const API_URL  = 'https://script.google.com/macros/s/AKfycbxCV_pL-xzrS9Q67MQeYRb_RESvCQVkkJTV6Ar9y29SHBEimCshgyoysdu7fPIKnec/exec';
+
+const MOTOQUEIROS = {
+  moto01: { id:'royle',  nome:'Royle Luiz Santos da Silva', aba:'moto01' },
+  moto02: { id:'taylor', nome:'Taylor Moreira do Carmo',    aba:'moto02' }
+};
+
+/* ============================================================
+   VERIFICAR SESSÃO
+   ============================================================ */
+const sessUser = sessionStorage.getItem('gestor_user');
+const sessTipo = sessionStorage.getItem('gestor_tipo');
+if (!sessUser || sessTipo !== 'admin') {
+  location.href = 'index.html';
+}
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let motoAtual = 'moto01';
+let subAtual  = 'corridas';
+let dadosMoto = { moto01:null, moto02:null };
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function toast(msg, tipo = 'ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + tipo;
+  setTimeout(() => el.className = 'toast', 4000);
+}
+
+function parseNum(v) {
+  if (v === '' || v === null || v === undefined) return 0;
+  if (typeof v === 'number') return v;
+  return parseFloat(String(v).replace(/\s/g, '').replace(',', '.')) || 0;
+}
+
+function formataMoeda(v) {
+  return 'R$ ' + parseNum(v).toFixed(2).replace('.', ',');
+}
+
+function hojeStr() {
+  const d = new Date();
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  return `${dd}/${mm}/${d.getFullYear()}`;
+}
+
+/* ============================================================
+   API — LEITURA
+   ============================================================ */
+async function lerAba(nomeAba) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nomeAba}!A2:Z?key=${API_KEY}`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  const data = await resp.json();
+  return data.values || [];
+}
+
+/* ============================================================
+   API — ESCRITA
+   ============================================================ */
+async function api(action, payload = {}) {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action, ...payload })
+  });
+  return resp.json();
+}
+
+/* ============================================================
+   CARREGAR DADOS DA MOTO
+   ============================================================ */
+async function carregarMoto(motoId) {
+  const aba = MOTOQUEIROS[motoId].aba;
+  const linhas = await lerAba(aba);
+  const todas = linhas.map((r, i) => ({
+    _row:           i + 2,
+    data:           (r[0]||'').toString().trim(),
+    km:             parseNum(r[1]),
+    entregas:       parseNum(r[2]),
+    motoboy:        (r[3]||'').toString().trim(),
+    dataReposicao:  (r[4]||'').toString().trim(),
+    tipoPagamento:  (r[5]||'').toString().trim(),
+    valor:          parseNum(r[6]),
+    nf:             (r[7]||'').toString().trim(),
+    local:          (r[8]||'').toString().trim()
+  }));
+
+  const corridas   = todas.filter(r => r.data && (r.km > 0 || r.entregas > 0) && !r.dataReposicao);
+  const pagamentos = todas.filter(r => r.dataReposicao || r.tipoPagamento || r.valor > 0);
+
+  return { todas, corridas, pagamentos };
+}
+
+/* ============================================================
+   SELECIONAR MOTO
+   ============================================================ */
+async function selecionarMoto(motoId) {
+  motoAtual = motoId;
+  document.querySelectorAll('.moto-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.moto === motoId);
+  });
+  await recarregarMoto();
+}
+
+/* ============================================================
+   SELECIONAR SUB-ABA
+   ============================================================ */
+function selecionarSub(sub) {
+  subAtual = sub;
+  document.querySelectorAll('.sub-tab').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase().includes(sub === 'corridas' ? 'corrida' : 'pagamento'));
+  });
+
+  const titulo = document.getElementById('panel-title');
+  const btnAdd = document.getElementById('btn-add');
+
+  if (sub === 'corridas') {
+    titulo.textContent = '📦 Corridas / Entregas';
+    btnAdd.textContent = '＋ Nova Corrida';
+  } else {
+    titulo.textContent = '💰 Pagamentos / Reposições';
+    btnAdd.textContent = '＋ Nova Reposição';
+  }
+  renderizar();
+}
+
+/* ============================================================
+   RENDERIZAR RESUMO
+   ============================================================ */
+function renderizarResumo(dados) {
+  const totalKM       = dados.corridas.reduce((s, r) => s + r.km, 0);
+  const totalEntregas = dados.corridas.reduce((s, r) => s + r.entregas, 0);
+  const totalPago     = dados.pagamentos.reduce((s, p) => s + p.valor, 0);
+
+  document.getElementById('resumo').innerHTML = `
+    <div class="resumo-card">
+      <div class="resumo-label">🛣️ KM Rodados</div>
+      <div class="resumo-valor">${totalKM.toFixed(1)} km</div>
+    </div>
+    <div class="resumo-card">
+      <div class="resumo-label">📦 Total Entregas</div>
+      <div class="resumo-valor">${totalEntregas}</div>
+    </div>
+    <div class="resumo-card">
+      <div class="resumo-label">💵 Total Pago</div>
+      <div class="resumo-valor">${formataMoeda(totalPago)}</div>
+    </div>
+    <div class="resumo-card">
+      <div class="resumo-label">📋 Registros</div>
+      <div class="resumo-valor">${dados.corridas.length + dados.pagamentos.length}</div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   RENDERIZAR TABELA
+   ============================================================ */
+function renderizar() {
+  const dados = dadosMoto[motoAtual];
+  if (!dados) return;
+
+  renderizarResumo(dados);
+
+  const container = document.getElementById('tabela-container');
+  const lista = subAtual === 'corridas' ? dados.corridas : dados.pagamentos;
+
+  if (!lista.length) {
+    container.innerHTML = `<div class="empty">
+      ${subAtual === 'corridas' ? '📭 Nenhuma corrida registrada ainda.' : '📭 Nenhum pagamento registrado ainda.'}
+    </div>`;
+    return;
+  }
+
+  if (subAtual === 'corridas') {
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th><th>KM</th><th>Entregas</th><th>Motoboy</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lista.slice().reverse().map(r => `
+            <tr>
+              <td><b>${r.data}</b></td>
+              <td>${r.km.toFixed(1)} km</td>
+              <td>${r.entregas}</td>
+              <td>${r.motoboy || '—'}</td>
+              <td>
+                <button class="btn-sm red" onclick="apagarLinha(${r._row})">🗑️</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  } else {
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Data Repos.</th><th>Tipo</th><th>Valor</th><th>NF</th><th>Local/Obs</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${lista.slice().reverse().map(p => `
+            <tr>
+              <td><b>${p.dataReposicao}</b></td>
+              <td>${p.tipoPagamento || '—'}</td>
+              <td><b>${formataMoeda(p.valor)}</b></td>
+              <td>${p.nf || '—'}</td>
+              <td><small>${p.local || '—'}</small></td>
+              <td>
+                <button class="btn-sm red" onclick="apagarLinha(${p._row})">🗑️</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+}
+
+/* ============================================================
+   RECARREGAR
+   ============================================================ */
+async function recarregarMoto() {
+  const loading = document.getElementById('loading');
+  loading.classList.add('show');
+  document.getElementById('tabela-container').innerHTML = '';
+  try {
+    dadosMoto[motoAtual] = await carregarMoto(motoAtual);
+    renderizar();
+  } catch (e) {
+    toast('Erro: ' + e.message, 'err');
+  } finally {
+    loading.classList.remove('show');
+  }
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function abrirModal(titulo, html) {
+  document.getElementById('modal-title').textContent = titulo;
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').classList.add('open');
+}
+function fecharModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') fecharModal();
+});
+
+/* ============================================================
+   FORM DE CORRIDA / PAGAMENTO
+   ============================================================ */
+function abrirForm() {
+  if (subAtual === 'corridas') abrirFormCorrida();
+  else abrirFormPagamento();
+}
+
+function abrirFormCorrida() {
+  const moto = MOTOQUEIROS[motoAtual];
+  abrirModal('📦 Nova Corrida — ' + moto.nome, `
+    <div class="form-grid">
+      <div class="field">
+        <label>Data (dd/mm/aaaa)</label>
+        <input type="text" id="c-data" value="${hojeStr()}">
+      </div>
+      <div class="field">
+        <label>KM Rodados</label>
+        <input type="text" id="c-km" placeholder="ex: 45.3">
+      </div>
+      <div class="field">
+        <label>Nº de Entregas</label>
+        <input type="text" id="c-entregas" placeholder="ex: 12">
+      </div>
+      <div class="field">
+        <label>Motoboy</label>
+        <input type="text" id="c-motoboy" value="${moto.nome}" readonly style="background:#f1f5f9">
+      </div>
+    </div>
+    <div style="display:flex; gap:10px">
+      <button class="btn btn-primary" onclick="salvarCorrida()">💾 Salvar Corrida</button>
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+async function salvarCorrida() {
+  const moto = MOTOQUEIROS[motoAtual];
+  const payload = {
+    motoId: motoAtual,
+    data: document.getElementById('c-data').value.trim(),
+    km: document.getElementById('c-km').value.trim().replace(',', '.'),
+    entregas: document.getElementById('c-entregas').value.trim(),
+    motoboy: moto.nome
+  };
+
+  if (!payload.data) return toast('Informe a data', 'err');
+
+  const r = await api('addCorrida', payload);
+  if (r.ok) {
+    toast('✅ Corrida salva!');
+    fecharModal();
+    await recarregarMoto();
+  } else {
+    toast('❌ ' + (r.error || 'Erro'), 'err');
+  }
+}
+
+function abrirFormPagamento() {
+  const moto = MOTOQUEIROS[motoAtual];
+  abrirModal('💰 Nova Reposição — ' + moto.nome, `
+    <div class="form-grid">
+      <div class="field">
+        <label>Data da Reposição (dd/mm/aaaa)</label>
+        <input type="text" id="p-data" value="${hojeStr()}">
+      </div>
+      <div class="field">
+        <label>Tipo de Pagamento</label>
+        <select id="p-tipo">
+          <option value="Gasolina">⛽ Gasolina</option>
+          <option value="Óleo">🛢️ Óleo</option>
+          <option value="Manutenção">🔧 Manutenção</option>
+          <option value="Pneu">🛞 Pneu</option>
+          <option value="Salário">💵 Salário</option>
+          <option value="Outros">📦 Outros</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Valor (R$)</label>
+        <input type="text" id="p-valor" placeholder="ex: 150.00">
+      </div>
+      <div class="field">
+        <label>NF (opcional)</label>
+        <input type="text" id="p-nf" placeholder="número da nota">
+      </div>
+      <div class="field full">
+        <label>Local / Observação</label>
+        <input type="text" id="p-local" placeholder="ex: Posto Shell Av. Brasil">
+      </div>
+    </div>
+    <div style="display:flex; gap:10px">
+      <button class="btn btn-yellow" onclick="salvarPagamento()">💾 Salvar Reposição</button>
+      <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
+    </div>
+  `);
+}
+
+async function salvarPagamento() {
+  const payload = {
+    motoId: motoAtual,
+    dataReposicao: document.getElementById('p-data').value.trim(),
+    tipoPagamento: document.getElementById('p-tipo').value,
+    valor: document.getElementById('p-valor').value.trim().replace(',', '.'),
+    nf: document.getElementById('p-nf').value.trim(),
+    local: document.getElementById('p-local').value.trim()
+  };
+
+  if (!payload.dataReposicao) return toast('Informe a data', 'err');
+
+  const r = await api('addPagamento', payload);
+  if (r.ok) {
+    toast('✅ Reposição salva!');
+    fecharModal();
+    await recarregarMoto();
+  } else {
+    toast('❌ ' + (r.error || 'Erro'), 'err');
+  }
+}
+
+/* ============================================================
+   APAGAR LINHA
+   ============================================================ */
+async function apagarLinha(rowIndex) {
+  if (!confirm('Apagar esta linha? Esta ação não pode ser desfeita.')) return;
+  const r = await api('deleteLinhaMoto', { motoId: motoAtual, rowIndex });
+  if (r.ok) {
+    toast('🗑️ Linha apagada');
+    await recarregarMoto();
+  } else {
+    toast('❌ ' + (r.error || 'Erro'), 'err');
+  }
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function logout() {
+  sessionStorage.clear();
+  location.href = 'index.html';
+}
+
+/* ============================================================
+   INICIALIZA
+   ============================================================ */
+(async () => {
+  await recarregarMoto();
+})();
+</script>
+</body>
+</html>
