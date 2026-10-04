@@ -13,7 +13,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* TOPBAR */
   .topbar {
     background: #0f172a; color: white; padding: 14px 24px;
     display: flex; justify-content: space-between; align-items: center;
@@ -32,7 +31,6 @@
 
   .content { padding: 24px; max-width: 1200px; margin: 0 auto; }
 
-  /* BANNER */
   .banner {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     color: white; padding: 24px 28px;
@@ -44,27 +42,96 @@
   .banner h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
   .banner p { font-size: 13px; opacity: 0.9; }
 
-  /* RESUMO */
-  .resumo-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  /* SALDOS */
+  .saldos-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
     gap: 16px; margin-bottom: 24px;
   }
-  .resumo-card {
+  .saldo-card {
     background: white; padding: 22px;
     border-radius: 16px; border: 1px solid #eef2f6;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    position: relative; overflow: hidden;
+  }
+  .saldo-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 5px;
+  }
+  .saldo-card.gasolina::before { background: #f59e0b; }
+  .saldo-card.oleo::before { background: #10b981; }
+  .saldo-card.pneu::before { background: #6366f1; }
+
+  .saldo-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .saldo-icone { font-size: 28px; }
+  .saldo-titulo {
+    font-size: 14px; font-weight: 700; color: #0f172a;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .saldo-titulo small {
+    display: block; font-size: 10px; font-weight: 500;
+    color: #64748b; text-transform: none; letter-spacing: 0;
+    margin-top: 2px;
+  }
+  .saldo-valor {
+    font-size: 30px; font-weight: 800;
+    color: #0f172a; line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .saldo-valor.neg { color: #dc2626; }
+
+  .saldo-detalhe {
+    background: #f8fafc; padding: 12px 14px;
+    border-radius: 10px; font-size: 12px;
+  }
+  .saldo-detalhe .linha {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; color: #475569;
+  }
+  .saldo-detalhe .linha.total {
+    border-top: 1px solid #e2e8f0; margin-top: 6px;
+    padding-top: 8px; font-weight: 700; color: #0f172a;
+  }
+  .saldo-detalhe .linha .val { font-weight: 600; }
+  .saldo-detalhe .linha .val.neg { color: #dc2626; }
+
+  /* Alerta saldo negativo */
+  .alerta-negativo {
+    background: #fef2f2; border: 1px solid #fecaca;
+    border-left: 4px solid #ef4444;
+    padding: 16px 20px; border-radius: 12px;
+    margin-bottom: 24px; display: none;
+  }
+  .alerta-negativo.show { display: block; }
+  .alerta-negativo h4 {
+    color: #991b1b; font-size: 14px; font-weight: 700;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .alerta-negativo p {
+    color: #7f1d1d; font-size: 13px; line-height: 1.6;
+  }
+
+  /* RESUMO */
+  .resumo-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 14px; margin-bottom: 24px;
+  }
+  .resumo-card {
+    background: white; padding: 18px;
+    border-radius: 14px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    text-align: center;
   }
   .resumo-label {
     font-size: 11px; color: #64748b; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
   }
-  .resumo-valor {
-    font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1.1;
-  }
+  .resumo-valor { font-size: 22px; font-weight: 800; }
+  .resumo-valor.blue { color: #2563eb; }
   .resumo-valor.green { color: #16a34a; }
   .resumo-valor.orange { color: #d97706; }
-  .resumo-valor.blue { color: #2563eb; }
-  .resumo-unidade { font-size: 13px; color: #64748b; font-weight: 500; margin-top: 4px; }
 
   /* CARD */
   .card {
@@ -78,7 +145,6 @@
     display: flex; align-items: center; gap: 8px;
   }
 
-  /* TABELAS */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
   th {
@@ -93,13 +159,14 @@
     border-radius: 8px; font-size: 11px; font-weight: 600;
     background: #fef3c7; color: #92400e;
   }
+  .badge.oleo { background: #d1fae5; color: #065f46; }
+  .badge.pneu { background: #e0e7ff; color: #3730a3; }
 
   .empty {
     text-align: center; padding: 30px;
     color: #94a3b8; font-size: 14px;
   }
 
-  /* LEGAL */
   .legal-notice {
     font-size: 12px; color: #64748b;
     background: #f8fafc; padding: 12px 16px;
@@ -107,7 +174,6 @@
     border-left: 3px solid #cbd5e1;
   }
 
-  /* LOADING */
   .loading { display: none; text-align: center; padding: 40px; color: #64748b; }
   .loading.show { display: block; }
   .spinner {
@@ -121,9 +187,8 @@
 
   @media (max-width: 768px) {
     .content { padding: 14px; }
-    .resumo-grid { grid-template-columns: 1fr; }
-    .resumo-valor { font-size: 24px; }
-    .banner-icon { font-size: 32px; }
+    .saldos-grid { grid-template-columns: 1fr; }
+    .resumo-grid { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
@@ -143,7 +208,7 @@
     <div class="banner-icon">🏍️</div>
     <div>
       <h2 id="banner-nome">Olá!</h2>
-      <p>Acompanhe suas entregas, quilometragem e pagamentos recebidos.</p>
+      <p>Acompanhe seus saldos, entregas, quilometragem e pagamentos recebidos.</p>
     </div>
   </div>
 
@@ -151,27 +216,121 @@
 
   <div id="conteudo" style="display:none">
 
-    <!-- RESUMO -->
+    <!-- ALERTA SALDO NEGATIVO -->
+    <div class="alerta-negativo" id="alerta-negativo">
+      <h4>⚠️ Atenção: Saldo Negativo</h4>
+      <p>
+        Você possui <b>saldo negativo</b> em uma ou mais categorias. Isso ocorreu porque foi realizada uma
+        <b>solicitação de adiantamento</b> para cobrir despesas urgentes relacionadas à motocicleta
+        (combustível, óleo ou pneu).
+        <br><br>
+        Este adiantamento foi <b>acordado entre as partes</b> para garantir a continuidade das atividades diárias,
+        sendo <b>abatido gradualmente conforme os quilômetros trabalhados</b>.
+        <br><br>
+        Em caso de dúvidas, procure a gerência.
+      </p>
+    </div>
+
+    <!-- 3 CARDS DE SALDO -->
+    <div class="saldos-grid">
+
+      <!-- GASOLINA -->
+      <div class="saldo-card gasolina">
+        <div class="saldo-header">
+          <div class="saldo-icone">⛽</div>
+          <div class="saldo-titulo">
+            Saldo Gasolina
+            <small>R$ 0,20 por km rodado</small>
+          </div>
+        </div>
+        <div class="saldo-valor" id="saldo-gasolina">R$ 0,00</div>
+        <div class="saldo-detalhe">
+          <div class="linha">
+            <span>Base acumulada</span>
+            <span class="val" id="det-gas-base">R$ 0,00</span>
+          </div>
+          <div class="linha">
+            <span>(-) Reposições</span>
+            <span class="val neg" id="det-gas-rep">R$ 0,00</span>
+          </div>
+          <div class="linha total">
+            <span>Disponível</span>
+            <span class="val" id="det-gas-total">R$ 0,00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÓLEO -->
+      <div class="saldo-card oleo">
+        <div class="saldo-header">
+          <div class="saldo-icone">🛢️</div>
+          <div class="saldo-titulo">
+            Saldo Óleo
+            <small>R$ 50,00 a cada 1.000 km</small>
+          </div>
+        </div>
+        <div class="saldo-valor" id="saldo-oleo">R$ 0,00</div>
+        <div class="saldo-detalhe">
+          <div class="linha">
+            <span>Bônus acumulados</span>
+            <span class="val" id="det-oleo-base">R$ 0,00</span>
+          </div>
+          <div class="linha">
+            <span>(-) Reposições</span>
+            <span class="val neg" id="det-oleo-rep">R$ 0,00</span>
+          </div>
+          <div class="linha total">
+            <span>Disponível</span>
+            <span class="val" id="det-oleo-total">R$ 0,00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PNEU -->
+      <div class="saldo-card pneu">
+        <div class="saldo-header">
+          <div class="saldo-icone">🛞</div>
+          <div class="saldo-titulo">
+            Saldo Pneu
+            <small>R$ 250,00 a cada 15.000 km</small>
+          </div>
+        </div>
+        <div class="saldo-valor" id="saldo-pneu">R$ 0,00</div>
+        <div class="saldo-detalhe">
+          <div class="linha">
+            <span>Bônus acumulados</span>
+            <span class="val" id="det-pneu-base">R$ 0,00</span>
+          </div>
+          <div class="linha">
+            <span>(-) Reposições</span>
+            <span class="val neg" id="det-pneu-rep">R$ 0,00</span>
+          </div>
+          <div class="linha total">
+            <span>Disponível</span>
+            <span class="val" id="det-pneu-total">R$ 0,00</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RESUMO GERAL -->
     <div class="resumo-grid">
       <div class="resumo-card">
         <div class="resumo-label">🛣️ KM Rodados</div>
         <div class="resumo-valor blue" id="r-km">0</div>
-        <div class="resumo-unidade">total acumulado</div>
       </div>
       <div class="resumo-card">
         <div class="resumo-label">📦 Total de Entregas</div>
         <div class="resumo-valor green" id="r-entregas">0</div>
-        <div class="resumo-unidade">todas as corridas</div>
-      </div>
-      <div class="resumo-card">
-        <div class="resumo-label">💵 Total Recebido</div>
-        <div class="resumo-valor orange" id="r-pago">R$ 0,00</div>
-        <div class="resumo-unidade">em reposições</div>
       </div>
       <div class="resumo-card">
         <div class="resumo-label">📋 Corridas</div>
         <div class="resumo-valor" id="r-corridas">0</div>
-        <div class="resumo-unidade">registradas</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-label">💵 Total Recebido</div>
+        <div class="resumo-valor orange" id="r-pago">R$ 0,00</div>
       </div>
     </div>
 
@@ -210,6 +369,15 @@ const MOTOQUEIROS = {
   'taylor': { aba: 'moto02', nome: 'Taylor Moreira do Carmo' }
 };
 
+/* Regras de negócio */
+const REGRAS = {
+  VALOR_POR_KM:     0.20,
+  BONUS_OLEO:       50,      // R$ a cada 1.000 km
+  KM_POR_BONUS_OLEO: 1000,
+  BONUS_PNEU:       250,     // R$ a cada 15.000 km
+  KM_POR_BONUS_PNEU: 15000
+};
+
 const sessUser = sessionStorage.getItem('gestor_user');
 const sessNome = sessionStorage.getItem('gestor_nome');
 const sessTipo = sessionStorage.getItem('gestor_tipo');
@@ -220,7 +388,6 @@ if (sessTipo === 'funcionario') location.href = 'funcionarios.html';
 
 const motoqueiro = MOTOQUEIROS[sessUser];
 if (!motoqueiro) {
-  // Usuário logado como motoqueiro mas sem correspondência — volta ao login
   sessionStorage.clear();
   location.href = 'index.html';
 }
@@ -238,7 +405,8 @@ function parseNum(v) {
 }
 
 function fmtMoeda(v) {
-  return 'R$ ' + parseNum(v).toFixed(2).replace('.', ',');
+  const sinal = v < 0 ? '-' : '';
+  return sinal + 'R$ ' + Math.abs(v).toFixed(2).replace('.', ',');
 }
 
 function fmtNum(v) { return parseNum(v).toFixed(1).replace('.', ','); }
@@ -296,14 +464,39 @@ async function carregarDados() {
 }
 
 /* ============================================================
-   PROCESSAR
+   PROCESSAR — CÁLCULO DOS SALDOS
    ============================================================ */
 function processar(d) {
   const totalKM = d.corridas.reduce((s, c) => s + c.km, 0);
   const totalEntregas = d.corridas.reduce((s, c) => s + c.entregas, 0);
+
+  // ---- Saldo Gasolina ----
+  const baseGasolina = totalKM * REGRAS.VALOR_POR_KM;
+  const repGasolina = d.pagamentos
+    .filter(p => p.tipoPagamento.toLowerCase() === 'gasolina')
+    .reduce((s, p) => s + p.valor, 0);
+  const saldoGasolina = baseGasolina - repGasolina;
+
+  // ---- Saldo Óleo ----
+  const bonusOleoQtd = Math.floor(totalKM / REGRAS.KM_POR_BONUS_OLEO);
+  const baseOleo = bonusOleoQtd * REGRAS.BONUS_OLEO;
+  const repOleo = d.pagamentos
+    .filter(p => p.tipoPagamento.toLowerCase() === 'óleo' || p.tipoPagamento.toLowerCase() === 'oleo')
+    .reduce((s, p) => s + p.valor, 0);
+  const saldoOleo = baseOleo - repOleo;
+
+  // ---- Saldo Pneu ----
+  const bonusPneuQtd = Math.floor(totalKM / REGRAS.KM_POR_BONUS_PNEU);
+  const basePneu = bonusPneuQtd * REGRAS.BONUS_PNEU;
+  const repPneu = d.pagamentos
+    .filter(p => p.tipoPagamento.toLowerCase() === 'pneu')
+    .reduce((s, p) => s + p.valor, 0);
+  const saldoPneu = basePneu - repPneu;
+
+  // ---- Total pago (para o resumo) ----
   const totalPago = d.pagamentos.reduce((s, p) => s + p.valor, 0);
 
-  // Extrato mensal
+  // ---- Extrato mensal ----
   const mensal = new Map();
   d.corridas.forEach(c => {
     if (!c.data) return;
@@ -324,27 +517,61 @@ function processar(d) {
     if (!mensal.has(key)) mensal.set(key, { mes: key, km: 0, entregas: 0, corridas: 0, pago: 0 });
     mensal.get(key).pago += p.valor;
   });
-
   const mensalArr = Array.from(mensal.values()).sort((a,b) => {
     const [ma, aa] = a.mes.split('/');
     const [mb, ab] = b.mes.split('/');
     return new Date(aa, ma-1) - new Date(ab, mb-1);
   });
 
-  return { totalKM, totalEntregas, totalPago, totalCorridas: d.corridas.length, mensalArr };
+  return {
+    totalKM, totalEntregas, totalPago, totalCorridas: d.corridas.length,
+    baseGasolina, repGasolina, saldoGasolina,
+    bonusOleoQtd, baseOleo, repOleo, saldoOleo,
+    bonusPneuQtd, basePneu, repPneu, saldoPneu,
+    mensalArr
+  };
 }
 
 /* ============================================================
    RENDERIZAR
    ============================================================ */
 function renderizar(d, p) {
-  // Resumo
+  // ---- Saldos ----
+  const gasEl = document.getElementById('saldo-gasolina');
+  gasEl.textContent = fmtMoeda(p.saldoGasolina);
+  gasEl.className = 'saldo-valor' + (p.saldoGasolina < 0 ? ' neg' : '');
+  document.getElementById('det-gas-base').textContent = fmtMoeda(p.baseGasolina);
+  document.getElementById('det-gas-rep').textContent = '-' + fmtMoeda(p.repGasolina);
+  document.getElementById('det-gas-total').textContent = fmtMoeda(p.saldoGasolina);
+  document.getElementById('det-gas-total').className = 'val' + (p.saldoGasolina < 0 ? ' neg' : '');
+
+  const oleoEl = document.getElementById('saldo-oleo');
+  oleoEl.textContent = fmtMoeda(p.saldoOleo);
+  oleoEl.className = 'saldo-valor' + (p.saldoOleo < 0 ? ' neg' : '');
+  document.getElementById('det-oleo-base').textContent = `${p.bonusOleoQtd} × R$ 50 = ` + fmtMoeda(p.baseOleo);
+  document.getElementById('det-oleo-rep').textContent = '-' + fmtMoeda(p.repOleo);
+  document.getElementById('det-oleo-total').textContent = fmtMoeda(p.saldoOleo);
+  document.getElementById('det-oleo-total').className = 'val' + (p.saldoOleo < 0 ? ' neg' : '');
+
+  const pneuEl = document.getElementById('saldo-pneu');
+  pneuEl.textContent = fmtMoeda(p.saldoPneu);
+  pneuEl.className = 'saldo-valor' + (p.saldoPneu < 0 ? ' neg' : '');
+  document.getElementById('det-pneu-base').textContent = `${p.bonusPneuQtd} × R$ 250 = ` + fmtMoeda(p.basePneu);
+  document.getElementById('det-pneu-rep').textContent = '-' + fmtMoeda(p.repPneu);
+  document.getElementById('det-pneu-total').textContent = fmtMoeda(p.saldoPneu);
+  document.getElementById('det-pneu-total').className = 'val' + (p.saldoPneu < 0 ? ' neg' : '');
+
+  // Alerta se algum saldo negativo
+  const temNegativo = p.saldoGasolina < 0 || p.saldoOleo < 0 || p.saldoPneu < 0;
+  document.getElementById('alerta-negativo').classList.toggle('show', temNegativo);
+
+  // ---- Resumo ----
   document.getElementById('r-km').textContent = fmtNum(p.totalKM);
   document.getElementById('r-entregas').textContent = p.totalEntregas;
-  document.getElementById('r-pago').textContent = fmtMoeda(p.totalPago);
   document.getElementById('r-corridas').textContent = p.totalCorridas;
+  document.getElementById('r-pago').textContent = fmtMoeda(p.totalPago);
 
-  // Corridas recentes
+  // ---- Corridas ----
   const cDiv = document.getElementById('corridas-container');
   if (d.corridas.length) {
     const ultimas = d.corridas.slice().sort((a,b) => dataToNum(b.data) - dataToNum(a.data)).slice(0, 10);
@@ -367,7 +594,7 @@ function renderizar(d, p) {
     cDiv.innerHTML = '<div class="empty">📭 Nenhuma corrida registrada ainda.</div>';
   }
 
-  // Pagamentos recentes
+  // ---- Pagamentos ----
   const pDiv = document.getElementById('pagamentos-container');
   if (d.pagamentos.length) {
     const ultimas = d.pagamentos.slice().sort((a,b) => dataToNum(b.dataReposicao) - dataToNum(a.dataReposicao)).slice(0, 10);
@@ -375,15 +602,19 @@ function renderizar(d, p) {
       <table>
         <thead><tr><th>📅 Data</th><th>🏷️ Tipo</th><th>💵 Valor</th><th>📄 NF</th><th>📍 Local</th></tr></thead>
         <tbody>
-          ${ultimas.map(pg => `
-            <tr>
-              <td><b>${pg.dataReposicao}</b></td>
-              <td><span class="badge">${pg.tipoPagamento || '—'}</span></td>
-              <td><b>${fmtMoeda(pg.valor)}</b></td>
-              <td>${pg.nf || '—'}</td>
-              <td><small>${pg.local || '—'}</small></td>
-            </tr>
-          `).join('')}
+          ${ultimas.map(pg => {
+            const tipoLower = (pg.tipoPagamento || '').toLowerCase();
+            const cls = tipoLower === 'gasolina' ? '' : (tipoLower.includes('leo') ? 'oleo' : (tipoLower === 'pneu' ? 'pneu' : ''));
+            return `
+              <tr>
+                <td><b>${pg.dataReposicao}</b></td>
+                <td><span class="badge ${cls}">${pg.tipoPagamento || '—'}</span></td>
+                <td><b>${fmtMoeda(pg.valor)}</b></td>
+                <td>${pg.nf || '—'}</td>
+                <td><small>${pg.local || '—'}</small></td>
+              </tr>
+            `;
+          }).join('')}
         </tbody>
       </table>
       <div class="legal-notice">📌 Mostrando as 10 reposições mais recentes.</div>
@@ -392,7 +623,7 @@ function renderizar(d, p) {
     pDiv.innerHTML = '<div class="empty">📭 Nenhuma reposição registrada ainda.</div>';
   }
 
-  // Extrato mensal
+  // ---- Extrato mensal ----
   const mDiv = document.getElementById('mensal-container');
   if (p.mensalArr.length) {
     mDiv.innerHTML = `
@@ -415,23 +646,18 @@ function renderizar(d, p) {
     mDiv.innerHTML = '<div class="empty">📭 Nenhum lançamento mensal.</div>';
   }
 
-  // Última atualização
   document.getElementById('last-update').innerHTML = `🔄 Atualizado em: ${new Date().toLocaleString('pt-BR')}`;
-
   document.getElementById('conteudo').style.display = 'block';
 }
 
 /* ============================================================
-   LOGOUT
+   LOGOUT / INICIALIZA
    ============================================================ */
 function logout() {
   sessionStorage.clear();
   location.href = 'index.html';
 }
 
-/* ============================================================
-   INICIALIZA
-   ============================================================ */
 (async () => {
   const loading = document.getElementById('loading');
   loading.classList.add('show');
