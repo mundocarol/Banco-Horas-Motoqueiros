@@ -253,7 +253,7 @@
 
 <div class="tabs">
   <button class="tab active" data-pane="banco">🏦 Banco de Horas</button>
-  <button class="tab" data-pane="funcs">👥 Gerenciar Funcionários</button>
+  <button class="tab" data-pane="funcs">👥 Gerenciar Pessoas</button>
   <button class="tab" data-pane="inativos">📁 Inativos</button>
 </div>
 
@@ -262,17 +262,18 @@
     <div class="loading" id="load-banco"><span class="spinner"></span> Carregando...</div>
     <div id="lista-funcionarios"></div>
   </div>
+
   <div class="pane" id="pane-funcs">
     <div class="form-card">
-      <h3 id="form-func-title">➕ Novo Funcionário / Motoqueiro</h3>
+      <h3 id="form-func-title">➕ Nova Pessoa (Funcionário ou Motoqueiro)</h3>
       <input type="hidden" id="func-editing-id">
       <div class="form-grid">
-        <div class="field"><label>ID (login)</label><input type="text" id="f-id" placeholder="ex: joao"></div>
+        <div class="field"><label>ID (login, sem espaços)</label><input type="text" id="f-id" placeholder="ex: joao"></div>
         <div class="field"><label>Nome Completo</label><input type="text" id="f-nome" placeholder="ex: João Silva"></div>
         <div class="field"><label>Tipo</label>
           <select id="f-tipo">
-            <option value="funcionario">Funcionário</option>
-            <option value="motoqueiro">Motoqueiro</option>
+            <option value="funcionario">👤 Funcionário</option>
+            <option value="motoqueiro">🏍️ Motoqueiro</option>
           </select>
         </div>
         <div class="field"><label>Senha</label><input type="text" id="f-senha" placeholder="ex: joao123"></div>
@@ -280,20 +281,22 @@
         <div class="field full"><label>Observação</label><input type="text" id="f-obs" placeholder="Opcional"></div>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap">
-        <button class="btn-sm b-primary" onclick="salvarFuncionario()">💾 Salvar</button>
+        <button class="btn-sm b-primary" onclick="salvarPessoa()">💾 Salvar</button>
         <button class="btn-sm b-ghost" onclick="limparFormFunc()">Limpar</button>
       </div>
     </div>
+
     <div class="form-card">
-      <h3>👥 Todos os Ativos</h3>
+      <h3>👥 Todas as Pessoas Ativas</h3>
       <div id="tabela-funcs"></div>
     </div>
   </div>
+
   <div class="pane" id="pane-inativos">
     <div class="form-card">
       <h3>📁 Desligados</h3>
       <p style="color:#64748b; font-size:13px; margin-bottom:16px">
-        Não aparecem no login. Dados preservados.
+        Não aparecem no login. Dados preservados para uso jurídico.
       </p>
       <div id="tabela-inativos"></div>
     </div>
@@ -330,7 +333,8 @@ if (!sessUser || sessTipo !== 'admin') location.href = 'index.html';
    ESTADO
    ============================================================ */
 let cadastro = [], controle = [], faltas = [], advertencias = [];
-let feriados = [], folgas = [], ferias = [], funcionarios = [];
+let feriados = [], folgas = [], ferias = [];
+let funcionarios = []; // só tipo=funcionario & ativo
 
 /* ============================================================
    HELPERS
@@ -501,13 +505,11 @@ function consolidar(nome) {
   const folg = folgas.filter(f => f.funcionario.toLowerCase() === nomeL);
   const fer2 = ferias.filter(f => f.funcionario.toLowerCase() === nomeL);
 
-  // Saldo BH = soma dos saldos MENOS as folgas que debitam banco (não têm vínculo feriado)
   let totalBH = ctrl.reduce((s,c) => s + c.saldoBanco, 0);
   const folgasBanco = folg.filter(f => f.origem === 'banco');
-  totalBH -= folgasBanco.length * 8; // cada folga do banco = 8h
+  totalBH -= folgasBanco.length * 8;
 
   const totalHE = ctrl.reduce((s,c) => s + c.horaExtra, 0);
-
   const feriadosPendentes = fer.filter(f => f.status === 'pendente').length;
 
   return {
@@ -522,12 +524,12 @@ function consolidar(nome) {
 }
 
 /* ============================================================
-   RENDER — BANCO
+   RENDER — BANCO DE HORAS
    ============================================================ */
 function renderBanco() {
   const c = document.getElementById('lista-funcionarios');
   if (!funcionarios.length) {
-    c.innerHTML = '<div class="empty">Nenhum funcionário ativo.</div>';
+    c.innerHTML = '<div class="empty">Nenhum funcionário ativo cadastrado. Vá em <b>Gerenciar Pessoas</b> e adicione.</div>';
     return;
   }
 
@@ -553,8 +555,8 @@ function renderBanco() {
           <div class="stat"><div class="stat-label">✅ Faltas Just.</div><div class="stat-value">${d.faltasJust}</div></div>
           <div class="stat"><div class="stat-label">❌ Faltas Injust.</div><div class="stat-value">${d.faltasInjust}</div></div>
           <div class="stat"><div class="stat-label">⚖️ Advertências</div><div class="stat-value">${d.advertenciasCount}</div></div>
-          <div class="stat"><div class="stat-label">📆 Folgas do Banco</div><div class="stat-value">${d.folgasBancoCount}</div></div>
-          <div class="stat"><div class="stat-label">📊 Meses Lançados</div><div class="stat-value">${d.ctrl.length}</div></div>
+          <div class="stat"><div class="stat-label">📆 Folgas Banco</div><div class="stat-value">${d.folgasBancoCount}</div></div>
+          <div class="stat"><div class="stat-label">📊 Meses</div><div class="stat-value">${d.ctrl.length}</div></div>
         </div>
 
         <div class="btns">
@@ -573,12 +575,12 @@ function renderBanco() {
 }
 
 /* ============================================================
-   RENDER — FUNCIONÁRIOS
+   RENDER — GERENCIAR / INATIVOS
    ============================================================ */
 function renderFuncs() {
   const c = document.getElementById('tabela-funcs');
   const ativos = cadastro.filter(x => x.status === 'ativo');
-  if (!ativos.length) { c.innerHTML = '<div class="empty">Nenhum ativo.</div>'; return; }
+  if (!ativos.length) { c.innerHTML = '<div class="empty">Nenhuma pessoa ativa.</div>'; return; }
   c.innerHTML = `
     <table>
       <thead><tr><th>Nome</th><th>ID</th><th>Tipo</th><th>Admissão</th><th>Ações</th></tr></thead>
@@ -669,7 +671,7 @@ function fecharModal() { document.getElementById('modal').classList.remove('open
 document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') fecharModal(); });
 
 /* ============================================================
-   MODAL — LANÇAMENTO (6 abas)
+   MODAL — LANÇAMENTO
    ============================================================ */
 function abrirLancamento(empId) {
   const f = cadastro.find(c => c.id === empId);
@@ -736,7 +738,6 @@ function formFeriado(f) {
 }
 
 function formFolga(f) {
-  // Busca feriados pendentes desse funcionário, ordenados por data (mais antigo primeiro)
   const pendentes = feriados
     .filter(x => x.funcionario.toLowerCase() === f.nome.toLowerCase() && x.status === 'pendente')
     .sort((a, b) => dataToNum(a.data) - dataToNum(b.data));
@@ -789,9 +790,7 @@ function formFolga(f) {
 function selecionarOrigem(origem) {
   document.querySelectorAll('.radio-opt').forEach(el => el.classList.remove('selected'));
   document.getElementById('opt-' + origem).classList.add('selected');
-  document.querySelectorAll('input[name="folg-origem"]').forEach(r => {
-    r.checked = r.value === origem;
-  });
+  document.querySelectorAll('input[name="folg-origem"]').forEach(r => { r.checked = r.value === origem; });
   document.getElementById('folg-feriado-wrap').style.display = origem === 'feriado' ? 'block' : 'none';
 }
 
@@ -1040,7 +1039,7 @@ async function apagar(action, rowIndex) {
 }
 
 /* ============================================================
-   RELATÓRIO COMPLETO
+   RELATÓRIO
    ============================================================ */
 function verRelatorio(empId) {
   const f = cadastro.find(c => c.id === empId);
@@ -1120,13 +1119,13 @@ function verRelatorio(empId) {
 }
 
 /* ============================================================
-   GERENCIAR FUNCIONÁRIOS
+   GERENCIAR PESSOAS
    ============================================================ */
 function limparFormFunc() {
   ['f-id','f-nome','f-senha','f-admissao','f-obs'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-tipo').value = 'funcionario';
   document.getElementById('func-editing-id').value = '';
-  document.getElementById('form-func-title').textContent = '➕ Novo Funcionário / Motoqueiro';
+  document.getElementById('form-func-title').textContent = '➕ Nova Pessoa (Funcionário ou Motoqueiro)';
   document.getElementById('f-id').disabled = false;
 }
 
@@ -1146,7 +1145,7 @@ function editarFunc(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-async function salvarFuncionario() {
+async function salvarPessoa() {
   const editId = document.getElementById('func-editing-id').value;
   const id     = document.getElementById('f-id').value.trim().toLowerCase();
   const nome   = document.getElementById('f-nome').value.trim();
@@ -1157,8 +1156,11 @@ async function salvarFuncionario() {
   if (!id || !nome || !senha) return toast('Preencha ID, Nome e Senha', 'err');
 
   let r;
-  if (editId) r = await api('updateCadastro', { id: editId, nome, senha, data_admissao: adm, observacao: obs });
-  else r = await api('addCadastro', { id, nome, tipo, senha, data_admissao: adm, observacao: obs });
+  if (editId) {
+    r = await api('updateCadastro', { id: editId, nome, tipo, senha, data_admissao: adm, observacao: obs });
+  } else {
+    r = await api('addCadastro', { id, nome, tipo, senha, data_admissao: adm, observacao: obs });
+  }
 
   if (r.ok) { toast('✅ Salvo!'); limparFormFunc(); await recarregar(); }
   else toast('❌ ' + (r.error || 'Erro'), 'err');
