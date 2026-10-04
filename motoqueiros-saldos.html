@@ -9,8 +9,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f8fafc; color: #1e293b;
-    -webkit-font-smoothing: antialiased;
+    background: #f8fafc; color: #1e293b; -webkit-font-smoothing: antialiased;
   }
 
   .topbar {
@@ -253,7 +252,6 @@
     <!-- 3 CARDS DE SALDO -->
     <div class="saldos-grid">
 
-      <!-- GASOLINA -->
       <div class="saldo-card gasolina">
         <div class="saldo-header">
           <div class="saldo-icone">⛽</div>
@@ -279,7 +277,6 @@
         </div>
       </div>
 
-      <!-- ÓLEO -->
       <div class="saldo-card oleo">
         <div class="saldo-header">
           <div class="saldo-icone">🛢️</div>
@@ -314,7 +311,6 @@
         </div>
       </div>
 
-      <!-- PNEU -->
       <div class="saldo-card pneu">
         <div class="saldo-header">
           <div class="saldo-icone">🛞</div>
@@ -371,19 +367,16 @@
       </div>
     </div>
 
-    <!-- CORRIDAS RECENTES -->
     <div class="card">
       <h3>📦 Últimas Corridas</h3>
       <div id="corridas-container"></div>
     </div>
 
-    <!-- REPOSIÇÕES RECENTES -->
     <div class="card">
       <h3>💰 Últimas Reposições</h3>
       <div id="pagamentos-container"></div>
     </div>
 
-    <!-- EXTRATO MENSAL -->
     <div class="card">
       <h3>📊 Extrato Mensal</h3>
       <div id="mensal-container"></div>
@@ -401,12 +394,6 @@
 const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
 const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
 
-const MOTOQUEIROS = {
-  'royle':  { aba: 'moto01', nome: 'Royle Luiz Santos da Silva' },
-  'taylor': { aba: 'moto02', nome: 'Taylor Moreira do Carmo' }
-};
-
-/* Regras de negócio — PROPORCIONAIS */
 const REGRAS = {
   VALOR_POR_KM:      0.20,
   BONUS_OLEO:        50,
@@ -415,6 +402,9 @@ const REGRAS = {
   KM_POR_BONUS_PNEU: 15000
 };
 
+/* ============================================================
+   SESSÃO
+   ============================================================ */
 const sessUser = sessionStorage.getItem('gestor_user');
 const sessNome = sessionStorage.getItem('gestor_nome');
 const sessTipo = sessionStorage.getItem('gestor_tipo');
@@ -422,12 +412,6 @@ const sessTipo = sessionStorage.getItem('gestor_tipo');
 if (!sessUser) location.href = 'index.html';
 if (sessTipo === 'admin') location.href = 'banco-horas.html';
 if (sessTipo === 'funcionario') location.href = 'funcionarios.html';
-
-const motoqueiro = MOTOQUEIROS[sessUser];
-if (!motoqueiro) {
-  sessionStorage.clear();
-  location.href = 'index.html';
-}
 
 document.getElementById('topbar-user').textContent = sessNome || sessUser;
 document.getElementById('banner-nome').textContent = 'Olá, ' + (sessNome || sessUser) + '!';
@@ -476,45 +460,47 @@ async function lerAba(nome) {
 }
 
 /* ============================================================
-   CARREGAR DADOS
+   CARREGAR DADOS (só do motoqueiro logado)
    ============================================================ */
 async function carregarDados() {
-  const linhas = await lerAba(motoqueiro.aba);
+  const linhas = await lerAba('Motos');
 
-  const todas = linhas.map((r, i) => ({
+  // Filtra apenas as linhas deste motoqueiro (pelo id)
+  const minhasLinhas = linhas.map((r, i) => ({
     _row: i + 2,
-    data: (r[0]||'').toString().trim(),
-    km: parseNum(r[1]),
-    entregas: parseNum(r[2]),
-    motoboy: (r[3]||'').toString().trim(),
-    dataReposicao: (r[4]||'').toString().trim(),
-    tipoPagamento: (r[5]||'').toString().trim(),
-    valor: parseNum(r[6]),
-    nf: (r[7]||'').toString().trim(),
-    local: (r[8]||'').toString().trim()
-  }));
+    motoboyId:     (r[0]||'').toString().trim().toLowerCase(),
+    motoboyNome:   (r[1]||'').toString().trim(),
+    data:          (r[2]||'').toString().trim(),
+    km:            parseNum(r[3]),
+    entregas:      parseNum(r[4]),
+    dataReposicao: (r[5]||'').toString().trim(),
+    tipoPagamento: (r[6]||'').toString().trim(),
+    valor:         parseNum(r[7]),
+    nf:            (r[8]||'').toString().trim(),
+    local:         (r[9]||'').toString().trim()
+  })).filter(m => m.motoboyId === sessUser.toLowerCase());
 
-  const corridas   = todas.filter(r => r.data && (r.km > 0 || r.entregas > 0) && !r.dataReposicao);
-  const pagamentos = todas.filter(r => r.dataReposicao || r.tipoPagamento || r.valor > 0);
+  const corridas   = minhasLinhas.filter(r => r.data && (r.km > 0 || r.entregas > 0) && !r.dataReposicao);
+  const pagamentos = minhasLinhas.filter(r => r.dataReposicao || r.tipoPagamento || r.valor > 0);
 
   return { corridas, pagamentos };
 }
 
 /* ============================================================
-   PROCESSAR — CÁLCULO PROPORCIONAL
+   PROCESSAR (cálculo proporcional + barra)
    ============================================================ */
 function processar(d) {
   const totalKM = d.corridas.reduce((s, c) => s + c.km, 0);
   const totalEntregas = d.corridas.reduce((s, c) => s + c.entregas, 0);
 
-  // ---- GASOLINA (proporcional por km) ----
+  // Gasolina
   const baseGasolina = totalKM * REGRAS.VALOR_POR_KM;
   const repGasolina = d.pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'gasolina')
     .reduce((s, p) => s + p.valor, 0);
   const saldoGasolina = baseGasolina - repGasolina;
 
-  // ---- ÓLEO (proporcional: km / 1000 × 50) ----
+  // Óleo (proporcional)
   const baseOleo = (totalKM / REGRAS.KM_POR_BONUS_OLEO) * REGRAS.BONUS_OLEO;
   const repOleo = d.pagamentos
     .filter(p => {
@@ -525,7 +511,7 @@ function processar(d) {
   const saldoOleo = baseOleo - repOleo;
   const kmRestanteOleo = totalKM % REGRAS.KM_POR_BONUS_OLEO;
 
-  // ---- PNEU (proporcional: km / 15000 × 250) ----
+  // Pneu (proporcional)
   const basePneu = (totalKM / REGRAS.KM_POR_BONUS_PNEU) * REGRAS.BONUS_PNEU;
   const repPneu = d.pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'pneu')
@@ -533,10 +519,9 @@ function processar(d) {
   const saldoPneu = basePneu - repPneu;
   const kmRestantePneu = totalKM % REGRAS.KM_POR_BONUS_PNEU;
 
-  // ---- Total pago ----
   const totalPago = d.pagamentos.reduce((s, p) => s + p.valor, 0);
 
-  // ---- Extrato mensal ----
+  // Extrato mensal
   const mensal = new Map();
   d.corridas.forEach(c => {
     if (!c.data) return;
@@ -595,11 +580,9 @@ function renderizar(d, p) {
   document.getElementById('det-oleo-total').textContent = fmtMoeda(p.saldoOleo);
   document.getElementById('det-oleo-total').className = 'val' + (p.saldoOleo < 0 ? ' neg' : '');
 
-  // Barra de progresso do óleo
-  const kmRestOleo = p.kmRestanteOleo;
-  const percOleo = (kmRestOleo / REGRAS.KM_POR_BONUS_OLEO) * 100;
+  const percOleo = (p.kmRestanteOleo / REGRAS.KM_POR_BONUS_OLEO) * 100;
   document.getElementById('oleo-prog-txt').textContent =
-    `${fmtNum(kmRestOleo)} / ${REGRAS.KM_POR_BONUS_OLEO} km`;
+    `${fmtNum(p.kmRestanteOleo)} / ${REGRAS.KM_POR_BONUS_OLEO} km`;
   document.getElementById('oleo-prog-fill').style.width = percOleo + '%';
 
   // ---- PNEU ----
@@ -611,11 +594,9 @@ function renderizar(d, p) {
   document.getElementById('det-pneu-total').textContent = fmtMoeda(p.saldoPneu);
   document.getElementById('det-pneu-total').className = 'val' + (p.saldoPneu < 0 ? ' neg' : '');
 
-  // Barra de progresso do pneu
-  const kmRestPneu = p.kmRestantePneu;
-  const percPneu = (kmRestPneu / REGRAS.KM_POR_BONUS_PNEU) * 100;
+  const percPneu = (p.kmRestantePneu / REGRAS.KM_POR_BONUS_PNEU) * 100;
   document.getElementById('pneu-prog-txt').textContent =
-    `${fmtNum(kmRestPneu)} / ${REGRAS.KM_POR_BONUS_PNEU} km`;
+    `${fmtNum(p.kmRestantePneu)} / ${REGRAS.KM_POR_BONUS_PNEU} km`;
   document.getElementById('pneu-prog-fill').style.width = percPneu + '%';
 
   // Alerta se algum saldo negativo
