@@ -7,85 +7,265 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #1e293b; -webkit-font-smoothing: antialiased; }
-  .topbar { background: #0f172a; color: white; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 12px; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f8fafc; color: #1e293b; -webkit-font-smoothing: antialiased;
+  }
+  .topbar {
+    background: #0f172a; color: white; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 12px;
+  }
   .topbar h1 { font-size: 18px; font-weight: 700; }
   .topbar h1 span { color: #60a5fa; }
   .topbar-actions { display: flex; gap: 10px; align-items: center; }
-  .nav-btn { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.12); padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .nav-btn {
+    background: rgba(255,255,255,0.08); color: white;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
   .nav-btn:hover { background: rgba(255,255,255,0.15); }
-  .logout-btn { background: #475569; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .logout-btn {
+    background: #475569; color: white;
+    border: none; padding: 8px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
   .logout-btn:hover { background: #334155; }
-  .content { padding: 24px; max-width: 1400px; margin: 0 auto; }
-  .moto-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-  .moto-btn { padding: 14px 26px; border: 2px solid #e2e8f0; background: white; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; color: #64748b; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; gap: 10px; }
-  .moto-btn:hover { border-color: #cbd5e1; }
-  .moto-btn.active { border-color: #3b82f6; background: #eff6ff; color: #2563eb; box-shadow: 0 4px 14px rgba(59,130,246,0.15); }
-  .moto-btn .icon { font-size: 22px; }
 
-  .saldos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 14px; margin-bottom: 20px; }
-  .saldo-card { background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid #eef2f6; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; overflow: hidden; }
-  .saldo-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; }
+  .content { padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+  /* SELETOR */
+  .moto-selector {
+    display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .moto-btn {
+    padding: 14px 22px;
+    border: 2px solid #e2e8f0; background: white;
+    border-radius: 12px; cursor: pointer;
+    font-weight: 700; font-size: 14px; color: #64748b;
+    transition: all 0.2s; font-family: inherit;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .moto-btn:hover { border-color: #cbd5e1; }
+  .moto-btn.active {
+    border-color: #3b82f6; background: #eff6ff; color: #2563eb;
+    box-shadow: 0 4px 14px rgba(59,130,246,0.15);
+  }
+  .moto-btn .icon { font-size: 20px; }
+  .moto-btn.ver-todos {
+    background: #1e293b; border-color: #1e293b; color: white;
+  }
+  .moto-btn.ver-todos.active {
+    background: #0f172a; border-color: #0f172a; color: white;
+    box-shadow: 0 4px 14px rgba(15,23,42,0.3);
+  }
+  .moto-btn .info-aba {
+    font-size: 10px; font-weight: 500;
+    opacity: 0.6; margin-top: 2px;
+  }
+  .loading-selector {
+    text-align: center; padding: 20px;
+    color: #94a3b8; font-size: 14px;
+  }
+
+  /* SALDOS */
+  .saldos-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+    gap: 14px; margin-bottom: 20px;
+  }
+  .saldo-card {
+    background: white; padding: 18px 20px;
+    border-radius: 14px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    position: relative; overflow: hidden;
+  }
+  .saldo-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 4px;
+  }
   .saldo-card.gasolina::before { background: #f59e0b; }
   .saldo-card.oleo::before { background: #10b981; }
   .saldo-card.pneu::before { background: #6366f1; }
-  .saldo-label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .saldo-label {
+    font-size: 11px; color: #64748b; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
   .saldo-valor { font-size: 22px; font-weight: 800; color: #0f172a; }
   .saldo-valor.neg { color: #dc2626; }
 
-  .resumo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 14px; margin-bottom: 24px; }
-  .resumo-card { background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid #eef2f6; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-  .resumo-label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  /* RESUMO */
+  .resumo-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 14px; margin-bottom: 24px;
+  }
+  .resumo-card {
+    background: white; padding: 18px 20px;
+    border-radius: 14px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .resumo-label {
+    font-size: 11px; color: #64748b; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+  }
   .resumo-valor { font-size: 24px; font-weight: 800; color: #0f172a; }
 
-  .sub-tabs { display: flex; gap: 6px; margin-bottom: 18px; background: white; padding: 6px; border-radius: 12px; border: 1px solid #eef2f6; width: fit-content; }
-  .sub-tab { padding: 10px 20px; border: none; background: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; color: #64748b; font-family: inherit; transition: all 0.2s; }
+  /* SUB-TABS */
+  .sub-tabs {
+    display: flex; gap: 6px; margin-bottom: 18px;
+    background: white; padding: 6px; border-radius: 12px;
+    border: 1px solid #eef2f6; width: fit-content;
+  }
+  .sub-tab {
+    padding: 10px 20px; border: none; background: none;
+    border-radius: 8px; cursor: pointer;
+    font-weight: 600; font-size: 13px; color: #64748b;
+    font-family: inherit; transition: all 0.2s;
+  }
   .sub-tab:hover { background: #f8fafc; color: #0f172a; }
   .sub-tab.active { background: #0f172a; color: white; }
 
-  .actions { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
-  .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: inherit; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  /* AÇÕES */
+  .actions {
+    display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+    justify-content: space-between; align-items: center;
+  }
+  .btn {
+    padding: 10px 20px; border: none; border-radius: 10px;
+    cursor: pointer; font-size: 13px; font-weight: 600;
+    font-family: inherit; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
   .btn:hover { transform: translateY(-1px); filter: brightness(0.95); }
   .btn-primary { background: #3b82f6; color: white; }
   .btn-yellow { background: #eab308; color: white; }
   .btn-ghost { background: #f1f5f9; color: #475569; }
-  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 7px; border: none; cursor: pointer; font-family: inherit; font-weight: 600; transition: all 0.2s; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-sm {
+    padding: 6px 12px; font-size: 12px; border-radius: 7px;
+    border: none; cursor: pointer; font-family: inherit;
+    font-weight: 600; transition: all 0.2s;
+  }
   .btn-sm:hover { filter: brightness(0.95); }
   .btn-sm.red { background: #fee2e2; color: #991b1b; }
 
-  .panel { background: white; padding: 22px; border-radius: 16px; border: 1px solid #eef2f6; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-  .panel h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; }
+  /* PAINEL */
+  .panel {
+    background: white; padding: 22px;
+    border-radius: 16px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  }
+  .panel h3 {
+    font-size: 16px; font-weight: 700; margin-bottom: 16px;
+    padding-bottom: 10px; border-bottom: 2px solid #f1f5f9;
+  }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-  th { background: #f1f5f9; font-weight: 600; font-size: 11px; text-transform: uppercase; color: #475569; letter-spacing: 0.3px; }
+  th {
+    background: #f1f5f9; font-weight: 600;
+    font-size: 11px; text-transform: uppercase;
+    color: #475569; letter-spacing: 0.3px;
+  }
   tr:hover { background: #f8fafc; }
-  .empty { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
-  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; margin-bottom: 18px; }
+  .empty {
+    text-align: center; padding: 40px;
+    color: #94a3b8; font-size: 14px;
+  }
+
+  /* FORM */
+  .form-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 14px; margin-bottom: 18px;
+  }
   .field { display: flex; flex-direction: column; }
-  .field label { font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .field input, .field select, .field textarea { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 14px; font-family: inherit; background: white; transition: all 0.2s; }
-  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+  .field label {
+    font-size: 11px; font-weight: 600; color: #475569;
+    margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .field input, .field select, .field textarea {
+    padding: 10px 12px; border: 1px solid #cbd5e1;
+    border-radius: 9px; font-size: 14px;
+    font-family: inherit; background: white;
+    transition: all 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+  .field textarea { min-height: 70px; resize: vertical; }
   .field.full { grid-column: 1/-1; }
-  .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.75); backdrop-filter: blur(4px); z-index: 1000; padding: 20px; overflow-y: auto; }
+
+  /* MODAL */
+  .modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(15,23,42,0.75); backdrop-filter: blur(4px);
+    z-index: 1000; padding: 20px; overflow-y: auto;
+  }
   .modal.open { display: block; }
-  .modal-box { background: white; max-width: 700px; margin: 30px auto; border-radius: 16px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.3); }
-  .modal-head { background: #0f172a; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-box {
+    background: white; max-width: 700px;
+    margin: 30px auto; border-radius: 16px;
+    overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  }
+  .modal-head {
+    background: #0f172a; color: white;
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
   .modal-head h3 { font-size: 17px; font-weight: 700; }
-  .modal-close { background: none; border: none; color: #94a3b8; font-size: 26px; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .modal-close {
+    background: none; border: none; color: #94a3b8;
+    font-size: 26px; cursor: pointer;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
   .modal-close:hover { background: rgba(255,255,255,0.1); color: white; }
   .modal-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
-  .toast { position: fixed; bottom: 24px; right: 24px; background: #0f172a; color: white; padding: 14px 22px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-weight: 600; font-size: 14px; display: none; z-index: 9999; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #0f172a; color: white;
+    padding: 14px 22px; border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    font-weight: 600; font-size: 14px;
+    display: none; z-index: 9999;
+  }
   .toast.show { display: block; animation: slideIn 0.3s; }
   .toast.ok { background: #16a34a; }
   .toast.err { background: #dc2626; }
-  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+  }
+
+  /* LOADING */
   .loading { display: none; text-align: center; padding: 40px; color: #64748b; }
   .loading.show { display: block; }
-  .spinner { display: inline-block; width: 22px; height: 22px; border: 3px solid #e2e8f0; border-radius: 50%; border-top-color: #3b82f6; animation: spin 0.8s linear infinite; margin-right: 10px; vertical-align: middle; }
+  .spinner {
+    display: inline-block; width: 22px; height: 22px;
+    border: 3px solid #e2e8f0; border-radius: 50%;
+    border-top-color: #3b82f6;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px; vertical-align: middle;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* BADGE MOTOBOY (na visão "ver todos") */
+  .badge-motoboy {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 8px;
+    font-size: 11px; font-weight: 600;
+    background: #dbeafe; color: #1e40af;
+  }
+
   @media (max-width: 768px) {
     .content { padding: 14px; }
-    .moto-btn { padding: 12px 18px; font-size: 13px; }
+    .moto-btn { padding: 12px 16px; font-size: 13px; }
     .saldos-grid { grid-template-columns: 1fr; }
     .resumo-grid { grid-template-columns: 1fr 1fr; }
   }
@@ -103,21 +283,9 @@
 
 <div class="content">
 
-  <div class="moto-selector">
-    <button class="moto-btn active" data-moto="moto01" onclick="selecionarMoto('moto01')">
-      <span class="icon">🏍️</span>
-      <div>
-        <div>Royle Luiz Santos da Silva</div>
-        <small style="font-weight:500; opacity:.7; font-size:11px">moto01</small>
-      </div>
-    </button>
-    <button class="moto-btn" data-moto="moto02" onclick="selecionarMoto('moto02')">
-      <span class="icon">🏍️</span>
-      <div>
-        <div>Taylor Moreira do Carmo</div>
-        <small style="font-weight:500; opacity:.7; font-size:11px">moto02</small>
-      </div>
-    </button>
+  <!-- SELETOR DINÂMICO -->
+  <div class="moto-selector" id="moto-selector">
+    <div class="loading-selector">Carregando motoqueiros...</div>
   </div>
 
   <!-- 3 CARDS DE SALDO -->
@@ -136,13 +304,16 @@
     </div>
   </div>
 
+  <!-- RESUMO -->
   <div class="resumo-grid" id="resumo"></div>
 
+  <!-- SUB-TABS -->
   <div class="sub-tabs">
     <button class="sub-tab active" onclick="selecionarSub('corridas')">📦 Corridas / Entregas</button>
     <button class="sub-tab" onclick="selecionarSub('pagamentos')">💰 Pagamentos / Reposições</button>
   </div>
 
+  <!-- PAINEL -->
   <div class="panel">
     <div class="actions">
       <h3 id="panel-title">Corridas / Entregas</h3>
@@ -169,14 +340,12 @@
 <div class="toast" id="toast"></div>
 
 <script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
 const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
 const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
-const API_URL  = 'https://script.google.com/macros/s/AKfycbxCV_pL-xzrS9Q67MQeYRb_RESvCQVkkJTV6Ar9y29SHBEimCshgyoysdu7fPIKnec/exec';
-
-const MOTOQUEIROS = {
-  moto01: { id:'royle',  nome:'Royle Luiz Santos da Silva', aba:'moto01' },
-  moto02: { id:'taylor', nome:'Taylor Moreira do Carmo',    aba:'moto02' }
-};
+const API_URL  = 'https://script.google.com/macros/s/AKfycbxCV_pL-xzrS9Q67MQeYRb_RESvCQVkkJTV6Ar9y29SHBEimcCshgyoysdu7fPIKnec/exec';
 
 const REGRAS = {
   VALOR_POR_KM:      0.20,
@@ -186,14 +355,26 @@ const REGRAS = {
   KM_POR_BONUS_PNEU: 15000
 };
 
+/* ============================================================
+   SESSÃO
+   ============================================================ */
 const sessUser = sessionStorage.getItem('gestor_user');
 const sessTipo = sessionStorage.getItem('gestor_tipo');
-if (!sessUser || sessTipo !== 'admin') location.href = 'index.html';
+if (!sessUser || sessTipo !== 'admin') {
+  location.href = 'index.html';
+}
 
-let motoAtual = 'moto01';
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let motoqueiros = [];        // [{id, nome, ...}] — vindos do Cadastro
+let motoAtual = null;        // id do motoqueiro selecionado OU 'TODOS'
 let subAtual  = 'corridas';
-let dadosMoto = { moto01:null, moto02:null };
+let todasMotos = [];         // todas as linhas da aba Motos
 
+/* ============================================================
+   HELPERS
+   ============================================================ */
 function toast(msg, tipo = 'ok') {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -212,6 +393,8 @@ function formataMoeda(v) {
   return sinal + 'R$ ' + Math.abs(v).toFixed(2).replace('.', ',');
 }
 
+function fmtKM(v) { return parseNum(v).toFixed(1).replace('.', ','); }
+
 function hojeStr() {
   const d = new Date();
   const dd = String(d.getDate()).padStart(2,'0');
@@ -219,12 +402,14 @@ function hojeStr() {
   return `${dd}/${mm}/${d.getFullYear()}`;
 }
 
-async function lerAba(nomeAba) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nomeAba}!A2:Z?key=${API_KEY}`;
+/* ============================================================
+   API
+   ============================================================ */
+async function lerAba(nome) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nome}!A2:Z?key=${API_KEY}`;
   const resp = await fetch(url);
   if (!resp.ok) throw new Error('HTTP ' + resp.status);
-  const data = await resp.json();
-  return data.values || [];
+  return (await resp.json()).values || [];
 }
 
 async function api(action, payload = {}) {
@@ -236,42 +421,71 @@ async function api(action, payload = {}) {
   return resp.json();
 }
 
-async function carregarMoto(motoId) {
-  const aba = MOTOQUEIROS[motoId].aba;
-  const linhas = await lerAba(aba);
-  const todas = linhas.map((r, i) => ({
-    _row: i + 2,
-    data: (r[0]||'').toString().trim(),
-    km: parseNum(r[1]),
-    entregas: parseNum(r[2]),
-    motoboy: (r[3]||'').toString().trim(),
-    dataReposicao: (r[4]||'').toString().trim(),
-    tipoPagamento: (r[5]||'').toString().trim(),
-    valor: parseNum(r[6]),
-    nf: (r[7]||'').toString().trim(),
-    local: (r[8]||'').toString().trim()
-  }));
-
-  const corridas   = todas.filter(r => r.data && (r.km > 0 || r.entregas > 0) && !r.dataReposicao);
-  const pagamentos = todas.filter(r => r.dataReposicao || r.tipoPagamento || r.valor > 0);
-
-  return { todas, corridas, pagamentos };
+/* ============================================================
+   CARREGAR MOTOQUEIROS DO CADASTRO
+   ============================================================ */
+async function carregarMotoqueiros() {
+  const linhas = await lerAba('Cadastro');
+  motoqueiros = linhas.map((r, i) => ({
+    id: (r[0]||'').toString().trim().toLowerCase(),
+    nome: (r[1]||'').toString().trim(),
+    tipo: (r[2]||'').toString().trim().toLowerCase(),
+    status: (r[4]||'').toString().trim().toLowerCase(),
+    observacao: (r[7]||'').toString().trim(),
+    _row: i + 2
+  })).filter(m => m.tipo === 'motoqueiro' && m.status === 'ativo');
 }
 
-/* CÁLCULO PROPORCIONAL */
-function calcularSaldos(dados) {
-  const totalKM = dados.corridas.reduce((s, c) => s + c.km, 0);
+/* ============================================================
+   CARREGAR ABA MOTOS (tudo)
+   ============================================================ */
+async function carregarMotos() {
+  const linhas = await lerAba('Motos');
+  todasMotos = linhas.map((r, i) => ({
+    _row:          i + 2,
+    motoboyId:     (r[0]||'').toString().trim().toLowerCase(),
+    motoboyNome:   (r[1]||'').toString().trim(),
+    data:          (r[2]||'').toString().trim(),
+    km:            parseNum(r[3]),
+    entregas:      parseNum(r[4]),
+    dataReposicao: (r[5]||'').toString().trim(),
+    tipoPagamento: (r[6]||'').toString().trim(),
+    valor:         parseNum(r[7]),
+    nf:            (r[8]||'').toString().trim(),
+    local:         (r[9]||'').toString().trim()
+  }));
+}
+
+/* ============================================================
+   FILTRAR DADOS POR MOTOBOY
+   ============================================================ */
+function filtrarPorMotoboy(motoId) {
+  if (motoId === 'TODOS') return todasMotos;
+  return todasMotos.filter(m => m.motoboyId === motoId);
+}
+
+function dividirCorridasPagamentos(linhas) {
+  const corridas   = linhas.filter(r => r.data && (r.km > 0 || r.entregas > 0) && !r.dataReposicao);
+  const pagamentos = linhas.filter(r => r.dataReposicao || r.tipoPagamento || r.valor > 0);
+  return { corridas, pagamentos };
+}
+
+/* ============================================================
+   CALCULAR SALDOS (para um conjunto de linhas)
+   ============================================================ */
+function calcularSaldos({ corridas, pagamentos }) {
+  const totalKM = corridas.reduce((s, c) => s + c.km, 0);
 
   // Gasolina
   const baseGas = totalKM * REGRAS.VALOR_POR_KM;
-  const repGas = dados.pagamentos
+  const repGas = pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'gasolina')
     .reduce((s, p) => s + p.valor, 0);
   const saldoGas = baseGas - repGas;
 
-  // Óleo (PROPORCIONAL)
+  // Óleo (proporcional)
   const baseOleo = (totalKM / REGRAS.KM_POR_BONUS_OLEO) * REGRAS.BONUS_OLEO;
-  const repOleo = dados.pagamentos
+  const repOleo = pagamentos
     .filter(p => {
       const t = p.tipoPagamento.toLowerCase();
       return t === 'óleo' || t === 'oleo';
@@ -279,9 +493,9 @@ function calcularSaldos(dados) {
     .reduce((s, p) => s + p.valor, 0);
   const saldoOleo = baseOleo - repOleo;
 
-  // Pneu (PROPORCIONAL)
+  // Pneu (proporcional)
   const basePneu = (totalKM / REGRAS.KM_POR_BONUS_PNEU) * REGRAS.BONUS_PNEU;
-  const repPneu = dados.pagamentos
+  const repPneu = pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'pneu')
     .reduce((s, p) => s + p.valor, 0);
   const saldoPneu = basePneu - repPneu;
@@ -289,14 +503,65 @@ function calcularSaldos(dados) {
   return { saldoGas, saldoOleo, saldoPneu };
 }
 
-async function selecionarMoto(motoId) {
-  motoAtual = motoId;
-  document.querySelectorAll('.moto-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.moto === motoId);
+/* ============================================================
+   RENDERIZAR SELETOR
+   ============================================================ */
+function renderSeletor() {
+  const wrap = document.getElementById('moto-selector');
+
+  if (!motoqueiros.length && !todasMotos.length) {
+    wrap.innerHTML = '<div class="loading-selector">Nenhum motoqueiro cadastrado. Vá em Banco de Horas → Gerenciar Pessoas.</div>';
+    return;
+  }
+
+  let html = '';
+
+  // Botões por motoqueiro
+  motoqueiros.forEach(m => {
+    html += `
+      <button class="moto-btn" data-id="${m.id}" onclick="selecionarMoto('${m.id}')">
+        <span class="icon">🏍️</span>
+        <div>
+          <div>${m.nome}</div>
+          <div class="info-aba">${m.observacao || m.id}</div>
+        </div>
+      </button>
+    `;
   });
-  await recarregarMoto();
+
+  // Botão Ver Todos
+  html += `
+    <button class="moto-btn ver-todos" data-id="TODOS" onclick="selecionarMoto('TODOS')">
+      <span class="icon">📋</span>
+      <div>
+        <div>Ver Todos</div>
+        <div class="info-aba">Visão geral</div>
+      </div>
+    </button>
+  `;
+
+  wrap.innerHTML = html;
+
+  // Marca o ativo
+  document.querySelectorAll('.moto-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === motoAtual);
+  });
 }
 
+/* ============================================================
+   SELECIONAR MOTO
+   ============================================================ */
+function selecionarMoto(motoId) {
+  motoAtual = motoId;
+  document.querySelectorAll('.moto-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.id === motoId);
+  });
+  renderizar();
+}
+
+/* ============================================================
+   SELECIONAR SUB-ABA
+   ============================================================ */
 function selecionarSub(sub) {
   subAtual = sub;
   document.querySelectorAll('.sub-tab').forEach(b => {
@@ -311,36 +576,22 @@ function selecionarSub(sub) {
     titulo.textContent = '💰 Pagamentos / Reposições';
     btnAdd.textContent = '＋ Nova Reposição';
   }
+  // Desabilita botão de adicionar quando em "Ver Todos"
+  btnAdd.disabled = (motoAtual === 'TODOS');
   renderizar();
 }
 
-function renderizarResumo(dados) {
-  const totalKM       = dados.corridas.reduce((s, r) => s + r.km, 0);
-  const totalEntregas = dados.corridas.reduce((s, r) => s + r.entregas, 0);
-  const totalPago     = dados.pagamentos.reduce((s, p) => s + p.valor, 0);
+/* ============================================================
+   RENDERIZAR
+   ============================================================ */
+function renderizar() {
+  if (!motoAtual) return;
 
-  document.getElementById('resumo').innerHTML = `
-    <div class="resumo-card">
-      <div class="resumo-label">🛣️ KM Rodados</div>
-      <div class="resumo-valor">${totalKM.toFixed(1)} km</div>
-    </div>
-    <div class="resumo-card">
-      <div class="resumo-label">📦 Total Entregas</div>
-      <div class="resumo-valor">${totalEntregas}</div>
-    </div>
-    <div class="resumo-card">
-      <div class="resumo-label">💵 Total Pago</div>
-      <div class="resumo-valor">${formataMoeda(totalPago)}</div>
-    </div>
-    <div class="resumo-card">
-      <div class="resumo-label">📋 Registros</div>
-      <div class="resumo-valor">${dados.corridas.length + dados.pagamentos.length}</div>
-    </div>
-  `;
-}
+  const linhas = filtrarPorMotoboy(motoAtual);
+  const { corridas, pagamentos } = dividirCorridasPagamentos(linhas);
 
-function renderizarSaldos(dados) {
-  const s = calcularSaldos(dados);
+  // Saldos
+  const s = calcularSaldos({ corridas, pagamentos });
   const elG = document.getElementById('s-gas');
   elG.textContent = formataMoeda(s.saldoGas);
   elG.className = 'saldo-valor' + (s.saldoGas < 0 ? ' neg' : '');
@@ -352,17 +603,34 @@ function renderizarSaldos(dados) {
   const elP = document.getElementById('s-pneu');
   elP.textContent = formataMoeda(s.saldoPneu);
   elP.className = 'saldo-valor' + (s.saldoPneu < 0 ? ' neg' : '');
-}
 
-function renderizar() {
-  const dados = dadosMoto[motoAtual];
-  if (!dados) return;
+  // Resumo
+  const totalKM = corridas.reduce((s, r) => s + r.km, 0);
+  const totalEntregas = corridas.reduce((s, r) => s + r.entregas, 0);
+  const totalPago = pagamentos.reduce((s, p) => s + p.valor, 0);
+  document.getElementById('resumo').innerHTML = `
+    <div class="resumo-card">
+      <div class="resumo-label">🛣️ KM Rodados</div>
+      <div class="resumo-valor">${fmtKM(totalKM)} km</div>
+    </div>
+    <div class="resumo-card">
+      <div class="resumo-label">📦 Total Entregas</div>
+      <div class="resumo-valor">${totalEntregas}</div>
+    </div>
+    <div class="resumo-card">
+      <div class="resumo-label">💵 Total Pago</div>
+      <div class="resumo-valor">${formataMoeda(totalPago)}</div>
+    </div>
+    <div class="resumo-card">
+      <div class="resumo-label">📋 Registros</div>
+      <div class="resumo-valor">${corridas.length + pagamentos.length}</div>
+    </div>
+  `;
 
-  renderizarSaldos(dados);
-  renderizarResumo(dados);
-
+  // Tabela
   const container = document.getElementById('tabela-container');
-  const lista = subAtual === 'corridas' ? dados.corridas : dados.pagamentos;
+  const lista = subAtual === 'corridas' ? corridas : pagamentos;
+  const mostrarMotoboy = (motoAtual === 'TODOS');
 
   if (!lista.length) {
     container.innerHTML = `<div class="empty">
@@ -374,14 +642,19 @@ function renderizar() {
   if (subAtual === 'corridas') {
     container.innerHTML = `
       <table>
-        <thead><tr><th>Data</th><th>KM</th><th>Entregas</th><th>Motoboy</th><th>Ações</th></tr></thead>
+        <thead>
+          <tr>
+            ${mostrarMotoboy ? '<th>Motoboy</th>' : ''}
+            <th>Data</th><th>KM</th><th>Entregas</th><th>Ações</th>
+          </tr>
+        </thead>
         <tbody>
           ${lista.slice().reverse().map(r => `
             <tr>
+              ${mostrarMotoboy ? `<td><span class="badge-motoboy">${r.motoboyNome || r.motoboyId}</span></td>` : ''}
               <td><b>${r.data}</b></td>
-              <td>${r.km.toFixed(1)} km</td>
+              <td>${fmtKM(r.km)} km</td>
               <td>${r.entregas}</td>
-              <td>${r.motoboy || '—'}</td>
               <td><button class="btn-sm red" onclick="apagarLinha(${r._row})">🗑️</button></td>
             </tr>
           `).join('')}
@@ -391,10 +664,16 @@ function renderizar() {
   } else {
     container.innerHTML = `
       <table>
-        <thead><tr><th>Data Repos.</th><th>Tipo</th><th>Valor</th><th>NF</th><th>Local/Obs</th><th>Ações</th></tr></thead>
+        <thead>
+          <tr>
+            ${mostrarMotoboy ? '<th>Motoboy</th>' : ''}
+            <th>Data Repos.</th><th>Tipo</th><th>Valor</th><th>NF</th><th>Local/Obs</th><th>Ações</th>
+          </tr>
+        </thead>
         <tbody>
           ${lista.slice().reverse().map(p => `
             <tr>
+              ${mostrarMotoboy ? `<td><span class="badge-motoboy">${p.motoboyNome || p.motoboyId}</span></td>` : ''}
               <td><b>${p.dataReposicao}</b></td>
               <td>${p.tipoPagamento || '—'}</td>
               <td><b>${formataMoeda(p.valor)}</b></td>
@@ -407,22 +686,14 @@ function renderizar() {
       </table>
     `;
   }
+
+  // Habilita/desabilita botão adicionar
+  document.getElementById('btn-add').disabled = (motoAtual === 'TODOS');
 }
 
-async function recarregarMoto() {
-  const loading = document.getElementById('loading');
-  loading.classList.add('show');
-  document.getElementById('tabela-container').innerHTML = '';
-  try {
-    dadosMoto[motoAtual] = await carregarMoto(motoAtual);
-    renderizar();
-  } catch (e) {
-    toast('Erro: ' + e.message, 'err');
-  } finally {
-    loading.classList.remove('show');
-  }
-}
-
+/* ============================================================
+   MODAL
+   ============================================================ */
 function abrirModal(titulo, html) {
   document.getElementById('modal-title').textContent = titulo;
   document.getElementById('modal-body').innerHTML = html;
@@ -435,19 +706,24 @@ document.getElementById('modal').addEventListener('click', e => {
   if (e.target.id === 'modal') fecharModal();
 });
 
+/* ============================================================
+   FORMULÁRIOS
+   ============================================================ */
 function abrirForm() {
+  if (motoAtual === 'TODOS') return;
   if (subAtual === 'corridas') abrirFormCorrida();
   else abrirFormPagamento();
 }
 
 function abrirFormCorrida() {
-  const moto = MOTOQUEIROS[motoAtual];
-  abrirModal('📦 Nova Corrida — ' + moto.nome, `
+  const m = motoqueiros.find(x => x.id === motoAtual);
+  if (!m) return toast('Selecione um motoqueiro', 'err');
+  abrirModal('📦 Nova Corrida — ' + m.nome, `
     <div class="form-grid">
       <div class="field"><label>Data (dd/mm/aaaa)</label><input type="text" id="c-data" value="${hojeStr()}"></div>
       <div class="field"><label>KM Rodados</label><input type="text" id="c-km" placeholder="ex: 45.3"></div>
       <div class="field"><label>Nº de Entregas</label><input type="text" id="c-entregas" placeholder="ex: 12"></div>
-      <div class="field"><label>Motoboy</label><input type="text" id="c-motoboy" value="${moto.nome}" readonly style="background:#f1f5f9"></div>
+      <div class="field"><label>Motoboy</label><input type="text" value="${m.nome}" readonly style="background:#f1f5f9"></div>
     </div>
     <div style="display:flex; gap:10px">
       <button class="btn btn-primary" onclick="salvarCorrida()">💾 Salvar Corrida</button>
@@ -457,23 +733,25 @@ function abrirFormCorrida() {
 }
 
 async function salvarCorrida() {
-  const moto = MOTOQUEIROS[motoAtual];
+  const m = motoqueiros.find(x => x.id === motoAtual);
+  if (!m) return toast('Selecione um motoqueiro', 'err');
   const payload = {
-    motoId: motoAtual,
+    motoboyId: motoAtual,
+    motoboyNome: m.nome,
     data: document.getElementById('c-data').value.trim(),
     km: document.getElementById('c-km').value.trim().replace(',', '.'),
-    entregas: document.getElementById('c-entregas').value.trim(),
-    motoboy: moto.nome
+    entregas: document.getElementById('c-entregas').value.trim()
   };
   if (!payload.data) return toast('Informe a data', 'err');
   const r = await api('addCorrida', payload);
-  if (r.ok) { toast('✅ Corrida salva!'); fecharModal(); await recarregarMoto(); }
+  if (r.ok) { toast('✅ Corrida salva!'); fecharModal(); await recarregar(); }
   else toast('❌ ' + (r.error || 'Erro'), 'err');
 }
 
 function abrirFormPagamento() {
-  const moto = MOTOQUEIROS[motoAtual];
-  abrirModal('💰 Nova Reposição — ' + moto.nome, `
+  const m = motoqueiros.find(x => x.id === motoAtual);
+  if (!m) return toast('Selecione um motoqueiro', 'err');
+  abrirModal('💰 Nova Reposição — ' + m.nome, `
     <div class="form-grid">
       <div class="field"><label>Data da Reposição (dd/mm/aaaa)</label><input type="text" id="p-data" value="${hojeStr()}"></div>
       <div class="field"><label>Tipo de Pagamento</label>
@@ -495,8 +773,11 @@ function abrirFormPagamento() {
 }
 
 async function salvarPagamento() {
+  const m = motoqueiros.find(x => x.id === motoAtual);
+  if (!m) return toast('Selecione um motoqueiro', 'err');
   const payload = {
-    motoId: motoAtual,
+    motoboyId: motoAtual,
+    motoboyNome: m.nome,
     dataReposicao: document.getElementById('p-data').value.trim(),
     tipoPagamento: document.getElementById('p-tipo').value,
     valor: document.getElementById('p-valor').value.trim().replace(',', '.'),
@@ -505,22 +786,54 @@ async function salvarPagamento() {
   };
   if (!payload.dataReposicao) return toast('Informe a data', 'err');
   const r = await api('addPagamento', payload);
-  if (r.ok) { toast('✅ Reposição salva!'); fecharModal(); await recarregarMoto(); }
+  if (r.ok) { toast('✅ Reposição salva!'); fecharModal(); await recarregar(); }
   else toast('❌ ' + (r.error || 'Erro'), 'err');
 }
 
+/* ============================================================
+   APAGAR
+   ============================================================ */
 async function apagarLinha(rowIndex) {
   if (!confirm('Apagar esta linha? Esta ação não pode ser desfeita.')) return;
-  const r = await api('deleteLinhaMoto', { motoId: motoAtual, rowIndex });
-  if (r.ok) { toast('🗑️ Linha apagada'); await recarregarMoto(); }
+  const r = await api('deleteLinhaMoto', { rowIndex });
+  if (r.ok) { toast('🗑️ Linha apagada'); await recarregar(); }
   else toast('❌ ' + (r.error || 'Erro'), 'err');
 }
 
+/* ============================================================
+   RECARREGAR
+   ============================================================ */
+async function recarregar() {
+  const loading = document.getElementById('loading');
+  loading.classList.add('show');
+  try {
+    await Promise.all([carregarMotoqueiros(), carregarMotos()]);
+
+    // Se o motoqueiro selecionado não existe mais, muda para o primeiro
+    if (motoAtual && motoAtual !== 'TODOS') {
+      if (!motoqueiros.find(m => m.id === motoAtual)) {
+        motoAtual = motoqueiros[0]?.id || 'TODOS';
+      }
+    }
+    if (!motoAtual) {
+      motoAtual = motoqueiros[0]?.id || 'TODOS';
+    }
+
+    renderSeletor();
+    renderizar();
+  } catch(e) {
+    toast('Erro: ' + e.message, 'err');
+  } finally {
+    loading.classList.remove('show');
+  }
+}
+
+/* ============================================================
+   LOGOUT / INICIALIZA
+   ============================================================ */
 function logout() { sessionStorage.clear(); location.href = 'index.html'; }
 
-(async () => {
-  await recarregarMoto();
-})();
+recarregar();
 </script>
 </body>
 </html>
