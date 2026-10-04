@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Sistema Gestor</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(145deg, #0b1120 0%, #1a253b 100%);
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .box {
+    width: 100%; max-width: 420px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(16px);
+    padding: 40px 32px;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  }
+  h1 {
+    color: #f1f5f9; text-align: center;
+    margin-bottom: 32px; font-size: 26px; font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  h1 span { color: #60a5fa; }
+  .fg { margin-bottom: 22px; }
+  label {
+    display: block; margin-bottom: 6px;
+    font-weight: 600; color: #94a3b8;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  input, select {
+    width: 100%; padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; font-size: 16px;
+    background: rgba(255,255,255,0.06);
+    color: #f1f5f9; height: 52px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.25s;
+  }
+  input:focus, select:focus {
+    outline: none; border-color: #3b82f6;
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+  }
+  select option { background: #1e293b; color: #f1f5f9; }
+  select:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pwd-wrap { position: relative; }
+  .toggle-pwd {
+    position: absolute; right: 16px; top: 50%;
+    transform: translateY(-50%); cursor: pointer;
+    color: #94a3b8; font-size: 18px;
+    background: transparent; border: none;
+    width: 32px; height: 32px;
+    border-radius: 50%; transition: all 0.2s;
+  }
+  .toggle-pwd:hover { color: #f1f5f9; background: rgba(255,255,255,0.08); }
+  .btn {
+    width: 100%; padding: 16px;
+    border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white; font-size: 16px; font-weight: 600;
+    cursor: pointer; height: 52px;
+    transition: all 0.3s ease;
+    letter-spacing: 0.3px;
+    font-family: inherit;
+  }
+  .btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37,99,235,0.35);
+  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  #err {
+    background: rgba(239,68,68,0.95); color: white;
+    padding: 12px 16px; border-radius: 10px;
+    margin-top: 20px; display: none;
+    text-align: center; font-size: 14px;
+  }
+  #info {
+    background: rgba(59,130,246,0.15); color: #93c5fd;
+    padding: 12px 16px; border-radius: 10px;
+    margin-bottom: 20px; text-align: center;
+    font-size: 13px; border: 1px solid rgba(59,130,246,0.25);
+  }
+  .loading {
+    display: none; text-align: center;
+    margin-top: 20px; color: #cbd5e1; font-size: 14px;
+  }
+  .spinner {
+    display: inline-block; width: 20px; height: 20px;
+    border: 3px solid rgba(203,213,225,0.25);
+    border-radius: 50%; border-top-color: #60a5fa;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h1>🏦 <span>Sistema Gestor</span></h1>
+
+  <div id="info">⏳ Carregando usuários...</div>
+
+  <div class="fg">
+    <label for="user">👤 Usuário</label>
+    <select id="user" disabled>
+      <option value="">Carregando...</option>
+    </select>
+  </div>
+
+  <div class="fg">
+    <label for="pwd">🔒 Senha</label>
+    <div class="pwd-wrap">
+      <input type="password" id="pwd" placeholder="Digite sua senha" autocomplete="current-password">
+      <button class="toggle-pwd" id="toggle-pwd" type="button" title="Mostrar senha">👁️</button>
+    </div>
+  </div>
+
+  <button class="btn" id="btn" disabled>Acessar Sistema</button>
+
+  <div id="err"></div>
+  <div class="loading" id="loading"><span class="spinner"></span> Verificando...</div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO
+   ============================================================ */
+const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
+const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
+
+const ABA_CADASTRO = 'Cadastro';
+
+/* Admin master — não fica no Cadastro, é fixo */
+const ADMIN_USER = 'admin';
+const ADMIN_PWD  = 'dan8301';
+
+/* ============================================================
+   ELEMENTOS
+   ============================================================ */
+const selectEl   = document.getElementById('user');
+const pwdEl      = document.getElementById('pwd');
+const btnEl      = document.getElementById('btn');
+const errEl      = document.getElementById('err');
+const infoEl     = document.getElementById('info');
+const loadingEl  = document.getElementById('loading');
+const togglePwd  = document.getElementById('toggle-pwd');
+
+/* ============================================================
+   CARREGAR USUÁRIOS DO CADASTRO (via API Key — leitura)
+   ============================================================ */
+async function carregarUsuarios() {
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ABA_CADASTRO}!A2:H?key=${API_KEY}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+
+    const linhas = data.values || [];
+    const usuarios = linhas
+      .filter(r => r[4] && r[4].toString().toLowerCase() === 'ativo')  // coluna E = status
+      .map(r => ({
+        id:    (r[0] || '').toString().trim().toLowerCase(),
+        nome:  (r[1] || '').toString().trim(),
+        tipo:  (r[2] || '').toString().trim().toLowerCase()  // funcionario | motoqueiro
+      }))
+      .filter(u => u.id && u.nome);
+
+    // Ordena alfabeticamente
+    usuarios.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
+    // Monta dropdown
+    selectEl.innerHTML = '<option value="">Selecione o usuário</option>';
+    usuarios.forEach(u => {
+      const opt = document.createElement('option');
+      opt.value = u.id;
+      opt.dataset.tipo = u.tipo;
+      opt.dataset.nome = u.nome;
+      opt.textContent = u.nome + (u.tipo === 'motoqueiro' ? ' 🏍️' : '');
+      selectEl.appendChild(opt);
+    });
+
+    // Admin sempre no topo separado
+    const optAdmin = document.createElement('option');
+    optAdmin.value = ADMIN_USER;
+    optAdmin.dataset.tipo = 'admin';
+    optAdmin.dataset.nome = 'Administrador';
+    optAdmin.textContent = '⭐ Administrador';
+    selectEl.appendChild(optAdmin);
+
+    selectEl.disabled = false;
+    btnEl.disabled = false;
+    infoEl.style.display = 'none';
+
+  } catch (e) {
+    console.error(e);
+    infoEl.textContent = '❌ Erro ao carregar usuários. Verifique a conexão.';
+    infoEl.style.background = 'rgba(239,68,68,0.15)';
+    infoEl.style.color = '#fca5a5';
+    infoEl.style.borderColor = 'rgba(239,68,68,0.25)';
+  }
+}
+
+/* ============================================================
+   MOSTRAR/OCULTAR SENHA
+   ============================================================ */
+togglePwd.addEventListener('click', () => {
+  const isPwd = pwdEl.type === 'password';
+  pwdEl.type = isPwd ? 'text' : 'password';
+  togglePwd.textContent = isPwd ? '🔒' : '👁️';
+});
+
+/* ============================================================
+   MOSTRAR ERRO
+   ============================================================ */
+function showError(msg) {
+  errEl.textContent = msg;
+  errEl.style.display = 'block';
+  setTimeout(() => { errEl.style.display = 'none'; }, 5000);
+}
+
+/* ============================================================
+   FAZER LOGIN
+   ============================================================ */
+async function fazerLogin() {
+  const user = selectEl.value;
+  const pwd  = pwdEl.value;
+
+  if (!user) { showError('❌ Selecione um usuário'); return; }
+  if (!pwd)  { showError('❌ Digite sua senha'); return; }
+
+  // Admin master (fixo)
+  if (user === ADMIN_USER) {
+    if (pwd !== ADMIN_PWD) { showError('❌ Senha incorreta!'); return; }
+    salvarSessao(ADMIN_USER, 'Administrador', 'admin');
+    location.href = 'banco-horas.html';
+    return;
+  }
+
+  // Demais usuários: valida senha lendo o Cadastro
+  loadingEl.style.display = 'block';
+  btnEl.disabled = true;
+
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ABA_CADASTRO}!A2:H?key=${API_KEY}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const linhas = data.values || [];
+
+    // Procura o usuário pelo id
+    const linha = linhas.find(r =>
+      (r[0] || '').toString().trim().toLowerCase() === user
+    );
+
+    if (!linha) { showError('❌ Usuário não encontrado'); return; }
+
+    const senhaCorreta = (linha[3] || '').toString().trim();
+    const status       = (linha[4] || '').toString().trim().toLowerCase();
+    const tipo         = (linha[2] || '').toString().trim().toLowerCase();
+    const nome         = (linha[1] || '').toString().trim();
+
+    if (status !== 'ativo') {
+      showError('❌ Este usuário está inativo. Entre em contato com o RH.');
+      return;
+    }
+
+    if (senhaCorreta !== pwd) {
+      showError('❌ Senha incorreta!');
+      return;
+    }
+
+    // Login OK — redireciona conforme tipo
+    salvarSessao(user, nome, tipo);
+
+    if (tipo === 'motoqueiro') {
+      location.href = 'motoqueiros-saldos.html';
+    } else {
+      location.href = 'funcionarios.html';
+    }
+
+  } catch (e) {
+    console.error(e);
+    showError('Erro: ' + e.message);
+  } finally {
+    loadingEl.style.display = 'none';
+    btnEl.disabled = false;
+  }
+}
+
+/* ============================================================
+   SALVAR SESSÃO
+   ============================================================ */
+function salvarSessao(user, nome, tipo) {
+  sessionStorage.setItem('gestor_user', user);
+  sessionStorage.setItem('gestor_nome', nome);
+  sessionStorage.setItem('gestor_tipo', tipo);
+  sessionStorage.setItem('gestor_login_ts', Date.now().toString());
+}
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+btnEl.addEventListener('click', fazerLogin);
+pwdEl.addEventListener('keypress', e => { if (e.key === 'Enter') fazerLogin(); });
+
+/* ============================================================
+   INICIALIZA
+   ============================================================ */
+carregarUsuarios();
+</script>
+</body>
+</html>
