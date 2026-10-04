@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Meus Créditos - Motoqueiro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f8fafc; color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* TOPBAR */
+  .topbar {
+    background: #0f172a; color: white; padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 12px;
+  }
+  .topbar h1 { font-size: 18px; font-weight: 700; }
+  .topbar h1 span { color: #60a5fa; }
+  .topbar-user { font-size: 13px; color: #94a3b8; }
+  .logout-btn {
+    background: #475569; color: white;
+    border: none; padding: 8px 18px; border-radius: 8px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .logout-btn:hover { background: #334155; }
+
+  .content { padding: 24px; max-width: 1200px; margin: 0 auto; }
+
+  /* BANNER */
+  .banner {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white; padding: 24px 28px;
+    border-radius: 18px; margin-bottom: 24px;
+    box-shadow: 0 10px 30px rgba(245,158,11,0.2);
+    display: flex; align-items: center; gap: 18px;
+  }
+  .banner-icon { font-size: 42px; }
+  .banner h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .banner p { font-size: 13px; opacity: 0.9; }
+
+  /* RESUMO */
+  .resumo-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  .resumo-card {
+    background: white; padding: 22px;
+    border-radius: 16px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center;
+  }
+  .resumo-label {
+    font-size: 11px; color: #64748b; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .resumo-valor {
+    font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1.1;
+  }
+  .resumo-valor.green { color: #16a34a; }
+  .resumo-valor.orange { color: #d97706; }
+  .resumo-valor.blue { color: #2563eb; }
+  .resumo-unidade { font-size: 13px; color: #64748b; font-weight: 500; margin-top: 4px; }
+
+  /* CARD */
+  .card {
+    background: white; padding: 22px 24px;
+    border-radius: 16px; border: 1px solid #eef2f6;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04); margin-bottom: 20px;
+  }
+  .card h3 {
+    font-size: 16px; font-weight: 700; margin-bottom: 16px;
+    padding-bottom: 12px; border-bottom: 2px solid #f1f5f9;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* TABELAS */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+  th {
+    background: #f1f5f9; font-weight: 600;
+    font-size: 11px; text-transform: uppercase;
+    color: #475569; letter-spacing: 0.3px;
+  }
+  tr:hover { background: #f8fafc; }
+
+  .badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 8px; font-size: 11px; font-weight: 600;
+    background: #fef3c7; color: #92400e;
+  }
+
+  .empty {
+    text-align: center; padding: 30px;
+    color: #94a3b8; font-size: 14px;
+  }
+
+  /* LEGAL */
+  .legal-notice {
+    font-size: 12px; color: #64748b;
+    background: #f8fafc; padding: 12px 16px;
+    border-radius: 10px; margin-top: 14px;
+    border-left: 3px solid #cbd5e1;
+  }
+
+  /* LOADING */
+  .loading { display: none; text-align: center; padding: 40px; color: #64748b; }
+  .loading.show { display: block; }
+  .spinner {
+    display: inline-block; width: 24px; height: 24px;
+    border: 3px solid #e2e8f0; border-radius: 50%;
+    border-top-color: #f59e0b;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .content { padding: 14px; }
+    .resumo-grid { grid-template-columns: 1fr; }
+    .resumo-valor { font-size: 24px; }
+    .banner-icon { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🏍️ <span>Meus Créditos</span></h1>
+  <div style="display:flex; align-items:center; gap:14px">
+    <span class="topbar-user" id="topbar-user"></span>
+    <button class="logout-btn" onclick="logout()">🚪 Sair</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="banner">
+    <div class="banner-icon">🏍️</div>
+    <div>
+      <h2 id="banner-nome">Olá!</h2>
+      <p>Acompanhe suas entregas, quilometragem e pagamentos recebidos.</p>
+    </div>
+  </div>
+
+  <div class="loading" id="loading"><span class="spinner"></span> Carregando seus dados...</div>
+
+  <div id="conteudo" style="display:none">
+
+    <!-- RESUMO -->
+    <div class="resumo-grid">
+      <div class="resumo-card">
+        <div class="resumo-label">🛣️ KM Rodados</div>
+        <div class="resumo-valor blue" id="r-km">0</div>
+        <div class="resumo-unidade">total acumulado</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-label">📦 Total de Entregas</div>
+        <div class="resumo-valor green" id="r-entregas">0</div>
+        <div class="resumo-unidade">todas as corridas</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-label">💵 Total Recebido</div>
+        <div class="resumo-valor orange" id="r-pago">R$ 0,00</div>
+        <div class="resumo-unidade">em reposições</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-label">📋 Corridas</div>
+        <div class="resumo-valor" id="r-corridas">0</div>
+        <div class="resumo-unidade">registradas</div>
+      </div>
+    </div>
+
+    <!-- CORRIDAS RECENTES -->
+    <div class="card">
+      <h3>📦 Últimas Corridas</h3>
+      <div id="corridas-container"></div>
+    </div>
+
+    <!-- REPOSIÇÕES RECENTES -->
+    <div class="card">
+      <h3>💰 Últimas Reposições</h3>
+      <div id="pagamentos-container"></div>
+    </div>
+
+    <!-- EXTRATO MENSAL -->
+    <div class="card">
+      <h3>📊 Extrato Mensal</h3>
+      <div id="mensal-container"></div>
+    </div>
+
+    <div class="legal-notice" id="last-update"></div>
+
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
+const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
+
+const MOTOQUEIROS = {
+  'royle':  { aba: 'moto01', nome: 'Royle Luiz Santos da Silva' },
+  'taylor': { aba: 'moto02', nome: 'Taylor Moreira do Carmo' }
+};
+
+const sessUser = sessionStorage.getItem('gestor_user');
+const sessNome = sessionStorage.getItem('gestor_nome');
+const sessTipo = sessionStorage.getItem('gestor_tipo');
+
+if (!sessUser) location.href = 'index.html';
+if (sessTipo === 'admin') location.href = 'banco-horas.html';
+if (sessTipo === 'funcionario') location.href = 'funcionarios.html';
+
+const motoqueiro = MOTOQUEIROS[sessUser];
+if (!motoqueiro) {
+  // Usuário logado como motoqueiro mas sem correspondência — volta ao login
+  sessionStorage.clear();
+  location.href = 'index.html';
+}
+
+document.getElementById('topbar-user').textContent = sessNome || sessUser;
+document.getElementById('banner-nome').textContent = 'Olá, ' + (sessNome || sessUser) + '!';
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function parseNum(v) {
+  if (v === '' || v === null || v === undefined) return 0;
+  if (typeof v === 'number') return v;
+  return parseFloat(String(v).replace(/\s/g,'').replace(',','.')) || 0;
+}
+
+function fmtMoeda(v) {
+  return 'R$ ' + parseNum(v).toFixed(2).replace('.', ',');
+}
+
+function fmtNum(v) { return parseNum(v).toFixed(1).replace('.', ','); }
+
+function getDayOfWeek(dateStr) {
+  if (!dateStr || !dateStr.includes('/')) return '';
+  try {
+    const [d,m,y] = dateStr.split('/');
+    const dt = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+    return ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'][dt.getDay()];
+  } catch(e) { return ''; }
+}
+
+function dataToNum(dateStr) {
+  if (!dateStr) return 0;
+  try {
+    const [d,m,y] = dateStr.split('/');
+    return new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime();
+  } catch(e) { return 0; }
+}
+
+/* ============================================================
+   API
+   ============================================================ */
+async function lerAba(nome) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nome}!A2:Z?key=${API_KEY}`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  return (await resp.json()).values || [];
+}
+
+/* ============================================================
+   CARREGAR DADOS DA MOTO
+   ============================================================ */
+async function carregarDados() {
+  const linhas = await lerAba(motoqueiro.aba);
+
+  const todas = linhas.map((r, i) => ({
+    _row: i + 2,
+    data: (r[0]||'').toString().trim(),
+    km: parseNum(r[1]),
+    entregas: parseNum(r[2]),
+    motoboy: (r[3]||'').toString().trim(),
+    dataReposicao: (r[4]||'').toString().trim(),
+    tipoPagamento: (r[5]||'').toString().trim(),
+    valor: parseNum(r[6]),
+    nf: (r[7]||'').toString().trim(),
+    local: (r[8]||'').toString().trim()
+  }));
+
+  const corridas   = todas.filter(r => r.data && (r.km > 0 || r.entregas > 0) && !r.dataReposicao);
+  const pagamentos = todas.filter(r => r.dataReposicao || r.tipoPagamento || r.valor > 0);
+
+  return { corridas, pagamentos };
+}
+
+/* ============================================================
+   PROCESSAR
+   ============================================================ */
+function processar(d) {
+  const totalKM = d.corridas.reduce((s, c) => s + c.km, 0);
+  const totalEntregas = d.corridas.reduce((s, c) => s + c.entregas, 0);
+  const totalPago = d.pagamentos.reduce((s, p) => s + p.valor, 0);
+
+  // Extrato mensal
+  const mensal = new Map();
+  d.corridas.forEach(c => {
+    if (!c.data) return;
+    const partes = c.data.split('/');
+    if (partes.length < 3) return;
+    const key = `${partes[1].padStart(2,'0')}/${partes[2]}`;
+    if (!mensal.has(key)) mensal.set(key, { mes: key, km: 0, entregas: 0, corridas: 0, pago: 0 });
+    const m = mensal.get(key);
+    m.km += c.km;
+    m.entregas += c.entregas;
+    m.corridas++;
+  });
+  d.pagamentos.forEach(p => {
+    if (!p.dataReposicao) return;
+    const partes = p.dataReposicao.split('/');
+    if (partes.length < 3) return;
+    const key = `${partes[1].padStart(2,'0')}/${partes[2]}`;
+    if (!mensal.has(key)) mensal.set(key, { mes: key, km: 0, entregas: 0, corridas: 0, pago: 0 });
+    mensal.get(key).pago += p.valor;
+  });
+
+  const mensalArr = Array.from(mensal.values()).sort((a,b) => {
+    const [ma, aa] = a.mes.split('/');
+    const [mb, ab] = b.mes.split('/');
+    return new Date(aa, ma-1) - new Date(ab, mb-1);
+  });
+
+  return { totalKM, totalEntregas, totalPago, totalCorridas: d.corridas.length, mensalArr };
+}
+
+/* ============================================================
+   RENDERIZAR
+   ============================================================ */
+function renderizar(d, p) {
+  // Resumo
+  document.getElementById('r-km').textContent = fmtNum(p.totalKM);
+  document.getElementById('r-entregas').textContent = p.totalEntregas;
+  document.getElementById('r-pago').textContent = fmtMoeda(p.totalPago);
+  document.getElementById('r-corridas').textContent = p.totalCorridas;
+
+  // Corridas recentes
+  const cDiv = document.getElementById('corridas-container');
+  if (d.corridas.length) {
+    const ultimas = d.corridas.slice().sort((a,b) => dataToNum(b.data) - dataToNum(a.data)).slice(0, 10);
+    cDiv.innerHTML = `
+      <table>
+        <thead><tr><th>📅 Data</th><th>🛣️ KM</th><th>📦 Entregas</th></tr></thead>
+        <tbody>
+          ${ultimas.map(c => `
+            <tr>
+              <td><b>${c.data}</b><br><small style="color:#94a3b8">${getDayOfWeek(c.data)}</small></td>
+              <td>${fmtNum(c.km)} km</td>
+              <td><b>${c.entregas}</b></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <div class="legal-notice">📌 Mostrando as 10 corridas mais recentes.</div>
+    `;
+  } else {
+    cDiv.innerHTML = '<div class="empty">📭 Nenhuma corrida registrada ainda.</div>';
+  }
+
+  // Pagamentos recentes
+  const pDiv = document.getElementById('pagamentos-container');
+  if (d.pagamentos.length) {
+    const ultimas = d.pagamentos.slice().sort((a,b) => dataToNum(b.dataReposicao) - dataToNum(a.dataReposicao)).slice(0, 10);
+    pDiv.innerHTML = `
+      <table>
+        <thead><tr><th>📅 Data</th><th>🏷️ Tipo</th><th>💵 Valor</th><th>📄 NF</th><th>📍 Local</th></tr></thead>
+        <tbody>
+          ${ultimas.map(pg => `
+            <tr>
+              <td><b>${pg.dataReposicao}</b></td>
+              <td><span class="badge">${pg.tipoPagamento || '—'}</span></td>
+              <td><b>${fmtMoeda(pg.valor)}</b></td>
+              <td>${pg.nf || '—'}</td>
+              <td><small>${pg.local || '—'}</small></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <div class="legal-notice">📌 Mostrando as 10 reposições mais recentes.</div>
+    `;
+  } else {
+    pDiv.innerHTML = '<div class="empty">📭 Nenhuma reposição registrada ainda.</div>';
+  }
+
+  // Extrato mensal
+  const mDiv = document.getElementById('mensal-container');
+  if (p.mensalArr.length) {
+    mDiv.innerHTML = `
+      <table>
+        <thead><tr><th>📅 Mês/Ano</th><th>📋 Corridas</th><th>🛣️ KM</th><th>📦 Entregas</th><th>💵 Pago</th></tr></thead>
+        <tbody>
+          ${p.mensalArr.map(m => `
+            <tr>
+              <td><b>${m.mes}</b></td>
+              <td>${m.corridas}</td>
+              <td>${fmtNum(m.km)} km</td>
+              <td>${m.entregas}</td>
+              <td><b style="color:#d97706">${fmtMoeda(m.pago)}</b></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  } else {
+    mDiv.innerHTML = '<div class="empty">📭 Nenhum lançamento mensal.</div>';
+  }
+
+  // Última atualização
+  document.getElementById('last-update').innerHTML = `🔄 Atualizado em: ${new Date().toLocaleString('pt-BR')}`;
+
+  document.getElementById('conteudo').style.display = 'block';
+}
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+function logout() {
+  sessionStorage.clear();
+  location.href = 'index.html';
+}
+
+/* ============================================================
+   INICIALIZA
+   ============================================================ */
+(async () => {
+  const loading = document.getElementById('loading');
+  loading.classList.add('show');
+  try {
+    const dados = await carregarDados();
+    const processado = processar(dados);
+    renderizar(dados, processado);
+  } catch(e) {
+    loading.innerHTML = '<div style="color:#dc2626">Erro: ' + e.message + '</div>';
+  } finally {
+    loading.classList.remove('show');
+  }
+})();
+</script>
+</body>
+</html>
