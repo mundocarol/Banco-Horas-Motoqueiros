@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Sistema Gestor</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Funcionário Informado</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -16,7 +16,7 @@
     -webkit-font-smoothing: antialiased;
   }
   .box {
-    width: 100%; max-width: 420px;
+    width: 100%; max-width: 440px;
     background: rgba(255,255,255,0.04);
     backdrop-filter: blur(16px);
     padding: 40px 32px;
@@ -26,20 +26,49 @@
   }
   h1 {
     color: #f1f5f9; text-align: center;
-    margin-bottom: 32px; font-size: 26px; font-weight: 700;
+    margin-bottom: 6px; font-size: 24px; font-weight: 800;
     letter-spacing: -0.5px;
   }
   h1 span { color: #60a5fa; }
+  .subtitle {
+    text-align: center; color: #94a3b8;
+    font-size: 12px; margin-bottom: 26px;
+    letter-spacing: 0.3px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 6px;
+    background: rgba(255,255,255,0.04);
+    padding: 5px; border-radius: 14px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .tab {
+    flex: 1; padding: 12px 8px;
+    border: none; background: none;
+    border-radius: 10px; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    color: #94a3b8; transition: all 0.25s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .tab:hover { color: #e2e8f0; background: rgba(255,255,255,0.04); }
+  .tab.active {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    box-shadow: 0 6px 20px rgba(37,99,235,0.3);
+  }
+
   .fg { margin-bottom: 22px; }
   label {
     display: block; margin-bottom: 6px;
     font-weight: 600; color: #94a3b8;
-    font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
   }
   input, select {
     width: 100%; padding: 14px 16px;
     border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px; font-size: 16px;
+    border-radius: 12px; font-size: 15px;
     background: rgba(255,255,255,0.06);
     color: #f1f5f9; height: 52px;
     font-family: 'Inter', sans-serif;
@@ -54,7 +83,7 @@
   select:disabled { opacity: 0.5; cursor: not-allowed; }
   .pwd-wrap { position: relative; }
   .toggle-pwd {
-    position: absolute; right: 16px; top: 50%;
+    position: absolute; right: 14px; top: 50%;
     transform: translateY(-50%); cursor: pointer;
     color: #94a3b8; font-size: 18px;
     background: transparent; border: none;
@@ -66,7 +95,7 @@
     width: 100%; padding: 16px;
     border: none; border-radius: 12px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white; font-size: 16px; font-weight: 600;
+    color: white; font-size: 15px; font-weight: 700;
     cursor: pointer; height: 52px;
     transition: all 0.3s ease;
     letter-spacing: 0.3px;
@@ -101,12 +130,134 @@
     margin-right: 10px; vertical-align: middle;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============================================
+     ADMIN (engrenagem) — só aparece com Ctrl+M
+     ============================================ */
+  .admin-gear {
+    position: fixed; top: 20px; right: 20px;
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    display: none;
+    align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+  .admin-gear.show { display: flex; }
+  .admin-gear:hover {
+    background: rgba(255,255,255,0.15);
+    transform: rotate(45deg);
+  }
+  .admin-gear svg {
+    width: 22px; height: 22px;
+    fill: none; stroke: #cbd5e1; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* MODAL ADMIN */
+  .admin-modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .admin-modal.show { display: flex; }
+  .admin-modal-box {
+    background: #1a253b;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 32px 28px;
+    border-radius: 20px;
+    width: 100%; max-width: 380px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  }
+  .admin-modal-box h3 {
+    color: #f1f5f9; font-size: 18px; font-weight: 700;
+    margin-bottom: 6px; text-align: center;
+  }
+  .admin-modal-box .hint {
+    color: #64748b; font-size: 12px;
+    text-align: center; margin-bottom: 22px;
+  }
+  .admin-modal-box input {
+    margin-bottom: 16px;
+  }
+  .admin-modal-actions {
+    display: flex; gap: 10px;
+  }
+  .admin-modal-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none; border-radius: 10px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-cancel {
+    background: rgba(255,255,255,0.08);
+    color: #cbd5e1;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+  }
+  .btn-cancel:hover { background: rgba(255,255,255,0.15); }
+  .btn-enter {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+  }
+  .btn-enter:hover { filter: brightness(1.1); }
+  .admin-err {
+    color: #fca5a5; font-size: 12px;
+    text-align: center; margin-top: 12px;
+    display: none;
+  }
+  .admin-err.show { display: block; }
+
+  @media (max-width: 480px) {
+    .box { padding: 32px 22px; }
+    h1 { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
 
+<!-- ENGRENAGEM (só desktop + Ctrl+M) -->
+<div class="admin-gear" id="admin-gear" title="Acesso administrativo">
+  <svg viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="3"></circle>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+  </svg>
+</div>
+
+<!-- MODAL ADMIN -->
+<div class="admin-modal" id="admin-modal">
+  <div class="admin-modal-box">
+    <h3>⚙️ Acesso Administrativo</h3>
+    <p class="hint">Digite a senha do administrador</p>
+    <input type="password" id="admin-pwd" placeholder="Senha do administrador" autocomplete="off">
+    <div class="admin-modal-actions">
+      <button class="btn-cancel" onclick="fecharAdmin()">Cancelar</button>
+      <button class="btn-enter" onclick="entrarAdmin()">Entrar</button>
+    </div>
+    <div class="admin-err" id="admin-err">Senha incorreta</div>
+  </div>
+</div>
+
+<!-- LOGIN PRINCIPAL -->
 <div class="box">
-  <h1>🏦 <span>Sistema Gestor</span></h1>
+  <h1>🏦 <span>Funcionário Informado</span></h1>
+  <p class="subtitle">Sistema de Banco de Horas e Controle de Motoqueiros</p>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" data-aba="bh" onclick="selecionarAba('bh')">
+      🏦 Banco de Horas
+    </button>
+    <button class="tab" data-aba="motos" onclick="selecionarAba('motos')">
+      🏍️ Motoqueiros
+    </button>
+  </div>
 
   <div id="info">⏳ Carregando usuários...</div>
 
@@ -139,24 +290,27 @@ const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
 const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
 
 const ABA_CADASTRO = 'Cadastro';
+const ADMIN_PWD    = 'dan8301';
 
-/* Admin master — não fica no Cadastro, é fixo */
-const ADMIN_USER = 'admin';
-const ADMIN_PWD  = 'dan8301';
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let usuarios = [];       // todos os ativos (funcionarios + motoqueiros)
+let abaAtual = 'bh';     // 'bh' ou 'motos'
 
 /* ============================================================
    ELEMENTOS
    ============================================================ */
-const selectEl   = document.getElementById('user');
-const pwdEl      = document.getElementById('pwd');
-const btnEl      = document.getElementById('btn');
-const errEl      = document.getElementById('err');
-const infoEl     = document.getElementById('info');
-const loadingEl  = document.getElementById('loading');
-const togglePwd  = document.getElementById('toggle-pwd');
+const selectEl  = document.getElementById('user');
+const pwdEl     = document.getElementById('pwd');
+const btnEl     = document.getElementById('btn');
+const errEl     = document.getElementById('err');
+const infoEl    = document.getElementById('info');
+const loadingEl = document.getElementById('loading');
+const togglePwd = document.getElementById('toggle-pwd');
 
 /* ============================================================
-   CARREGAR USUÁRIOS DO CADASTRO (via API Key — leitura)
+   CARREGAR USUÁRIOS
    ============================================================ */
 async function carregarUsuarios() {
   try {
@@ -166,41 +320,19 @@ async function carregarUsuarios() {
     const data = await resp.json();
 
     const linhas = data.values || [];
-    const usuarios = linhas
-      .filter(r => r[4] && r[4].toString().toLowerCase() === 'ativo')  // coluna E = status
+    usuarios = linhas
+      .filter(r => r[4] && r[4].toString().toLowerCase() === 'ativo')
       .map(r => ({
         id:    (r[0] || '').toString().trim().toLowerCase(),
         nome:  (r[1] || '').toString().trim(),
-        tipo:  (r[2] || '').toString().trim().toLowerCase()  // funcionario | motoqueiro
+        tipo:  (r[2] || '').toString().trim().toLowerCase()
       }))
       .filter(u => u.id && u.nome);
-
-    // Ordena alfabeticamente
-    usuarios.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
-
-    // Monta dropdown
-    selectEl.innerHTML = '<option value="">Selecione o usuário</option>';
-    usuarios.forEach(u => {
-      const opt = document.createElement('option');
-      opt.value = u.id;
-      opt.dataset.tipo = u.tipo;
-      opt.dataset.nome = u.nome;
-      opt.textContent = u.nome + (u.tipo === 'motoqueiro' ? ' 🏍️' : '');
-      selectEl.appendChild(opt);
-    });
-
-    // Admin sempre no topo separado
-    const optAdmin = document.createElement('option');
-    optAdmin.value = ADMIN_USER;
-    optAdmin.dataset.tipo = 'admin';
-    optAdmin.dataset.nome = 'Administrador';
-    optAdmin.textContent = '⭐ Administrador';
-    selectEl.appendChild(optAdmin);
 
     selectEl.disabled = false;
     btnEl.disabled = false;
     infoEl.style.display = 'none';
-
+    renderSelect();
   } catch (e) {
     console.error(e);
     infoEl.textContent = '❌ Erro ao carregar usuários. Verifique a conexão.';
@@ -208,6 +340,52 @@ async function carregarUsuarios() {
     infoEl.style.color = '#fca5a5';
     infoEl.style.borderColor = 'rgba(239,68,68,0.25)';
   }
+}
+
+/* ============================================================
+   RENDERIZAR SELECT CONFORME A ABA ATIVA
+   ============================================================ */
+function renderSelect() {
+  // Filtra conforme a aba
+  const filtro = abaAtual === 'bh' ? 'funcionario' : 'motoqueiro';
+  const lista = usuarios.filter(u => u.tipo === filtro);
+
+  // Ordena alfabeticamente
+  lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
+  selectEl.innerHTML = '<option value="">Selecione o usuário</option>';
+
+  if (!lista.length) {
+    const opt = document.createElement('option');
+    opt.disabled = true;
+    opt.textContent = abaAtual === 'bh'
+      ? '— Nenhum funcionário cadastrado —'
+      : '— Nenhum motoqueiro cadastrado —';
+    selectEl.appendChild(opt);
+    return;
+  }
+
+  lista.forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u.id;
+    opt.dataset.tipo = u.tipo;
+    opt.dataset.nome = u.nome;
+    opt.textContent = u.nome;
+    selectEl.appendChild(opt);
+  });
+}
+
+/* ============================================================
+   SELECIONAR ABA
+   ============================================================ */
+function selecionarAba(aba) {
+  abaAtual = aba;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.aba === aba);
+  });
+  // Limpa a senha e re-renderiza
+  pwdEl.value = '';
+  renderSelect();
 }
 
 /* ============================================================
@@ -238,15 +416,6 @@ async function fazerLogin() {
   if (!user) { showError('❌ Selecione um usuário'); return; }
   if (!pwd)  { showError('❌ Digite sua senha'); return; }
 
-  // Admin master (fixo)
-  if (user === ADMIN_USER) {
-    if (pwd !== ADMIN_PWD) { showError('❌ Senha incorreta!'); return; }
-    salvarSessao(ADMIN_USER, 'Administrador', 'admin');
-    location.href = 'banco-horas.html';
-    return;
-  }
-
-  // Demais usuários: valida senha lendo o Cadastro
   loadingEl.style.display = 'block';
   btnEl.disabled = true;
 
@@ -257,7 +426,6 @@ async function fazerLogin() {
     const data = await resp.json();
     const linhas = data.values || [];
 
-    // Procura o usuário pelo id
     const linha = linhas.find(r =>
       (r[0] || '').toString().trim().toLowerCase() === user
     );
@@ -279,9 +447,23 @@ async function fazerLogin() {
       return;
     }
 
-    // Login OK — redireciona conforme tipo
-    salvarSessao(user, nome, tipo);
+    // Confere se a aba ativa bate com o tipo do usuário
+    if (abaAtual === 'bh' && tipo !== 'funcionario') {
+      showError('❌ Este usuário não é funcionário. Use a aba Motoqueiros.');
+      return;
+    }
+    if (abaAtual === 'motos' && tipo !== 'motoqueiro') {
+      showError('❌ Este usuário não é motoqueiro. Use a aba Banco de Horas.');
+      return;
+    }
 
+    // Salva sessão
+    sessionStorage.setItem('gestor_user', user);
+    sessionStorage.setItem('gestor_nome', nome);
+    sessionStorage.setItem('gestor_tipo', tipo);
+    sessionStorage.setItem('gestor_login_ts', Date.now().toString());
+
+    // Redireciona
     if (tipo === 'motoqueiro') {
       location.href = 'motoqueiros-saldos.html';
     } else {
@@ -298,13 +480,63 @@ async function fazerLogin() {
 }
 
 /* ============================================================
-   SALVAR SESSÃO
+   ADMIN (Ctrl+M + Engrenagem)
    ============================================================ */
-function salvarSessao(user, nome, tipo) {
-  sessionStorage.setItem('gestor_user', user);
-  sessionStorage.setItem('gestor_nome', nome);
-  sessionStorage.setItem('gestor_tipo', tipo);
-  sessionStorage.setItem('gestor_login_ts', Date.now().toString());
+const gearEl = document.getElementById('admin-gear');
+const modalEl = document.getElementById('admin-modal');
+const adminPwdEl = document.getElementById('admin-pwd');
+const adminErrEl = document.getElementById('admin-err');
+
+// Detecta Ctrl+M (só desktop)
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key.toLowerCase() === 'm') {
+    e.preventDefault();
+    // Só mostra se for tela grande (não mobile)
+    if (window.innerWidth >= 768) {
+      gearEl.classList.add('show');
+    }
+  }
+});
+
+// Abre modal ao clicar na engrenagem
+gearEl.addEventListener('click', () => {
+  modalEl.classList.add('show');
+  adminErrEl.classList.remove('show');
+  adminPwdEl.value = '';
+  setTimeout(() => adminPwdEl.focus(), 100);
+});
+
+// Fecha modal
+function fecharAdmin() {
+  modalEl.classList.remove('show');
+  adminPwdEl.value = '';
+  adminErrEl.classList.remove('show');
+}
+
+// Fecha ao clicar fora
+modalEl.addEventListener('click', e => {
+  if (e.target === modalEl) fecharAdmin();
+});
+
+// Enter no campo de senha
+adminPwdEl.addEventListener('keypress', e => {
+  if (e.key === 'Enter') entrarAdmin();
+});
+
+// Botão entrar
+function entrarAdmin() {
+  const pwd = adminPwdEl.value;
+  if (pwd === ADMIN_PWD) {
+    sessionStorage.setItem('gestor_user', 'admin');
+    sessionStorage.setItem('gestor_nome', 'Administrador');
+    sessionStorage.setItem('gestor_tipo', 'admin');
+    sessionStorage.setItem('gestor_login_ts', Date.now().toString());
+    location.href = 'banco-horas.html';
+  } else {
+    adminErrEl.classList.add('show');
+    adminPwdEl.value = '';
+    adminPwdEl.focus();
+  }
 }
 
 /* ============================================================
