@@ -44,7 +44,7 @@
 
   /* SALDOS */
   .saldos-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
     gap: 16px; margin-bottom: 24px;
   }
   .saldo-card {
@@ -96,6 +96,26 @@
   }
   .saldo-detalhe .linha .val { font-weight: 600; }
   .saldo-detalhe .linha .val.neg { color: #dc2626; }
+
+  /* BARRA DE PROGRESSO */
+  .progresso-wrap {
+    margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+  }
+  .progresso-info {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: #64748b; margin-bottom: 6px;
+  }
+  .progresso-bar {
+    height: 8px; background: #e2e8f0;
+    border-radius: 99px; overflow: hidden;
+  }
+  .progresso-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progresso-fill.oleo { background: linear-gradient(90deg, #10b981, #059669); }
+  .progresso-fill.pneu { background: linear-gradient(90deg, #6366f1, #4f46e5); }
 
   /* Alerta saldo negativo */
   .alerta-negativo {
@@ -216,7 +236,6 @@
 
   <div id="conteudo" style="display:none">
 
-    <!-- ALERTA SALDO NEGATIVO -->
     <div class="alerta-negativo" id="alerta-negativo">
       <h4>⚠️ Atenção: Saldo Negativo</h4>
       <p>
@@ -246,11 +265,11 @@
         <div class="saldo-valor" id="saldo-gasolina">R$ 0,00</div>
         <div class="saldo-detalhe">
           <div class="linha">
-            <span>Base acumulada</span>
+            <span>Base acumulada (<span id="gas-km">0</span> km × R$ 0,20)</span>
             <span class="val" id="det-gas-base">R$ 0,00</span>
           </div>
           <div class="linha">
-            <span>(-) Reposições</span>
+            <span>(-) Reposições de gasolina</span>
             <span class="val neg" id="det-gas-rep">R$ 0,00</span>
           </div>
           <div class="linha total">
@@ -266,22 +285,31 @@
           <div class="saldo-icone">🛢️</div>
           <div class="saldo-titulo">
             Saldo Óleo
-            <small>R$ 50,00 a cada 1.000 km</small>
+            <small>R$ 50,00 a cada 1.000 km (proporcional)</small>
           </div>
         </div>
         <div class="saldo-valor" id="saldo-oleo">R$ 0,00</div>
         <div class="saldo-detalhe">
           <div class="linha">
-            <span>Bônus acumulados</span>
+            <span>Base acumulada</span>
             <span class="val" id="det-oleo-base">R$ 0,00</span>
           </div>
           <div class="linha">
-            <span>(-) Reposições</span>
+            <span>(-) Reposições de óleo</span>
             <span class="val neg" id="det-oleo-rep">R$ 0,00</span>
           </div>
           <div class="linha total">
             <span>Disponível</span>
             <span class="val" id="det-oleo-total">R$ 0,00</span>
+          </div>
+        </div>
+        <div class="progresso-wrap">
+          <div class="progresso-info">
+            <span>Próximo bônus cheio</span>
+            <span id="oleo-prog-txt">0 / 1.000 km</span>
+          </div>
+          <div class="progresso-bar">
+            <div class="progresso-fill oleo" id="oleo-prog-fill" style="width:0%"></div>
           </div>
         </div>
       </div>
@@ -292,22 +320,31 @@
           <div class="saldo-icone">🛞</div>
           <div class="saldo-titulo">
             Saldo Pneu
-            <small>R$ 250,00 a cada 15.000 km</small>
+            <small>R$ 250,00 a cada 15.000 km (proporcional)</small>
           </div>
         </div>
         <div class="saldo-valor" id="saldo-pneu">R$ 0,00</div>
         <div class="saldo-detalhe">
           <div class="linha">
-            <span>Bônus acumulados</span>
+            <span>Base acumulada</span>
             <span class="val" id="det-pneu-base">R$ 0,00</span>
           </div>
           <div class="linha">
-            <span>(-) Reposições</span>
+            <span>(-) Reposições de pneu</span>
             <span class="val neg" id="det-pneu-rep">R$ 0,00</span>
           </div>
           <div class="linha total">
             <span>Disponível</span>
             <span class="val" id="det-pneu-total">R$ 0,00</span>
+          </div>
+        </div>
+        <div class="progresso-wrap">
+          <div class="progresso-info">
+            <span>Próximo bônus cheio</span>
+            <span id="pneu-prog-txt">0 / 15.000 km</span>
+          </div>
+          <div class="progresso-bar">
+            <div class="progresso-fill pneu" id="pneu-prog-fill" style="width:0%"></div>
           </div>
         </div>
       </div>
@@ -369,12 +406,12 @@ const MOTOQUEIROS = {
   'taylor': { aba: 'moto02', nome: 'Taylor Moreira do Carmo' }
 };
 
-/* Regras de negócio */
+/* Regras de negócio — PROPORCIONAIS */
 const REGRAS = {
-  VALOR_POR_KM:     0.20,
-  BONUS_OLEO:       50,      // R$ a cada 1.000 km
+  VALOR_POR_KM:      0.20,
+  BONUS_OLEO:        50,
   KM_POR_BONUS_OLEO: 1000,
-  BONUS_PNEU:       250,     // R$ a cada 15.000 km
+  BONUS_PNEU:        250,
   KM_POR_BONUS_PNEU: 15000
 };
 
@@ -439,7 +476,7 @@ async function lerAba(nome) {
 }
 
 /* ============================================================
-   CARREGAR DADOS DA MOTO
+   CARREGAR DADOS
    ============================================================ */
 async function carregarDados() {
   const linhas = await lerAba(motoqueiro.aba);
@@ -464,36 +501,39 @@ async function carregarDados() {
 }
 
 /* ============================================================
-   PROCESSAR — CÁLCULO DOS SALDOS
+   PROCESSAR — CÁLCULO PROPORCIONAL
    ============================================================ */
 function processar(d) {
   const totalKM = d.corridas.reduce((s, c) => s + c.km, 0);
   const totalEntregas = d.corridas.reduce((s, c) => s + c.entregas, 0);
 
-  // ---- Saldo Gasolina ----
+  // ---- GASOLINA (proporcional por km) ----
   const baseGasolina = totalKM * REGRAS.VALOR_POR_KM;
   const repGasolina = d.pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'gasolina')
     .reduce((s, p) => s + p.valor, 0);
   const saldoGasolina = baseGasolina - repGasolina;
 
-  // ---- Saldo Óleo ----
-  const bonusOleoQtd = Math.floor(totalKM / REGRAS.KM_POR_BONUS_OLEO);
-  const baseOleo = bonusOleoQtd * REGRAS.BONUS_OLEO;
+  // ---- ÓLEO (proporcional: km / 1000 × 50) ----
+  const baseOleo = (totalKM / REGRAS.KM_POR_BONUS_OLEO) * REGRAS.BONUS_OLEO;
   const repOleo = d.pagamentos
-    .filter(p => p.tipoPagamento.toLowerCase() === 'óleo' || p.tipoPagamento.toLowerCase() === 'oleo')
+    .filter(p => {
+      const t = p.tipoPagamento.toLowerCase();
+      return t === 'óleo' || t === 'oleo';
+    })
     .reduce((s, p) => s + p.valor, 0);
   const saldoOleo = baseOleo - repOleo;
+  const kmRestanteOleo = totalKM % REGRAS.KM_POR_BONUS_OLEO;
 
-  // ---- Saldo Pneu ----
-  const bonusPneuQtd = Math.floor(totalKM / REGRAS.KM_POR_BONUS_PNEU);
-  const basePneu = bonusPneuQtd * REGRAS.BONUS_PNEU;
+  // ---- PNEU (proporcional: km / 15000 × 250) ----
+  const basePneu = (totalKM / REGRAS.KM_POR_BONUS_PNEU) * REGRAS.BONUS_PNEU;
   const repPneu = d.pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'pneu')
     .reduce((s, p) => s + p.valor, 0);
   const saldoPneu = basePneu - repPneu;
+  const kmRestantePneu = totalKM % REGRAS.KM_POR_BONUS_PNEU;
 
-  // ---- Total pago (para o resumo) ----
+  // ---- Total pago ----
   const totalPago = d.pagamentos.reduce((s, p) => s + p.valor, 0);
 
   // ---- Extrato mensal ----
@@ -526,8 +566,8 @@ function processar(d) {
   return {
     totalKM, totalEntregas, totalPago, totalCorridas: d.corridas.length,
     baseGasolina, repGasolina, saldoGasolina,
-    bonusOleoQtd, baseOleo, repOleo, saldoOleo,
-    bonusPneuQtd, basePneu, repPneu, saldoPneu,
+    baseOleo, repOleo, saldoOleo, kmRestanteOleo,
+    basePneu, repPneu, saldoPneu, kmRestantePneu,
     mensalArr
   };
 }
@@ -536,30 +576,47 @@ function processar(d) {
    RENDERIZAR
    ============================================================ */
 function renderizar(d, p) {
-  // ---- Saldos ----
+  // ---- GASOLINA ----
   const gasEl = document.getElementById('saldo-gasolina');
   gasEl.textContent = fmtMoeda(p.saldoGasolina);
   gasEl.className = 'saldo-valor' + (p.saldoGasolina < 0 ? ' neg' : '');
+  document.getElementById('gas-km').textContent = fmtNum(p.totalKM);
   document.getElementById('det-gas-base').textContent = fmtMoeda(p.baseGasolina);
   document.getElementById('det-gas-rep').textContent = '-' + fmtMoeda(p.repGasolina);
   document.getElementById('det-gas-total').textContent = fmtMoeda(p.saldoGasolina);
   document.getElementById('det-gas-total').className = 'val' + (p.saldoGasolina < 0 ? ' neg' : '');
 
+  // ---- ÓLEO ----
   const oleoEl = document.getElementById('saldo-oleo');
   oleoEl.textContent = fmtMoeda(p.saldoOleo);
   oleoEl.className = 'saldo-valor' + (p.saldoOleo < 0 ? ' neg' : '');
-  document.getElementById('det-oleo-base').textContent = `${p.bonusOleoQtd} × R$ 50 = ` + fmtMoeda(p.baseOleo);
+  document.getElementById('det-oleo-base').textContent = fmtMoeda(p.baseOleo);
   document.getElementById('det-oleo-rep').textContent = '-' + fmtMoeda(p.repOleo);
   document.getElementById('det-oleo-total').textContent = fmtMoeda(p.saldoOleo);
   document.getElementById('det-oleo-total').className = 'val' + (p.saldoOleo < 0 ? ' neg' : '');
 
+  // Barra de progresso do óleo
+  const kmRestOleo = p.kmRestanteOleo;
+  const percOleo = (kmRestOleo / REGRAS.KM_POR_BONUS_OLEO) * 100;
+  document.getElementById('oleo-prog-txt').textContent =
+    `${fmtNum(kmRestOleo)} / ${REGRAS.KM_POR_BONUS_OLEO} km`;
+  document.getElementById('oleo-prog-fill').style.width = percOleo + '%';
+
+  // ---- PNEU ----
   const pneuEl = document.getElementById('saldo-pneu');
   pneuEl.textContent = fmtMoeda(p.saldoPneu);
   pneuEl.className = 'saldo-valor' + (p.saldoPneu < 0 ? ' neg' : '');
-  document.getElementById('det-pneu-base').textContent = `${p.bonusPneuQtd} × R$ 250 = ` + fmtMoeda(p.basePneu);
+  document.getElementById('det-pneu-base').textContent = fmtMoeda(p.basePneu);
   document.getElementById('det-pneu-rep').textContent = '-' + fmtMoeda(p.repPneu);
   document.getElementById('det-pneu-total').textContent = fmtMoeda(p.saldoPneu);
   document.getElementById('det-pneu-total').className = 'val' + (p.saldoPneu < 0 ? ' neg' : '');
+
+  // Barra de progresso do pneu
+  const kmRestPneu = p.kmRestantePneu;
+  const percPneu = (kmRestPneu / REGRAS.KM_POR_BONUS_PNEU) * 100;
+  document.getElementById('pneu-prog-txt').textContent =
+    `${fmtNum(kmRestPneu)} / ${REGRAS.KM_POR_BONUS_PNEU} km`;
+  document.getElementById('pneu-prog-fill').style.width = percPneu + '%';
 
   // Alerta se algum saldo negativo
   const temNegativo = p.saldoGasolina < 0 || p.saldoOleo < 0 || p.saldoPneu < 0;
