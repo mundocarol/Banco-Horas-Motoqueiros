@@ -15,9 +15,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ============================================
-     TELA DE LOGIN
-     ============================================ */
+  /* LOGIN */
   .login-wrap {
     display: flex; align-items: center; justify-content: center;
     min-height: 100vh; padding: 20px;
@@ -81,9 +79,7 @@
   }
   .login-error.show { display: block; }
 
-  /* ============================================
-     PAINEL
-     ============================================ */
+  /* APP */
   .app { display: none; }
   .app.show { display: block; }
 
@@ -115,9 +111,6 @@
 
   .content { max-width: 900px; margin: 0 auto; padding: 32px; }
 
-  /* ============================================
-     FORM
-     ============================================ */
   .card {
     background: white;
     border-radius: 14px;
@@ -185,9 +178,6 @@
   .btn-submit:hover { background: #1e40af; }
   .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  /* ============================================
-     HISTÓRICO
-     ============================================ */
   .card-historico { padding: 22px 28px; }
   .card-historico .head {
     display: flex; justify-content: space-between; align-items: center;
@@ -247,9 +237,6 @@
   }
   .btn-del:hover { background: #fef2f2; color: #dc2626; }
 
-  /* ============================================
-     TOAST
-     ============================================ */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
     padding: 14px 20px; border-radius: 10px;
@@ -323,7 +310,6 @@
 
   <div class="content">
 
-    <!-- Formulário -->
     <div class="card">
       <h2>Novo Lançamento</h2>
       <p class="desc">Escolha o motoqueiro e informe os dados do dia.</p>
@@ -357,7 +343,6 @@
       </button>
     </div>
 
-    <!-- Histórico -->
     <div class="card card-historico">
       <div class="head">
         <h2>Últimos Lançamentos</h2>
@@ -408,12 +393,14 @@ function getDayOfWeek(dateStr) {
   } catch(e) { return ''; }
 }
 
-function dataToNum(dateStr) {
-  if (!dateStr) return 0;
-  try {
-    const [d,m,y] = dateStr.split('/');
-    return new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime();
-  } catch(e) { return 0; }
+/* Converte dd/mm/aaaa → aaaammdd (número) para ordenação à prova de falhas */
+function dataParaTs(dateStr) {
+  if (!dateStr || !dateStr.includes('/')) return 0;
+  const [d, m, a] = dateStr.split('/');
+  const dd = String(d).padStart(2,'0');
+  const mm = String(m).padStart(2,'0');
+  const aaaa = String(a).padStart(4,'0');
+  return parseInt(aaaa + mm + dd) || 0;
 }
 
 /* ============================================================
@@ -427,12 +414,18 @@ async function lerAba(nome) {
 }
 
 async function api(action, payload = {}) {
-  const resp = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, ...payload })
-  });
-  return resp.json();
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action, ...payload })
+    });
+    if (!resp.ok) return { ok: false, error: 'HTTP ' + resp.status };
+    return await resp.json();
+  } catch (e) {
+    console.error('Erro na API:', e);
+    return { ok: false, error: 'Falha de conexão: ' + e.message };
+  }
 }
 
 /* ============================================================
@@ -554,7 +547,7 @@ async function salvar() {
 }
 
 /* ============================================================
-   HISTÓRICO
+   HISTÓRICO — ORDENADO: mais recente sempre no topo
    ============================================================ */
 async function carregarHistorico() {
   const container = document.getElementById('historico-container');
@@ -576,15 +569,18 @@ async function carregarHistorico() {
     // Só corridas (tem data e km) e não reposições
     const corridas = todos.filter(t => t.data && t.km > 0 && !t.dataReposicao);
 
-    // Ordenação: por data decrescente (mais recente primeiro).
-    // Empate: quem foi adicionado por último (maior _row) fica no topo.
+    // ------------------------------------------------------------
+    // ORDENAÇÃO: 
+    //   1º - Data mais recente primeiro (compara AAAAMMDD como número)
+    //   2º - _row maior primeiro (último lançado no topo, para empate)
+    // ------------------------------------------------------------
     corridas.sort((a, b) => {
-      const diff = dataToNum(b.data) - dataToNum(a.data);
-      if (diff !== 0) return diff;
-      return b._row - a._row;
+      const tsA = dataParaTs(a.data);
+      const tsB = dataParaTs(b.data);
+      if (tsA !== tsB) return tsB - tsA;   // data desc
+      return b._row - a._row;              // mesma data: último lançado primeiro
     });
 
-    // Últimos 15
     const ultimos = corridas.slice(0, 15);
 
     if (!ultimos.length) {
