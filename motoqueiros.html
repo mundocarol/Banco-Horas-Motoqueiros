@@ -38,7 +38,6 @@
 
   .content { padding: 24px; max-width: 1400px; margin: 0 auto; }
 
-  /* SELETOR */
   .moto-selector {
     display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
   }
@@ -72,7 +71,6 @@
     color: #94a3b8; font-size: 14px;
   }
 
-  /* SALDOS */
   .saldos-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
     gap: 14px; margin-bottom: 20px;
@@ -98,7 +96,6 @@
   .saldo-valor { font-size: 22px; font-weight: 800; color: #0f172a; }
   .saldo-valor.neg { color: #dc2626; }
 
-  /* RESUMO */
   .resumo-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
     gap: 14px; margin-bottom: 24px;
@@ -114,7 +111,6 @@
   }
   .resumo-valor { font-size: 24px; font-weight: 800; color: #0f172a; }
 
-  /* SUB-TABS */
   .sub-tabs {
     display: flex; gap: 6px; margin-bottom: 18px;
     background: white; padding: 6px; border-radius: 12px;
@@ -129,7 +125,6 @@
   .sub-tab:hover { background: #f8fafc; color: #0f172a; }
   .sub-tab.active { background: #0f172a; color: white; }
 
-  /* AÇÕES */
   .actions {
     display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
     justify-content: space-between; align-items: center;
@@ -153,7 +148,6 @@
   .btn-sm:hover { filter: brightness(0.95); }
   .btn-sm.red { background: #fee2e2; color: #991b1b; }
 
-  /* PAINEL */
   .panel {
     background: white; padding: 22px;
     border-radius: 16px; border: 1px solid #eef2f6;
@@ -176,7 +170,6 @@
     color: #94a3b8; font-size: 14px;
   }
 
-  /* FORM */
   .form-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
     gap: 14px; margin-bottom: 18px;
@@ -199,7 +192,6 @@
   .field textarea { min-height: 70px; resize: vertical; }
   .field.full { grid-column: 1/-1; }
 
-  /* MODAL */
   .modal {
     display: none; position: fixed; inset: 0;
     background: rgba(15,23,42,0.75); backdrop-filter: blur(4px);
@@ -226,7 +218,6 @@
   .modal-close:hover { background: rgba(255,255,255,0.1); color: white; }
   .modal-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
 
-  /* TOAST */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
     background: #0f172a; color: white;
@@ -243,7 +234,6 @@
     to   { transform: translateX(0); opacity: 1; }
   }
 
-  /* LOADING */
   .loading { display: none; text-align: center; padding: 40px; color: #64748b; }
   .loading.show { display: block; }
   .spinner {
@@ -255,7 +245,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* BADGE MOTOBOY (na visão "ver todos") */
   .badge-motoboy {
     display: inline-block;
     padding: 3px 10px; border-radius: 8px;
@@ -283,12 +272,10 @@
 
 <div class="content">
 
-  <!-- SELETOR DINÂMICO -->
   <div class="moto-selector" id="moto-selector">
     <div class="loading-selector">Carregando motoqueiros...</div>
   </div>
 
-  <!-- 3 CARDS DE SALDO -->
   <div class="saldos-grid">
     <div class="saldo-card gasolina">
       <div class="saldo-label">⛽ Saldo Gasolina</div>
@@ -304,16 +291,13 @@
     </div>
   </div>
 
-  <!-- RESUMO -->
   <div class="resumo-grid" id="resumo"></div>
 
-  <!-- SUB-TABS -->
   <div class="sub-tabs">
     <button class="sub-tab active" onclick="selecionarSub('corridas')">📦 Corridas / Entregas</button>
     <button class="sub-tab" onclick="selecionarSub('pagamentos')">💰 Pagamentos / Reposições</button>
   </div>
 
-  <!-- PAINEL -->
   <div class="panel">
     <div class="actions">
       <h3 id="panel-title">Corridas / Entregas</h3>
@@ -345,7 +329,7 @@
    ============================================================ */
 const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
 const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
-const API_URL  = 'https://script.google.com/macros/s/AKfycbxCV_pL-xzrS9Q67MQeYRb_RESvCQVkkJTV6Ar9y29SHBEimcCshgyoysdu7fPIKnec/exec';
+const API_URL  = 'https://script.google.com/macros/s/AKfycbxCV_pL-xzrS9Q67MQeYRb_RESvCQVkkJTV6Ar9y29SHBEimCshgyoysdu7fPIKnec/exec';
 
 const REGRAS = {
   VALOR_POR_KM:      0.20,
@@ -367,10 +351,10 @@ if (!sessUser || sessTipo !== 'admin') {
 /* ============================================================
    ESTADO
    ============================================================ */
-let motoqueiros = [];        // [{id, nome, ...}] — vindos do Cadastro
-let motoAtual = null;        // id do motoqueiro selecionado OU 'TODOS'
+let motoqueiros = [];
+let motoAtual = null;
 let subAtual  = 'corridas';
-let todasMotos = [];         // todas as linhas da aba Motos
+let todasMotos = [];
 
 /* ============================================================
    HELPERS
@@ -402,6 +386,17 @@ function hojeStr() {
   return `${dd}/${mm}/${d.getFullYear()}`;
 }
 
+/* Ordena lista por data decrescente. Empate: último lançado (maior _row) no topo. */
+function ordenarPorDataDesc(lista, campoData) {
+  return lista.slice().sort((a, b) => {
+    const dataA = (a[campoData] || '').split('/').reverse().join('');
+    const dataB = (b[campoData] || '').split('/').reverse().join('');
+    const cmp = dataB.localeCompare(dataA);
+    if (cmp !== 0) return cmp;
+    return (b._row || 0) - (a._row || 0);
+  });
+}
+
 /* ============================================================
    API
    ============================================================ */
@@ -413,16 +408,25 @@ async function lerAba(nome) {
 }
 
 async function api(action, payload = {}) {
-  const resp = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, ...payload })
-  });
-  return resp.json();
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action, ...payload })
+    });
+    if (!resp.ok) {
+      return { ok: false, error: 'HTTP ' + resp.status };
+    }
+    const data = await resp.json();
+    return data;
+  } catch (e) {
+    console.error('Erro na API:', e);
+    return { ok: false, error: 'Falha de conexão: ' + e.message };
+  }
 }
 
 /* ============================================================
-   CARREGAR MOTOQUEIROS DO CADASTRO
+   CARREGAR MOTOQUEIROS
    ============================================================ */
 async function carregarMotoqueiros() {
   const linhas = await lerAba('Cadastro');
@@ -433,12 +437,11 @@ async function carregarMotoqueiros() {
     status: (r[4]||'').toString().trim().toLowerCase(),
     observacao: (r[7]||'').toString().trim(),
     _row: i + 2
-  })).filter(m => m.tipo === 'motoqueiro' && m.status === 'ativo');
+  }))
+  .filter(m => m.tipo === 'motoqueiro' && m.status === 'ativo')
+  .sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
 }
 
-/* ============================================================
-   CARREGAR ABA MOTOS (tudo)
-   ============================================================ */
 async function carregarMotos() {
   const linhas = await lerAba('Motos');
   todasMotos = linhas.map((r, i) => ({
@@ -456,9 +459,6 @@ async function carregarMotos() {
   }));
 }
 
-/* ============================================================
-   FILTRAR DADOS POR MOTOBOY
-   ============================================================ */
 function filtrarPorMotoboy(motoId) {
   if (motoId === 'TODOS') return todasMotos;
   return todasMotos.filter(m => m.motoboyId === motoId);
@@ -470,20 +470,15 @@ function dividirCorridasPagamentos(linhas) {
   return { corridas, pagamentos };
 }
 
-/* ============================================================
-   CALCULAR SALDOS (para um conjunto de linhas)
-   ============================================================ */
 function calcularSaldos({ corridas, pagamentos }) {
   const totalKM = corridas.reduce((s, c) => s + c.km, 0);
 
-  // Gasolina
   const baseGas = totalKM * REGRAS.VALOR_POR_KM;
   const repGas = pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'gasolina')
     .reduce((s, p) => s + p.valor, 0);
   const saldoGas = baseGas - repGas;
 
-  // Óleo (proporcional)
   const baseOleo = (totalKM / REGRAS.KM_POR_BONUS_OLEO) * REGRAS.BONUS_OLEO;
   const repOleo = pagamentos
     .filter(p => {
@@ -493,7 +488,6 @@ function calcularSaldos({ corridas, pagamentos }) {
     .reduce((s, p) => s + p.valor, 0);
   const saldoOleo = baseOleo - repOleo;
 
-  // Pneu (proporcional)
   const basePneu = (totalKM / REGRAS.KM_POR_BONUS_PNEU) * REGRAS.BONUS_PNEU;
   const repPneu = pagamentos
     .filter(p => p.tipoPagamento.toLowerCase() === 'pneu')
@@ -504,7 +498,7 @@ function calcularSaldos({ corridas, pagamentos }) {
 }
 
 /* ============================================================
-   RENDERIZAR SELETOR
+   RENDER SELETOR
    ============================================================ */
 function renderSeletor() {
   const wrap = document.getElementById('moto-selector');
@@ -516,7 +510,6 @@ function renderSeletor() {
 
   let html = '';
 
-  // Botões por motoqueiro
   motoqueiros.forEach(m => {
     html += `
       <button class="moto-btn" data-id="${m.id}" onclick="selecionarMoto('${m.id}')">
@@ -529,7 +522,6 @@ function renderSeletor() {
     `;
   });
 
-  // Botão Ver Todos
   html += `
     <button class="moto-btn ver-todos" data-id="TODOS" onclick="selecionarMoto('TODOS')">
       <span class="icon">📋</span>
@@ -542,15 +534,11 @@ function renderSeletor() {
 
   wrap.innerHTML = html;
 
-  // Marca o ativo
   document.querySelectorAll('.moto-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.id === motoAtual);
   });
 }
 
-/* ============================================================
-   SELECIONAR MOTO
-   ============================================================ */
 function selecionarMoto(motoId) {
   motoAtual = motoId;
   document.querySelectorAll('.moto-btn').forEach(b => {
@@ -559,9 +547,6 @@ function selecionarMoto(motoId) {
   renderizar();
 }
 
-/* ============================================================
-   SELECIONAR SUB-ABA
-   ============================================================ */
 function selecionarSub(sub) {
   subAtual = sub;
   document.querySelectorAll('.sub-tab').forEach(b => {
@@ -576,7 +561,6 @@ function selecionarSub(sub) {
     titulo.textContent = '💰 Pagamentos / Reposições';
     btnAdd.textContent = '＋ Nova Reposição';
   }
-  // Desabilita botão de adicionar quando em "Ver Todos"
   btnAdd.disabled = (motoAtual === 'TODOS');
   renderizar();
 }
@@ -590,7 +574,6 @@ function renderizar() {
   const linhas = filtrarPorMotoboy(motoAtual);
   const { corridas, pagamentos } = dividirCorridasPagamentos(linhas);
 
-  // Saldos
   const s = calcularSaldos({ corridas, pagamentos });
   const elG = document.getElementById('s-gas');
   elG.textContent = formataMoeda(s.saldoGas);
@@ -604,7 +587,6 @@ function renderizar() {
   elP.textContent = formataMoeda(s.saldoPneu);
   elP.className = 'saldo-valor' + (s.saldoPneu < 0 ? ' neg' : '');
 
-  // Resumo
   const totalKM = corridas.reduce((s, r) => s + r.km, 0);
   const totalEntregas = corridas.reduce((s, r) => s + r.entregas, 0);
   const totalPago = pagamentos.reduce((s, p) => s + p.valor, 0);
@@ -627,7 +609,6 @@ function renderizar() {
     </div>
   `;
 
-  // Tabela
   const container = document.getElementById('tabela-container');
   const lista = subAtual === 'corridas' ? corridas : pagamentos;
   const mostrarMotoboy = (motoAtual === 'TODOS');
@@ -640,6 +621,8 @@ function renderizar() {
   }
 
   if (subAtual === 'corridas') {
+    // Ordena por data decrescente
+    const ordenada = ordenarPorDataDesc(lista, 'data');
     container.innerHTML = `
       <table>
         <thead>
@@ -649,7 +632,7 @@ function renderizar() {
           </tr>
         </thead>
         <tbody>
-          ${lista.slice().reverse().map(r => `
+          ${ordenada.map(r => `
             <tr>
               ${mostrarMotoboy ? `<td><span class="badge-motoboy">${r.motoboyNome || r.motoboyId}</span></td>` : ''}
               <td><b>${r.data}</b></td>
@@ -662,6 +645,8 @@ function renderizar() {
       </table>
     `;
   } else {
+    // Ordena por data de reposição decrescente
+    const ordenada = ordenarPorDataDesc(lista, 'dataReposicao');
     container.innerHTML = `
       <table>
         <thead>
@@ -671,7 +656,7 @@ function renderizar() {
           </tr>
         </thead>
         <tbody>
-          ${lista.slice().reverse().map(p => `
+          ${ordenada.map(p => `
             <tr>
               ${mostrarMotoboy ? `<td><span class="badge-motoboy">${p.motoboyNome || p.motoboyId}</span></td>` : ''}
               <td><b>${p.dataReposicao}</b></td>
@@ -687,7 +672,6 @@ function renderizar() {
     `;
   }
 
-  // Habilita/desabilita botão adicionar
   document.getElementById('btn-add').disabled = (motoAtual === 'TODOS');
 }
 
@@ -699,12 +683,13 @@ function abrirModal(titulo, html) {
   document.getElementById('modal-body').innerHTML = html;
   document.getElementById('modal').classList.add('open');
 }
+
 function fecharModal() {
   document.getElementById('modal').classList.remove('open');
 }
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target.id === 'modal') fecharModal();
-});
+
+/* ⚠️ REMOVIDO: linha que fechava o modal ao clicar fora
+   Agora o modal só fecha clicando no X. */
 
 /* ============================================================
    FORMULÁRIOS
@@ -775,6 +760,11 @@ function abrirFormPagamento() {
 async function salvarPagamento() {
   const m = motoqueiros.find(x => x.id === motoAtual);
   if (!m) return toast('Selecione um motoqueiro', 'err');
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
   const payload = {
     motoboyId: motoAtual,
     motoboyNome: m.nome,
@@ -784,10 +774,23 @@ async function salvarPagamento() {
     nf: document.getElementById('p-nf').value.trim(),
     local: document.getElementById('p-local').value.trim()
   };
-  if (!payload.dataReposicao) return toast('Informe a data', 'err');
+
+  if (!payload.dataReposicao) {
+    btn.disabled = false;
+    btn.textContent = '💾 Salvar Reposição';
+    return toast('Informe a data', 'err');
+  }
+
   const r = await api('addPagamento', payload);
-  if (r.ok) { toast('✅ Reposição salva!'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) {
+    toast('✅ Reposição salva!');
+    fecharModal();
+    await recarregar();
+  } else {
+    toast('❌ ' + (r.error || 'Erro'), 'err');
+    btn.disabled = false;
+    btn.textContent = '💾 Salvar Reposição';
+  }
 }
 
 /* ============================================================
@@ -809,7 +812,6 @@ async function recarregar() {
   try {
     await Promise.all([carregarMotoqueiros(), carregarMotos()]);
 
-    // Se o motoqueiro selecionado não existe mais, muda para o primeiro
     if (motoAtual && motoAtual !== 'TODOS') {
       if (!motoqueiros.find(m => m.id === motoAtual)) {
         motoAtual = motoqueiros[0]?.id || 'TODOS';
