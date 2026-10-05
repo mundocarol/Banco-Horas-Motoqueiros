@@ -7,273 +7,509 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
+  html, body {
+    background: #eef1f5;
+    color: #1e293b;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f8fafc; color: #1e293b; -webkit-font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
   }
+
+  /* ============================================
+     TOPBAR
+     ============================================ */
   .topbar {
-    background: #0f172a; color: white; padding: 14px 24px;
+    background: #0f172a; color: white;
+    padding: 14px 32px;
     display: flex; justify-content: space-between; align-items: center;
     position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 12px;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.12);
+    flex-wrap: wrap; gap: 12px;
   }
-  .topbar h1 { font-size: 18px; font-weight: 700; }
-  .topbar h1 span { color: #60a5fa; }
-  .topbar-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .topbar h1 {
+    font-size: 16px; font-weight: 700;
+    letter-spacing: -0.2px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .topbar h1 .dot {
+    display: inline-block; width: 8px; height: 8px;
+    background: #3b82f6; border-radius: 50%;
+  }
+  .topbar h1 span { color: #93c5fd; font-weight: 500; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
   .nav-btn {
-    background: rgba(255,255,255,0.08); color: white;
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06); color: #cbd5e1;
+    border: 1px solid rgba(255,255,255,0.08);
     padding: 8px 16px; border-radius: 8px;
-    font-size: 13px; font-weight: 600; cursor: pointer;
-    transition: all 0.2s; text-decoration: none;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.18s; text-decoration: none;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .nav-btn:hover { background: rgba(255,255,255,0.15); }
+  .nav-btn:hover { background: rgba(255,255,255,0.12); color: white; }
   .logout-btn {
-    background: #475569; color: white;
-    border: none; padding: 8px 18px; border-radius: 8px;
-    font-size: 13px; font-weight: 600; cursor: pointer;
+    background: transparent; color: #94a3b8;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.18s;
   }
-  .logout-btn:hover { background: #334155; }
+  .logout-btn:hover { background: rgba(239,68,68,0.12); color: #fca5a5; border-color: rgba(239,68,68,0.2); }
 
+  /* ============================================
+     TABS
+     ============================================ */
+  .tabs-wrap {
+    background: white;
+    border-bottom: 1px solid #dbe1ea;
+    position: sticky; top: 60px; z-index: 99;
+  }
   .tabs {
-    background: white; border-bottom: 2px solid #e2e8f0;
-    padding: 0 24px; display: flex; gap: 4px;
-    position: sticky; top: 68px; z-index: 99; overflow-x: auto;
+    max-width: 1400px; margin: 0 auto;
+    padding: 0 32px;
+    display: flex; gap: 4px; overflow-x: auto;
   }
   .tab {
-    padding: 14px 22px; cursor: pointer;
-    font-weight: 600; font-size: 14px; color: #64748b;
+    padding: 16px 20px; cursor: pointer;
+    font-weight: 500; font-size: 14px; color: #64748b;
     border: none; background: none;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s; white-space: nowrap; font-family: inherit;
+    border-bottom: 2px solid transparent;
+    transition: all 0.18s; white-space: nowrap;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 8px;
   }
-  .tab:hover { color: #0f172a; background: #f8fafc; }
-  .tab.active { color: #2563eb; border-bottom-color: #2563eb; background: #eff6ff; }
+  .tab:hover { color: #0f172a; }
+  .tab.active { color: #1d4ed8; border-bottom-color: #1d4ed8; font-weight: 600; }
 
-  .content { padding: 24px; max-width: 1400px; margin: 0 auto; }
+  /* ============================================
+     CONTEÚDO
+     ============================================ */
+  .content { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
   .pane { display: none; }
   .pane.active { display: block; }
 
-  .emp-card {
-    background: white; padding: 22px 24px;
-    border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    border: 1px solid #eef2f6; margin-bottom: 20px; transition: all 0.2s;
-  }
-  .emp-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.07); }
-  .emp-header {
+  /* Filtro + ações */
+  .toolbar {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 20px; gap: 16px; flex-wrap: wrap;
   }
-  .emp-nome { font-size: 19px; font-weight: 700; color: #0f172a; }
-  .emp-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
-  .saldo-wrap { display: flex; gap: 10px; flex-wrap: wrap; }
-  .saldo {
-    padding: 8px 16px; border-radius: 10px;
-    font-size: 15px; font-weight: 700; text-align: center;
+  .search-box {
+    position: relative; flex: 1; max-width: 420px;
   }
-  .saldo small { display: block; font-size: 10px; font-weight: 600; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 2px; }
-  .saldo.bh { background: #f0f9ff; color: #0369a1; }
-  .saldo.bh.neg { background: #fef2f2; color: #dc2626; }
-  .saldo.he { background: #fef3c7; color: #92400e; }
-  .saldo.fp { background: #fee2e2; color: #991b1b; }
-  .saldo.fp.ok { background: #dcfce7; color: #166534; }
+  .search-box input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    border: 1px solid #d1d9e3;
+    background: white;
+    border-radius: 10px;
+    font-size: 14px; font-family: inherit;
+    color: #0f172a;
+    transition: all 0.18s;
+  }
+  .search-box input:focus {
+    outline: none; border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+  }
+  .search-box::before {
+    content: '';
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 16px; height: 16px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'%3e%3c/circle%3e%3cpath d='m21 21-4.35-4.35'%3e%3c/path%3e%3c/svg%3e");
+    background-size: cover;
+    opacity: 0.6;
+  }
 
-  .stats {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
-    gap: 10px; margin-bottom: 14px;
+  /* ============================================
+     CARD FUNCIONÁRIO - NOVO DESIGN
+     ============================================ */
+  .emp-card {
+    background: white;
+    padding: 22px 24px;
+    border-radius: 14px;
+    border: 1px solid #e3e8ef;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    margin-bottom: 14px;
+    transition: all 0.2s ease;
   }
-  .stat { background: #f8fafc; padding: 12px 14px; border-radius: 10px; border: 1px solid #eef2f6; }
+  .emp-card:hover {
+    box-shadow: 0 4px 16px rgba(15,23,42,0.06);
+    border-color: #cbd5e1;
+  }
+
+  .emp-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 16px; flex-wrap: wrap;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .emp-info { flex: 1; min-width: 200px; }
+  .emp-nome {
+    font-size: 17px; font-weight: 700; color: #0f172a;
+    letter-spacing: -0.2px; margin-bottom: 4px;
+  }
+  .emp-meta {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    font-size: 12px; color: #64748b;
+  }
+  .emp-meta span { display: flex; align-items: center; gap: 5px; }
+
+  .emp-badges {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .badge {
+    padding: 6px 12px; border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    letter-spacing: -0.1px;
+  }
+  .badge small {
+    display: block; font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    opacity: 0.75; margin-bottom: 1px;
+  }
+  .badge.bh { background: #f1f5f9; color: #334155; }
+  .badge.bh.neg { background: #fef2f2; color: #b91c1c; }
+  .badge.he { background: #f1f5f9; color: #334155; }
+  .badge.bh strong, .badge.he strong { font-size: 14px; }
+
+  /* Feriados pendentes com destaque */
+  .badge.fer {
+    background: #fffbeb; color: #92400e;
+    border: 1px solid #fde68a;
+  }
+  .badge.fer.ok { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+
+  /* ============================================
+     FAIXA DE STATUS DE FÉRIAS
+     ============================================ */
+  .ferias-status {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .ferias-status.ok { background: #f0fdf4; color: #166534; border-color: #dcfce7; }
+  .ferias-status.warning { background: #fffbeb; color: #92400e; border-color: #fef3c7; }
+  .ferias-status.danger { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+  .ferias-status.neutral { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
+
+  .ferias-status .icon { font-size: 18px; }
+  .ferias-status .text { flex: 1; }
+  .ferias-status .text b { font-weight: 700; }
+
+  /* ============================================
+     STATS GRID
+     ============================================ */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat {
+    background: #f8fafc;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+  }
   .stat-label {
     font-size: 10px; color: #64748b; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-bottom: 3px;
   }
-  .stat-value { font-size: 18px; font-weight: 700; color: #0f172a; }
-
-  .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .btn-sm {
-    padding: 8px 14px; border: none; border-radius: 8px;
-    cursor: pointer; font-size: 12px; font-weight: 600;
-    transition: all 0.2s; font-family: inherit;
+  .stat-value {
+    font-size: 16px; font-weight: 700; color: #0f172a;
   }
-  .btn-sm:hover { transform: translateY(-1px); filter: brightness(0.95); }
-  .b-green   { background: #dcfce7; color: #166534; }
-  .b-red     { background: #fee2e2; color: #991b1b; }
-  .b-yellow  { background: #fef9c3; color: #854d0e; }
-  .b-blue    { background: #dbeafe; color: #1e40af; }
-  .b-purple  { background: #f3e8ff; color: #6b21a8; }
-  .b-cyan    { background: #cffafe; color: #155e75; }
-  .b-orange  { background: #ffedd5; color: #9a3412; }
-  .b-dark    { background: #1e293b; color: white; }
-  .b-primary { background: #3b82f6; color: white; }
-  .b-ghost   { background: #f1f5f9; color: #475569; }
+  .stat-value.zero { color: #cbd5e1; }
+  .stat-value.neg { color: #dc2626; }
 
+  /* ============================================
+     BOTÕES DE AÇÃO
+     ============================================ */
+  .actions-row {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding-top: 14px;
+    border-top: 1px solid #f1f5f9;
+  }
+  .btn-action {
+    padding: 7px 12px; border-radius: 7px;
+    font-size: 12px; font-weight: 500;
+    border: 1px solid #e2e8f0;
+    background: white; color: #475569;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-action:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
+  .btn-action.primary {
+    background: #1d4ed8; border-color: #1d4ed8; color: white;
+    font-weight: 600;
+  }
+  .btn-action.primary:hover { background: #1e40af; border-color: #1e40af; }
+  .btn-action.danger:hover {
+    background: #fef2f2; border-color: #fecaca; color: #dc2626;
+  }
+
+  /* ============================================
+     FORM CARD
+     ============================================ */
   .form-card {
-    background: white; padding: 24px;
-    border-radius: 16px; border: 1px solid #eef2f6;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04); margin-bottom: 24px;
+    background: white;
+    padding: 24px 26px;
+    border-radius: 14px;
+    border: 1px solid #e3e8ef;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    margin-bottom: 20px;
   }
   .form-card h3 {
-    margin-bottom: 18px; font-size: 17px; font-weight: 700;
-    padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;
+    font-size: 15px; font-weight: 700; color: #0f172a;
+    margin-bottom: 18px; padding-bottom: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    letter-spacing: -0.2px;
   }
   .form-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 14px; margin-bottom: 18px;
   }
   .field { display: flex; flex-direction: column; }
   .field label {
     font-size: 11px; font-weight: 600; color: #475569;
-    margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px;
   }
   .field input, .field select, .field textarea {
-    padding: 10px 12px; border: 1px solid #cbd5e1;
-    border-radius: 9px; font-size: 14px;
-    font-family: inherit; background: white; transition: all 0.2s;
+    padding: 10px 12px;
+    border: 1px solid #d1d9e3;
+    border-radius: 8px;
+    font-size: 14px; font-family: inherit;
+    background: white; color: #0f172a;
+    transition: all 0.18s;
   }
   .field input:focus, .field select:focus, .field textarea:focus {
-    outline: none; border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    outline: none; border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(29,78,216,0.08);
   }
   .field textarea { min-height: 70px; resize: vertical; }
   .field.full { grid-column: 1/-1; }
-  .field.disabled input { background: #f1f5f9; color: #64748b; }
 
+  /* ============================================
+     TABELAS
+     ============================================ */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td {
+    padding: 11px 12px; text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  th {
+    background: #f8fafc; font-weight: 600;
+    font-size: 11px; text-transform: uppercase;
+    color: #64748b; letter-spacing: 0.3px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+
+  .empty {
+    text-align: center; padding: 48px 24px;
+    color: #94a3b8; font-size: 14px;
+  }
+  .empty-icon { font-size: 40px; opacity: 0.3; margin-bottom: 12px; display: block; }
+
+  /* ============================================
+     BOTÕES GENÉRICOS
+     ============================================ */
+  .btn-sm {
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px; font-weight: 500;
+    font-family: inherit;
+    transition: all 0.15s;
+    border: 1px solid #e2e8f0;
+    background: white; color: #475569;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-sm:hover { background: #f8fafc; border-color: #cbd5e1; }
+  .btn-sm.primary { background: #1d4ed8; border-color: #1d4ed8; color: white; font-weight: 600; }
+  .btn-sm.primary:hover { background: #1e40af; }
+  .btn-sm.danger { color: #dc2626; border-color: #fecaca; }
+  .btn-sm.danger:hover { background: #fef2f2; }
+
+  /* ============================================
+     MODAL
+     ============================================ */
   .modal {
     display: none; position: fixed; inset: 0;
-    background: rgba(15,23,42,0.75); backdrop-filter: blur(4px);
+    background: rgba(15,23,42,0.5);
+    backdrop-filter: blur(3px);
     z-index: 1000; padding: 20px; overflow-y: auto;
   }
   .modal.open { display: block; }
   .modal-box {
     background: white; max-width: 950px;
-    margin: 30px auto; border-radius: 16px;
-    overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+    margin: 40px auto; border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(15,23,42,0.2);
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn {
+    from { transform: translateY(-12px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
   .modal-head {
-    background: #0f172a; color: white; padding: 16px 24px;
+    background: white; color: #0f172a;
+    padding: 20px 26px;
     display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #e3e8ef;
   }
-  .modal-head h3 { font-size: 17px; font-weight: 700; }
+  .modal-head h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
   .modal-close {
     background: none; border: none; color: #94a3b8;
-    font-size: 26px; cursor: pointer;
-    width: 36px; height: 36px; border-radius: 50%;
+    font-size: 24px; cursor: pointer;
+    width: 32px; height: 32px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
   }
-  .modal-close:hover { background: rgba(255,255,255,0.1); color: white; }
+  .modal-close:hover { background: #f1f5f9; color: #0f172a; }
 
   .modal-tabs {
-    display: flex; gap: 2px; background: #f1f5f9;
-    padding: 8px; border-bottom: 1px solid #e2e8f0; overflow-x: auto;
+    display: flex; gap: 2px;
+    background: #f8fafc;
+    padding: 8px 20px 0;
+    border-bottom: 1px solid #e3e8ef;
+    overflow-x: auto;
   }
   .modal-tab {
     padding: 10px 16px; border: none; background: none;
-    border-radius: 8px; cursor: pointer;
-    font-weight: 600; font-size: 13px; color: #64748b;
-    font-family: inherit; transition: all 0.2s; white-space: nowrap;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    font-weight: 500; font-size: 13px; color: #64748b;
+    font-family: inherit;
+    transition: all 0.15s;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
   }
-  .modal-tab:hover { color: #0f172a; background: white; }
-  .modal-tab.active { background: #0f172a; color: white; }
+  .modal-tab:hover { color: #0f172a; }
+  .modal-tab.active {
+    color: #1d4ed8; border-bottom-color: #1d4ed8;
+    background: white; font-weight: 600;
+  }
 
-  .modal-body { padding: 24px; max-height: 65vh; overflow-y: auto; }
+  .modal-body { padding: 24px 26px; max-height: 70vh; overflow-y: auto; }
   .modal-pane { display: none; }
   .modal-pane.active { display: block; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-  th {
-    background: #f1f5f9; font-weight: 600;
-    font-size: 11px; text-transform: uppercase;
-    color: #475569; letter-spacing: 0.3px;
+  /* Radio customizado */
+  .radio-group { display: flex; gap: 12px; flex-wrap: wrap; }
+  .radio-opt {
+    flex: 1; min-width: 220px;
+    background: #f8fafc; padding: 14px 16px;
+    border-radius: 10px; border: 1px solid #e2e8f0;
+    cursor: pointer; transition: all 0.15s;
   }
-  tr:hover { background: #f8fafc; }
-  .empty { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
+  .radio-opt:hover { border-color: #cbd5e1; background: white; }
+  .radio-opt.selected { border-color: #1d4ed8; background: #eff6ff; }
+  .radio-opt input { margin-right: 8px; }
+  .radio-opt b { font-size: 13px; color: #0f172a; }
+  .radio-opt small { display: block; color: #64748b; font-size: 11px; margin-top: 4px; margin-left: 22px; }
 
+  /* ============================================
+     TOAST
+     ============================================ */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
     background: #0f172a; color: white;
-    padding: 14px 22px; border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    font-weight: 600; font-size: 14px;
-    display: none; z-index: 9999; max-width: 400px;
+    padding: 14px 20px; border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(15,23,42,0.2);
+    font-weight: 500; font-size: 13px;
+    display: none; z-index: 9999;
+    max-width: 380px;
   }
-  .toast.show { display: block; animation: slideIn 0.3s; }
-  .toast.ok { background: #16a34a; }
-  .toast.err { background: #dc2626; }
+  .toast.show { display: block; animation: slideIn 0.25s ease; }
+  .toast.ok { background: #15803d; }
+  .toast.err { background: #b91c1c; }
   @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to   { transform: translateX(0); opacity: 1; }
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
   }
 
-  .loading { display: none; text-align: center; padding: 40px; color: #64748b; }
+  /* ============================================
+     LOADING
+     ============================================ */
+  .loading { display: none; text-align: center; padding: 48px; color: #64748b; }
   .loading.show { display: block; }
   .spinner {
-    display: inline-block; width: 24px; height: 24px;
-    border: 3px solid #e2e8f0; border-radius: 50%;
-    border-top-color: #3b82f6;
-    animation: spin 0.8s linear infinite;
+    display: inline-block; width: 20px; height: 20px;
+    border: 2px solid #e2e8f0; border-radius: 50%;
+    border-top-color: #1d4ed8;
+    animation: spin 0.7s linear infinite;
     margin-right: 10px; vertical-align: middle;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .radio-group { display: flex; gap: 12px; flex-wrap: wrap; }
-  .radio-opt {
-    flex: 1; min-width: 200px;
-    background: #f8fafc; padding: 14px;
-    border-radius: 10px; border: 2px solid #e2e8f0;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .radio-opt:hover { border-color: #cbd5e1; background: white; }
-  .radio-opt.selected { border-color: #3b82f6; background: #eff6ff; }
-  .radio-opt input { margin-right: 8px; }
-  .radio-opt b { font-size: 13px; }
-  .radio-opt small { display: block; color: #64748b; font-size: 11px; margin-top: 4px; margin-left: 22px; }
-
   @media (max-width: 768px) {
-    .content { padding: 14px; }
-    .topbar { padding: 12px 14px; }
-    .topbar h1 { font-size: 15px; }
-    .tabs { padding: 0 12px; }
-    .tab { padding: 12px 14px; font-size: 13px; }
-    .stats { grid-template-columns: 1fr 1fr; }
-    .modal-body { padding: 16px; }
+    .content { padding: 16px; }
+    .topbar { padding: 12px 16px; }
+    .tabs { padding: 0 16px; }
+    .emp-header { flex-direction: column; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .modal-body { padding: 18px; }
+    .search-box { max-width: 100%; }
   }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <h1>📊 <span>Painel Admin</span> — Banco de Horas</h1>
+  <h1><span class="dot"></span>Painel Administrativo <span>· Banco de Horas</span></h1>
   <div class="topbar-actions">
     <a href="motoqueiros.html" class="nav-btn">🏍️ Motoqueiros</a>
-    <button class="logout-btn" onclick="logout()">🚪 Sair</button>
+    <button class="logout-btn" onclick="logout()">Sair</button>
   </div>
 </div>
 
-<div class="tabs">
-  <button class="tab active" data-pane="banco">🏦 Banco de Horas</button>
-  <button class="tab" data-pane="funcs">👥 Gerenciar Pessoas</button>
-  <button class="tab" data-pane="inativos">📁 Inativos</button>
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" data-pane="banco">📊 Banco de Horas</button>
+    <button class="tab" data-pane="funcs">👥 Gerenciar Pessoas</button>
+    <button class="tab" data-pane="inativos">📁 Inativos</button>
+  </div>
 </div>
 
 <div class="content">
+
+  <!-- ===================== BANCO ===================== -->
   <div class="pane active" id="pane-banco">
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="text" id="filtro-nome" placeholder="Buscar por nome..." oninput="filtrarFuncionarios()">
+      </div>
+    </div>
     <div class="loading" id="load-banco"><span class="spinner"></span> Carregando...</div>
     <div id="lista-funcionarios"></div>
   </div>
 
+  <!-- ===================== FUNCIONÁRIOS ===================== -->
   <div class="pane" id="pane-funcs">
     <div class="form-card">
-      <h3 id="form-func-title">➕ Nova Pessoa (Funcionário ou Motoqueiro)</h3>
+      <h3 id="form-func-title">Nova Pessoa</h3>
       <input type="hidden" id="func-editing-id">
       <div class="form-grid">
-        <div class="field"><label>ID (login, sem espaços)</label><input type="text" id="f-id" placeholder="ex: joao"></div>
+        <div class="field"><label>ID (login)</label><input type="text" id="f-id" placeholder="ex: joao"></div>
         <div class="field"><label>Nome Completo</label><input type="text" id="f-nome" placeholder="ex: João Silva"></div>
         <div class="field"><label>Tipo</label>
           <select id="f-tipo">
-            <option value="funcionario">👤 Funcionário</option>
-            <option value="motoqueiro">🏍️ Motoqueiro</option>
+            <option value="funcionario">Funcionário</option>
+            <option value="motoqueiro">Motoqueiro</option>
           </select>
         </div>
         <div class="field"><label>Senha</label><input type="text" id="f-senha" placeholder="ex: joao123"></div>
@@ -281,26 +517,28 @@
         <div class="field full"><label>Observação</label><input type="text" id="f-obs" placeholder="Opcional"></div>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap">
-        <button class="btn-sm b-primary" onclick="salvarPessoa()">💾 Salvar</button>
-        <button class="btn-sm b-ghost" onclick="limparFormFunc()">Limpar</button>
+        <button class="btn-sm primary" onclick="salvarPessoa()">💾 Salvar</button>
+        <button class="btn-sm" onclick="limparFormFunc()">Limpar</button>
       </div>
     </div>
 
     <div class="form-card">
-      <h3>👥 Todas as Pessoas Ativas</h3>
+      <h3>Pessoas Ativas</h3>
       <div id="tabela-funcs"></div>
     </div>
   </div>
 
+  <!-- ===================== INATIVOS ===================== -->
   <div class="pane" id="pane-inativos">
     <div class="form-card">
-      <h3>📁 Desligados</h3>
+      <h3>Desligados</h3>
       <p style="color:#64748b; font-size:13px; margin-bottom:16px">
-        Não aparecem no login. Dados preservados para uso jurídico.
+        Não aparecem no login. Dados preservados para consulta e uso jurídico.
       </p>
       <div id="tabela-inativos"></div>
     </div>
   </div>
+
 </div>
 
 <div class="modal" id="modal">
@@ -334,7 +572,8 @@ if (!sessUser || sessTipo !== 'admin') location.href = 'index.html';
    ============================================================ */
 let cadastro = [], controle = [], faltas = [], advertencias = [];
 let feriados = [], folgas = [], ferias = [];
-let funcionarios = []; // só tipo=funcionario & ativo
+let funcionarios = [];
+let filtroNome = '';
 
 /* ============================================================
    HELPERS
@@ -343,7 +582,7 @@ function toast(msg, tipo='ok') {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show ' + tipo;
-  setTimeout(() => el.className = 'toast', 4000);
+  setTimeout(() => el.className = 'toast', 3500);
 }
 
 function parseNum(v) {
@@ -381,6 +620,25 @@ function dataToNum(dateStr) {
   } catch(e) { return 0; }
 }
 
+function diffDias(dateStr) {
+  if (!dateStr) return 0;
+  try {
+    const [d,m,y] = dateStr.split('/');
+    const dt = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    return Math.floor((hoje - dt) / (1000*3600*24));
+  } catch(e) { return 0; }
+}
+
+function addMeses(dateStr, meses) {
+  try {
+    const [d,m,y] = dateStr.split('/');
+    const dt = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+    dt.setMonth(dt.getMonth() + meses);
+    return `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+  } catch(e) { return ''; }
+}
+
 /* ============================================================
    API
    ============================================================ */
@@ -401,7 +659,7 @@ async function api(action, payload = {}) {
 }
 
 /* ============================================================
-   CARREGAR
+   CARREGAR DADOS
    ============================================================ */
 async function carregarCadastro() {
   const linhas = await lerAba('Cadastro');
@@ -416,7 +674,9 @@ async function carregarCadastro() {
     observacao: (r[7]||'').toString().trim(),
     _row: i + 2
   })).filter(c => c.id);
-  funcionarios = cadastro.filter(c => c.tipo === 'funcionario' && c.status === 'ativo');
+  funcionarios = cadastro
+    .filter(c => c.tipo === 'funcionario' && c.status === 'ativo')
+    .sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
 }
 
 async function carregarControle() {
@@ -427,8 +687,6 @@ async function carregarControle() {
     saldoBanco: parseNum(r[2]),
     horaExtra: parseNum(r[3]),
     observacao: (r[4]||'').toString().trim(),
-    lancadoEm: (r[5]||'').toString().trim(),
-    lancadoPor: (r[6]||'').toString().trim(),
     _row: i + 2
   })).filter(c => c.funcionario);
 }
@@ -440,7 +698,6 @@ async function carregarFaltas() {
     data: (r[1]||'').toString().trim(),
     comAtestado: r[2] === '1',
     observacao: (r[3]||'').toString().trim(),
-    lancadoEm: (r[4]||'').toString().trim(),
     _row: i + 2
   })).filter(f => f.funcionario);
 }
@@ -451,7 +708,6 @@ async function carregarAdvertencias() {
     funcionario: (r[0]||'').toString().trim(),
     data: (r[1]||'').toString().trim(),
     motivo: (r[2]||'').toString().trim(),
-    lancadoEm: (r[3]||'').toString().trim(),
     _row: i + 2
   })).filter(a => a.funcionario);
 }
@@ -463,7 +719,6 @@ async function carregarFeriados() {
     data: (r[1]||'').toString().trim(),
     folgaVinculada: parseInt(r[2]) || 0,
     status: (r[3]||'pendente').toString().trim().toLowerCase(),
-    lancadoEm: (r[4]||'').toString().trim(),
     _row: i + 2
   })).filter(f => f.funcionario);
 }
@@ -475,7 +730,6 @@ async function carregarFolgas() {
     data: (r[1]||'').toString().trim(),
     origem: (r[2]||'').toString().trim().toLowerCase(),
     feriadoVinculado: parseInt(r[3]) || 0,
-    lancadoEm: (r[4]||'').toString().trim(),
     _row: i + 2
   })).filter(f => f.funcionario);
 }
@@ -524,76 +778,217 @@ function consolidar(nome) {
 }
 
 /* ============================================================
-   RENDER — BANCO DE HORAS
+   LÓGICA DE FÉRIAS (regras novas)
+   ============================================================
+   - Primeira férias: prazo limite = admissão + 1 ano e 8 meses
+   - A partir da segunda: prazo limite = última férias (retorno) + 10 meses
+   ============================================================ */
+function calcularStatusFerias(f, dados) {
+  if (!f.data_admissao) {
+    return { tipo: 'neutral', icon: 'ℹ️', msg: 'Data de admissão não cadastrada' };
+  }
+
+  const nomeL = f.nome.toLowerCase();
+  const feriasPessoa = dados.fer2.filter(x => x.funcionario.toLowerCase() === nomeL);
+  const feriasValidas = feriasPessoa.filter(x => x.status === 'agendada' || x.status === 'gozada');
+
+  // Última férias (maior data de retorno)
+  const ultima = feriasValidas
+    .slice()
+    .sort((a,b) => dataToNum(b.retorno) - dataToNum(a.retorno))[0];
+
+  if (!ultima) {
+    // Nunca teve férias — primeira férias
+    const admissao = f.data_admissao;
+    const diasAdmissao = diffDias(admissao);
+    const diasParaUmAno = 365 - diasAdmissao;
+
+    if (diasAdmissao < 365) {
+      return {
+        tipo: 'neutral', icon: '📅',
+        msg: `Faltam <b>${diasParaUmAno} dias</b> para completar 1 ano`
+      };
+    }
+
+    // Completo 1 ano
+    const limite = addMeses(admissao, 20); // 1 ano e 8 meses = 20 meses
+    const diasParaLimite = diffDias(limite) * -1; // dias faltando (positivo)
+
+    if (diasParaLimite > 90) {
+      // Ainda longe do limite (mais de 3 meses)
+      const diasDesde1Ano = diasAdmissao - 365;
+      return {
+        tipo: 'ok', icon: '✅',
+        msg: `Direito a férias desde ${addMeses(admissao, 12)} · Agendar até <b>${limite}</b>`
+      };
+    } else if (diasParaLimite > 0) {
+      // Menos de 3 meses para o limite
+      return {
+        tipo: 'warning', icon: '⚠️',
+        msg: `Atenção: agendar férias até <b>${limite}</b> (${diasParaLimite} dias)`
+      };
+    } else {
+      // Passou do limite (1 ano e 8 meses)
+      const diasAtraso = Math.abs(diasParaLimite);
+      return {
+        tipo: 'danger', icon: '🔴',
+        msg: `ATRASO de <b>${diasAtraso} dias</b> — agende urgentemente`
+      };
+    }
+  }
+
+  // Já teve férias — prazo = último retorno + 10 meses
+  const ultimoRetorno = ultima.retorno;
+  const limite = addMeses(ultimoRetorno, 10);
+  const diasParaLimite = diffDias(limite) * -1;
+  const diasDesdeRetorno = diffDias(ultimoRetorno);
+
+  if (diasDesdeRetorno < 30) {
+    return {
+      tipo: 'ok', icon: '✅',
+      msg: `Férias recentes (retornou em ${ultimoRetorno})`
+    };
+  }
+
+  if (diasParaLimite > 60) {
+    return {
+      tipo: 'ok', icon: '📅',
+      msg: `Agendar próxima até <b>${limite}</b>`
+    };
+  } else if (diasParaLimite > 0) {
+    return {
+      tipo: 'warning', icon: '⚠️',
+      msg: `Agendar até <b>${limite}</b> (${diasParaLimite} dias)`
+    };
+  } else {
+    const diasAtraso = Math.abs(diasParaLimite);
+    return {
+      tipo: 'danger', icon: '🔴',
+      msg: `ATRASO de <b>${diasAtraso} dias</b> — agende urgentemente`
+    };
+  }
+}
+
+/* ============================================================
+   RENDER
    ============================================================ */
 function renderBanco() {
   const c = document.getElementById('lista-funcionarios');
-  if (!funcionarios.length) {
-    c.innerHTML = '<div class="empty">Nenhum funcionário ativo cadastrado. Vá em <b>Gerenciar Pessoas</b> e adicione.</div>';
+  let lista = funcionarios;
+
+  if (filtroNome) {
+    lista = lista.filter(f => f.nome.toLowerCase().includes(filtroNome));
+  }
+
+  if (!lista.length) {
+    c.innerHTML = `<div class="empty">
+      <span class="empty-icon">📭</span>
+      ${filtroNome ? 'Nenhum funcionário encontrado com esse nome.' : 'Nenhum funcionário ativo. Vá em <b>Gerenciar Pessoas</b> e adicione.'}
+    </div>`;
     return;
   }
 
-  c.innerHTML = funcionarios.map(f => {
+  c.innerHTML = lista.map(f => {
     const d = consolidar(f.nome);
+    const sFerias = calcularStatusFerias(f, d);
+
     const bhClass = d.totalBH < 0 ? 'neg' : '';
-    const fpClass = d.feriadosPendentes > 0 ? '' : 'ok';
+    const ferClass = d.feriadosPendentes > 0 ? '' : 'ok';
+
     return `
       <div class="emp-card">
         <div class="emp-header">
-          <div>
-            <div class="emp-nome">👤 ${f.nome}</div>
-            <div class="emp-sub">${f.data_admissao ? '📅 Admissão: ' + f.data_admissao : 'Sem data de admissão'}</div>
+          <div class="emp-info">
+            <div class="emp-nome">${f.nome}</div>
+            <div class="emp-meta">
+              <span>📅 Admissão: ${f.data_admissao || '—'}</span>
+              <span>📊 ${d.ctrl.length} lançamento(s)</span>
+            </div>
           </div>
-          <div class="saldo-wrap">
-            <div class="saldo bh ${bhClass}"><small>Banco Horas</small>${fmtHoras(d.totalBH)}</div>
-            <div class="saldo he"><small>Horas Extras</small>${fmtHoras(d.totalHE)}</div>
-            <div class="saldo fp ${fpClass}"><small>Feriados Pend.</small>${d.feriadosPendentes}</div>
+          <div class="emp-badges">
+            <div class="badge bh ${bhClass}">
+              <div><small>Banco Horas</small><strong>${fmtHoras(d.totalBH)}</strong></div>
+            </div>
+            <div class="badge he">
+              <div><small>Horas Extras</small><strong>${fmtHoras(d.totalHE)}</strong></div>
+            </div>
+            <div class="badge fer ${ferClass}">
+              <div><small>Feriados Pend.</small><strong>${d.feriadosPendentes}</strong></div>
+            </div>
           </div>
         </div>
 
-        <div class="stats">
-          <div class="stat"><div class="stat-label">✅ Faltas Just.</div><div class="stat-value">${d.faltasJust}</div></div>
-          <div class="stat"><div class="stat-label">❌ Faltas Injust.</div><div class="stat-value">${d.faltasInjust}</div></div>
-          <div class="stat"><div class="stat-label">⚖️ Advertências</div><div class="stat-value">${d.advertenciasCount}</div></div>
-          <div class="stat"><div class="stat-label">📆 Folgas Banco</div><div class="stat-value">${d.folgasBancoCount}</div></div>
-          <div class="stat"><div class="stat-label">📊 Meses</div><div class="stat-value">${d.ctrl.length}</div></div>
+        <div class="ferias-status ${sFerias.tipo}">
+          <span class="icon">${sFerias.icon}</span>
+          <span class="text">${sFerias.msg}</span>
         </div>
 
-        <div class="btns">
-          <button class="btn-sm b-primary" onclick="abrirLancamento('${f.id}')">＋ Lançar</button>
-          <button class="btn-sm b-dark" onclick="verRelatorio('${f.id}')">📋 Relatório</button>
-          <button class="btn-sm b-cyan" onclick="verMensal('${f.id}')">📊 Extras Mensais</button>
-          <button class="btn-sm b-yellow" onclick="verFaltas('${f.id}')">📋 Faltas</button>
-          <button class="btn-sm b-purple" onclick="verAdvertencias('${f.id}')">⚖️ Advertências</button>
-          <button class="btn-sm b-orange" onclick="verFeriados('${f.id}')">🏖️ Feriados</button>
-          <button class="btn-sm b-green" onclick="verFolgas('${f.id}')">📆 Folgas</button>
-          <button class="btn-sm b-blue" onclick="verFerias('${f.id}')">🌴 Férias</button>
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-label">Faltas Just.</div>
+            <div class="stat-value ${d.faltasJust === 0 ? 'zero' : ''}">${d.faltasJust}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Faltas Injust.</div>
+            <div class="stat-value ${d.faltasInjust === 0 ? 'zero' : 'neg'}">${d.faltasInjust}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Advertências</div>
+            <div class="stat-value ${d.advertenciasCount === 0 ? 'zero' : 'neg'}">${d.advertenciasCount}</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Folgas Banco</div>
+            <div class="stat-value ${d.folgasBancoCount === 0 ? 'zero' : ''}">${d.folgasBancoCount}</div>
+          </div>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn-action primary" onclick="abrirLancamento('${f.id}')">＋ Lançar</button>
+          <button class="btn-action" onclick="verRelatorio('${f.id}')">📋 Relatório</button>
+          <button class="btn-action" onclick="verMensal('${f.id}')">📊 Mensal</button>
+          <button class="btn-action" onclick="verFaltas('${f.id}')">📋 Faltas</button>
+          <button class="btn-action" onclick="verAdvertencias('${f.id}')">⚖️ Advertências</button>
+          <button class="btn-action" onclick="verFeriados('${f.id}')">🏖️ Feriados</button>
+          <button class="btn-action" onclick="verFolgas('${f.id}')">📆 Folgas</button>
+          <button class="btn-action" onclick="verFerias('${f.id}')">🌴 Férias</button>
         </div>
       </div>
     `;
   }).join('');
 }
 
+function filtrarFuncionarios() {
+  filtroNome = document.getElementById('filtro-nome').value.trim().toLowerCase();
+  renderBanco();
+}
+
 /* ============================================================
-   RENDER — GERENCIAR / INATIVOS
+   GERENCIAR FUNCIONÁRIOS
    ============================================================ */
 function renderFuncs() {
   const c = document.getElementById('tabela-funcs');
-  const ativos = cadastro.filter(x => x.status === 'ativo');
-  if (!ativos.length) { c.innerHTML = '<div class="empty">Nenhuma pessoa ativa.</div>'; return; }
+  const ativos = cadastro
+    .filter(x => x.status === 'ativo')
+    .sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
+  if (!ativos.length) {
+    c.innerHTML = '<div class="empty"><span class="empty-icon">📭</span>Nenhuma pessoa ativa.</div>';
+    return;
+  }
+
   c.innerHTML = `
     <table>
-      <thead><tr><th>Nome</th><th>ID</th><th>Tipo</th><th>Admissão</th><th>Ações</th></tr></thead>
+      <thead><tr><th>Nome</th><th>ID</th><th>Tipo</th><th>Admissão</th><th style="width:180px">Ações</th></tr></thead>
       <tbody>
         ${ativos.map(f => `
           <tr>
             <td><b>${f.nome}</b></td>
-            <td>${f.id}</td>
+            <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:11px">${f.id}</code></td>
             <td>${f.tipo === 'motoqueiro' ? '🏍️ Motoqueiro' : '👤 Funcionário'}</td>
             <td>${f.data_admissao || '—'}</td>
             <td>
-              <button class="btn-sm b-blue" onclick="editarFunc('${f.id}')">✏️ Editar</button>
-              <button class="btn-sm b-red" onclick="inativarFunc('${f.id}')">🚫 Inativar</button>
+              <button class="btn-sm" onclick="editarFunc('${f.id}')">✏️ Editar</button>
+              <button class="btn-sm danger" onclick="inativarFunc('${f.id}')">Inativar</button>
             </td>
           </tr>
         `).join('')}
@@ -603,21 +998,28 @@ function renderFuncs() {
 
 function renderInativos() {
   const c = document.getElementById('tabela-inativos');
-  const inat = cadastro.filter(x => x.status === 'inativo');
-  if (!inat.length) { c.innerHTML = '<div class="empty">✅ Nenhum desligado.</div>'; return; }
+  const inat = cadastro
+    .filter(x => x.status === 'inativo')
+    .sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
+  if (!inat.length) {
+    c.innerHTML = '<div class="empty"><span class="empty-icon">✅</span>Nenhum desligado.</div>';
+    return;
+  }
+
   c.innerHTML = `
     <table>
-      <thead><tr><th>Nome</th><th>ID</th><th>Tipo</th><th>Desligamento</th><th>Ações</th></tr></thead>
+      <thead><tr><th>Nome</th><th>ID</th><th>Tipo</th><th>Desligamento</th><th style="width:220px">Ações</th></tr></thead>
       <tbody>
         ${inat.map(f => `
           <tr>
             <td><b>${f.nome}</b></td>
-            <td>${f.id}</td>
+            <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:11px">${f.id}</code></td>
             <td>${f.tipo === 'motoqueiro' ? '🏍️ Motoqueiro' : '👤 Funcionário'}</td>
             <td>${f.data_desligamento || '—'}</td>
             <td>
-              <button class="btn-sm b-green" onclick="reativarFunc('${f.id}')">✅ Reativar</button>
-              <button class="btn-sm b-dark" onclick="verRelatorio('${f.id}')">📋 Histórico</button>
+              <button class="btn-sm primary" onclick="reativarFunc('${f.id}')">Reativar</button>
+              <button class="btn-sm" onclick="verRelatorio('${f.id}')">📋 Histórico</button>
             </td>
           </tr>
         `).join('')}
@@ -640,7 +1042,7 @@ document.querySelectorAll('.tab').forEach(t => {
 });
 
 /* ============================================================
-   MODAL GENÉRICO
+   MODAL
    ============================================================ */
 function abrirModal(titulo, html, opts = {}) {
   document.getElementById('modal-title').textContent = titulo;
@@ -671,7 +1073,7 @@ function fecharModal() { document.getElementById('modal').classList.remove('open
 document.getElementById('modal').addEventListener('click', e => { if (e.target.id === 'modal') fecharModal(); });
 
 /* ============================================================
-   MODAL — LANÇAMENTO
+   LANÇAMENTO (5 abas)
    ============================================================ */
 function abrirLancamento(empId) {
   const f = cadastro.find(c => c.id === empId);
@@ -686,7 +1088,7 @@ function abrirLancamento(empId) {
     { id: 'feri', label: '🌴 Férias',      html: formFerias(f) }
   ];
 
-  abrirModal('➕ Lançamento — ' + f.nome, '', { tabs });
+  abrirModal('Lançar — ' + f.nome, '', { tabs });
 }
 
 function formControle(f) {
@@ -697,7 +1099,7 @@ function formControle(f) {
       <div class="field"><label>Hora Extra (horas)</label><input type="text" id="ctrl-he" placeholder="ex: 12"></div>
       <div class="field full"><label>Observação</label><textarea id="ctrl-obs" placeholder="Opcional"></textarea></div>
     </div>
-    <button class="btn-sm b-primary" onclick="salvarControle('${f.nome}')">💾 Salvar Lançamento Mensal</button>
+    <button class="btn-sm primary" onclick="salvarControle('${f.nome}')">💾 Salvar Lançamento</button>
   `;
 }
 
@@ -710,7 +1112,7 @@ function formFalta(f) {
       </div>
       <div class="field full"><label>Observação</label><input type="text" id="falta-obs" placeholder="Ex: atestado médico"></div>
     </div>
-    <button class="btn-sm b-primary" onclick="salvarFalta('${f.nome}')">💾 Salvar Falta</button>
+    <button class="btn-sm primary" onclick="salvarFalta('${f.nome}')">💾 Salvar Falta</button>
   `;
 }
 
@@ -720,20 +1122,20 @@ function formAdvertencia(f) {
       <div class="field"><label>Data</label><input type="text" id="adv-data" value="${hojeStr()}"></div>
       <div class="field full"><label>Motivo</label><input type="text" id="adv-motivo" placeholder="Motivo da advertência"></div>
     </div>
-    <button class="btn-sm b-primary" onclick="salvarAdvertencia('${f.nome}')">💾 Salvar Advertência</button>
+    <button class="btn-sm primary" onclick="salvarAdvertencia('${f.nome}')">💾 Salvar Advertência</button>
   `;
 }
 
 function formFeriado(f) {
   return `
-    <div style="background:#fef3c7; padding:12px; border-radius:8px; font-size:13px; color:#92400e; margin-bottom:16px; border-left:3px solid #f59e0b">
+    <div style="background:#f8fafc; padding:14px 16px; border-radius:10px; font-size:13px; color:#475569; margin-bottom:18px; border-left:3px solid #1d4ed8">
       ℹ️ Feriado trabalhado gera <b>direito a uma folga</b>. Não afeta o saldo do banco de horas.
       Ao lançar uma folga com origem <b>"Pagar feriado"</b>, o feriado mais antigo pendente já vem selecionado.
     </div>
     <div class="form-grid">
       <div class="field"><label>Data do Feriado Trabalhado</label><input type="text" id="fer-data" value="${hojeStr()}"></div>
     </div>
-    <button class="btn-sm b-primary" onclick="salvarFeriado('${f.nome}')">💾 Salvar Feriado</button>
+    <button class="btn-sm primary" onclick="salvarFeriado('${f.nome}')">💾 Salvar Feriado</button>
   `;
 }
 
@@ -778,12 +1180,9 @@ function formFolga(f) {
         <label>Feriado a Compensar</label>
         <select id="folg-feriado">${optionsFeriado}</select>
       </div>
-      <small style="color:#64748b; font-size:11px; margin-top:6px; display:block">
-        💡 O feriado mais antigo já vem selecionado. Você pode trocar.
-      </small>
     </div>
 
-    <button class="btn-sm b-primary" onclick="salvarFolga('${f.nome}')">💾 Salvar Folga</button>
+    <button class="btn-sm primary" onclick="salvarFolga('${f.nome}')">💾 Salvar Folga</button>
   `;
 }
 
@@ -807,10 +1206,10 @@ function formFerias(f) {
         </select>
       </div>
     </div>
-    <div style="background:#f0f9ff; padding:12px; border-radius:8px; font-size:12px; color:#0369a1; margin-bottom:14px">
+    <div style="background:#f8fafc; padding:14px 16px; border-radius:10px; font-size:12px; color:#475569; margin-bottom:16px">
       ℹ️ Fim e Retorno são calculados automaticamente (retorno pula domingo).
     </div>
-    <button class="btn-sm b-primary" onclick="salvarFerias('${f.nome}')">💾 Salvar Férias</button>
+    <button class="btn-sm primary" onclick="salvarFerias('${f.nome}')">💾 Salvar Férias</button>
   `;
 }
 
@@ -828,8 +1227,8 @@ async function salvarControle(nome) {
   };
   if (!p.mesAno) return toast('Informe o Mês/Ano', 'err');
   const r = await api('addControle', p);
-  if (r.ok) { toast('✅ Lançamento salvo!'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Lançamento salvo!'); fecharModal(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function salvarFalta(nome) {
@@ -841,8 +1240,8 @@ async function salvarFalta(nome) {
   };
   if (!p.data) return toast('Informe a data', 'err');
   const r = await api('addFalta', p);
-  if (r.ok) { toast('✅ Falta salva!'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Falta salva!'); fecharModal(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function salvarAdvertencia(nome) {
@@ -853,8 +1252,8 @@ async function salvarAdvertencia(nome) {
   };
   if (!p.data || !p.motivo) return toast('Preencha data e motivo', 'err');
   const r = await api('addAdvertencia', p);
-  if (r.ok) { toast('✅ Advertência salva!'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Advertência salva!'); fecharModal(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function salvarFeriado(nome) {
@@ -862,10 +1261,10 @@ async function salvarFeriado(nome) {
     funcionario: nome,
     data: document.getElementById('fer-data').value.trim()
   };
-  if (!p.data) return toast('Informe a data do feriado', 'err');
+  if (!p.data) return toast('Informe a data', 'err');
   const r = await api('addFeriado', p);
-  if (r.ok) { toast('✅ Feriado salvo!'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Feriado salvo!'); fecharModal(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function salvarFolga(nome) {
@@ -882,8 +1281,8 @@ async function salvarFolga(nome) {
     p.feriadoRow = ferRow;
   }
   const r = await api('addFolga', p);
-  if (r.ok) { toast('✅ Folga salva!'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Folga salva!'); fecharModal(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function salvarFerias(nome) {
@@ -895,8 +1294,8 @@ async function salvarFerias(nome) {
   };
   if (!p.inicio || !p.dias) return toast('Preencha início e dias', 'err');
   const r = await api('addFerias', p);
-  if (r.ok) { toast('✅ Férias salvas!'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Férias salvas!'); fecharModal(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 /* ============================================================
@@ -913,12 +1312,12 @@ function verMensal(empId) {
             <td>${fmtHoras(c.saldoBanco)}</td>
             <td>${fmtHoras(c.horaExtra)}</td>
             <td><small>${c.observacao||'—'}</small></td>
-            <td><button class="btn-sm b-red" onclick="apagar('deleteControle',${c._row})">🗑️</button></td>
+            <td><button class="btn-sm danger" onclick="apagar('deleteControle',${c._row})">🗑️</button></td>
           </tr>
         `).join('')}
       </tbody></table>`
-    : '<div class="empty">Nenhum lançamento mensal.</div>';
-  abrirModal('📊 Extras Mensais — ' + f.nome, html);
+    : '<div class="empty"><span class="empty-icon">📭</span>Nenhum lançamento mensal.</div>';
+  abrirModal('Extras Mensais — ' + f.nome, html);
 }
 
 function verFaltas(empId) {
@@ -928,15 +1327,15 @@ function verFaltas(empId) {
     ? `<table><thead><tr><th>Data</th><th>Atestado</th><th>Obs</th><th></th></tr></thead><tbody>
         ${d.falt.slice().reverse().map(x => `
           <tr>
-            <td><b>${x.data}</b><br><small>${getDayOfWeek(x.data)}</small></td>
+            <td><b>${x.data}</b></td>
             <td>${x.comAtestado ? '✅ Sim' : '❌ Não'}</td>
             <td><small>${x.observacao||'—'}</small></td>
-            <td><button class="btn-sm b-red" onclick="apagar('deleteFalta',${x._row})">🗑️</button></td>
+            <td><button class="btn-sm danger" onclick="apagar('deleteFalta',${x._row})">🗑️</button></td>
           </tr>
         `).join('')}
       </tbody></table>`
-    : '<div class="empty">Nenhuma falta.</div>';
-  abrirModal('📋 Faltas — ' + f.nome, html);
+    : '<div class="empty"><span class="empty-icon">📭</span>Nenhuma falta.</div>';
+  abrirModal('Faltas — ' + f.nome, html);
 }
 
 function verAdvertencias(empId) {
@@ -948,12 +1347,12 @@ function verAdvertencias(empId) {
           <tr>
             <td><b>${x.data}</b></td>
             <td>${x.motivo||'—'}</td>
-            <td><button class="btn-sm b-red" onclick="apagar('deleteAdvertencia',${x._row})">🗑️</button></td>
+            <td><button class="btn-sm danger" onclick="apagar('deleteAdvertencia',${x._row})">🗑️</button></td>
           </tr>
         `).join('')}
       </tbody></table>`
-    : '<div class="empty">Nenhuma advertência.</div>';
-  abrirModal('⚖️ Advertências — ' + f.nome, html);
+    : '<div class="empty"><span class="empty-icon">📭</span>Nenhuma advertência.</div>';
+  abrirModal('Advertências — ' + f.nome, html);
 }
 
 function verFeriados(empId) {
@@ -963,19 +1362,19 @@ function verFeriados(empId) {
     ? `<table><thead><tr><th>Data</th><th>Status</th><th></th></tr></thead><tbody>
         ${d.feriados.slice().sort((a,b) => dataToNum(a.data) - dataToNum(b.data)).map(x => `
           <tr>
-            <td><b>${x.data}</b><br><small>${getDayOfWeek(x.data)}</small></td>
+            <td><b>${x.data}</b> <small style="color:#94a3b8">(${getDayOfWeek(x.data)})</small></td>
             <td>${x.status === 'pendente' 
-              ? '<span style="background:#fee2e2; color:#991b1b; padding:3px 10px; border-radius:6px; font-weight:600; font-size:11px">⏳ PENDENTE</span>' 
-              : '<span style="background:#dcfce7; color:#166534; padding:3px 10px; border-radius:6px; font-weight:600; font-size:11px">✅ COMPENSADO</span>'}</td>
-            <td><button class="btn-sm b-red" onclick="apagar('deleteFeriado',${x._row})">🗑️</button></td>
+              ? '<span style="background:#fffbeb; color:#92400e; padding:3px 10px; border-radius:6px; font-weight:600; font-size:11px">⏳ PENDENTE</span>' 
+              : '<span style="background:#f0fdf4; color:#166534; padding:3px 10px; border-radius:6px; font-weight:600; font-size:11px">✅ COMPENSADO</span>'}</td>
+            <td><button class="btn-sm danger" onclick="apagar('deleteFeriado',${x._row})">🗑️</button></td>
           </tr>
         `).join('')}
       </tbody></table>
-      <div style="margin-top:14px; padding:12px; background:#f0f9ff; border-radius:8px; font-size:12px; color:#0369a1">
+      <div style="margin-top:14px; padding:12px 14px; background:#f8fafc; border-radius:8px; font-size:12px; color:#475569">
         💡 Ao apagar um feriado compensado, a folga vinculada também é apagada.
       </div>`
-    : '<div class="empty">Nenhum feriado trabalhado.</div>';
-  abrirModal('🏖️ Feriados — ' + f.nome, html);
+    : '<div class="empty"><span class="empty-icon">📭</span>Nenhum feriado trabalhado.</div>';
+  abrirModal('Feriados — ' + f.nome, html);
 }
 
 function verFolgas(empId) {
@@ -993,19 +1392,19 @@ function verFolgas(empId) {
           }
           return `
             <tr>
-              <td><b>${x.data}</b><br><small>${getDayOfWeek(x.data)}</small></td>
+              <td><b>${x.data}</b> <small style="color:#94a3b8">(${getDayOfWeek(x.data)})</small></td>
               <td>${x.origem === 'feriado' ? '🏖️ Feriado' : '📊 Banco'}</td>
               <td><small>${detalhe}</small></td>
-              <td><button class="btn-sm b-red" onclick="apagar('deleteFolga',${x._row})">🗑️</button></td>
+              <td><button class="btn-sm danger" onclick="apagar('deleteFolga',${x._row})">🗑️</button></td>
             </tr>
           `;
         }).join('')}
       </tbody></table>
-      <div style="margin-top:14px; padding:12px; background:#f0f9ff; border-radius:8px; font-size:12px; color:#0369a1">
+      <div style="margin-top:14px; padding:12px 14px; background:#f8fafc; border-radius:8px; font-size:12px; color:#475569">
         💡 Ao apagar uma folga vinculada a feriado, o feriado volta para <b>pendente</b>.
       </div>`
-    : '<div class="empty">Nenhuma folga.</div>';
-  abrirModal('📆 Folgas — ' + f.nome, html);
+    : '<div class="empty"><span class="empty-icon">📭</span>Nenhuma folga.</div>';
+  abrirModal('Folgas — ' + f.nome, html);
 }
 
 function verFerias(empId) {
@@ -1020,102 +1419,104 @@ function verFerias(empId) {
             <td>${x.retorno}</td>
             <td>${x.dias}</td>
             <td>${x.status}</td>
-            <td><button class="btn-sm b-red" onclick="apagar('deleteFerias',${x._row})">🗑️</button></td>
+            <td><button class="btn-sm danger" onclick="apagar('deleteFerias',${x._row})">🗑️</button></td>
           </tr>
         `).join('')}
       </tbody></table>`
-    : '<div class="empty">Nenhum período de férias.</div>';
-  abrirModal('🌴 Férias — ' + f.nome, html);
+    : '<div class="empty"><span class="empty-icon">📭</span>Nenhum período de férias.</div>';
+  abrirModal('Férias — ' + f.nome, html);
 }
 
-/* ============================================================
-   APAGAR
-   ============================================================ */
 async function apagar(action, rowIndex) {
   if (!confirm('Apagar esta linha? Esta ação não pode ser desfeita.')) return;
   const r = await api(action, { rowIndex });
-  if (r.ok) { toast('🗑️ Apagado'); fecharModal(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Apagado'); fecharModal(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 /* ============================================================
-   RELATÓRIO
+   RELATÓRIO COMPLETO
    ============================================================ */
 function verRelatorio(empId) {
   const f = cadastro.find(c => c.id === empId);
   if (!f) return;
   const d = consolidar(f.nome);
+  const sFerias = calcularStatusFerias(f, d);
   const agora = new Date().toLocaleString('pt-BR');
 
   const html = `
-    <div style="text-align:center; border-bottom:2px solid #1e293b; padding-bottom:16px; margin-bottom:20px">
-      <h2 style="font-size:20px; font-weight:800">RELATÓRIO COMPLETO</h2>
-      <p style="color:#475569; font-size:13px; margin-top:4px">
+    <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:20px; margin-bottom:24px">
+      <h2 style="font-size:20px; font-weight:800; letter-spacing:-0.3px; color:#0f172a">RELATÓRIO COMPLETO</h2>
+      <p style="color:#475569; font-size:13px; margin-top:6px">
         <b>${f.nome}</b> · ${f.tipo === 'motoqueiro' ? 'Motoqueiro' : 'Funcionário'} ·
-        ${f.data_admissao ? 'Admissão ' + f.data_admissao : 'Sem admissão'} · Status: ${f.status.toUpperCase()}
+        ${f.data_admissao ? 'Admissão ' + f.data_admissao : 'Sem admissão'}
       </p>
       <small style="color:#94a3b8">Gerado em ${agora}</small>
     </div>
 
-    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px">
-      <div style="background:#f0f9ff; padding:12px; border-radius:8px; text-align:center">
-        <small style="color:#0369a1; font-size:10px; font-weight:600; text-transform:uppercase">Banco Horas</small>
-        <div style="font-size:18px; font-weight:800; color:${d.totalBH>=0?'#16a34a':'#dc2626'}">${fmtHoras(d.totalBH)}</div>
+    <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:24px">
+      <div style="background:#f8fafc; padding:14px; border-radius:10px; text-align:center; border:1px solid #f1f5f9">
+        <small style="color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">Banco Horas</small>
+        <div style="font-size:20px; font-weight:800; color:${d.totalBH>=0?'#15803d':'#b91c1c'}; margin-top:4px">${fmtHoras(d.totalBH)}</div>
       </div>
-      <div style="background:#fef3c7; padding:12px; border-radius:8px; text-align:center">
-        <small style="color:#92400e; font-size:10px; font-weight:600; text-transform:uppercase">Hora Extra</small>
-        <div style="font-size:18px; font-weight:800; color:#92400e">${fmtHoras(d.totalHE)}</div>
+      <div style="background:#f8fafc; padding:14px; border-radius:10px; text-align:center; border:1px solid #f1f5f9">
+        <small style="color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">Hora Extra</small>
+        <div style="font-size:20px; font-weight:800; color:#0f172a; margin-top:4px">${fmtHoras(d.totalHE)}</div>
       </div>
-      <div style="background:${d.feriadosPendentes > 0 ? '#fee2e2' : '#dcfce7'}; padding:12px; border-radius:8px; text-align:center">
-        <small style="color:${d.feriadosPendentes > 0 ? '#991b1b' : '#166534'}; font-size:10px; font-weight:600; text-transform:uppercase">Fer. Pend.</small>
-        <div style="font-size:18px; font-weight:800">${d.feriadosPendentes}</div>
+      <div style="background:${d.feriadosPendentes > 0 ? '#fffbeb' : '#f0fdf4'}; padding:14px; border-radius:10px; text-align:center; border:1px solid ${d.feriadosPendentes > 0 ? '#fef3c7' : '#dcfce7'}">
+        <small style="color:${d.feriadosPendentes > 0 ? '#92400e' : '#166534'}; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">Fer. Pend.</small>
+        <div style="font-size:20px; font-weight:800; color:${d.feriadosPendentes > 0 ? '#92400e' : '#166534'}; margin-top:4px">${d.feriadosPendentes}</div>
       </div>
-      <div style="background:#dcfce7; padding:12px; border-radius:8px; text-align:center">
-        <small style="color:#166534; font-size:10px; font-weight:600; text-transform:uppercase">Faltas J.</small>
-        <div style="font-size:18px; font-weight:800">${d.faltasJust}</div>
+      <div style="background:#f8fafc; padding:14px; border-radius:10px; text-align:center; border:1px solid #f1f5f9">
+        <small style="color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">Faltas J.</small>
+        <div style="font-size:20px; font-weight:800; color:#0f172a; margin-top:4px">${d.faltasJust}</div>
       </div>
-      <div style="background:#fee2e2; padding:12px; border-radius:8px; text-align:center">
-        <small style="color:#991b1b; font-size:10px; font-weight:600; text-transform:uppercase">Faltas I.</small>
-        <div style="font-size:18px; font-weight:800">${d.faltasInjust}</div>
+      <div style="background:#f8fafc; padding:14px; border-radius:10px; text-align:center; border:1px solid #f1f5f9">
+        <small style="color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.4px">Faltas I.</small>
+        <div style="font-size:20px; font-weight:800; color:#0f172a; margin-top:4px">${d.faltasInjust}</div>
       </div>
     </div>
 
-    <h3 style="font-size:14px; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">📊 Extras Mensais</h3>
-    ${d.ctrl.length ? `<table style="margin-bottom:20px"><thead><tr><th>Mês</th><th>BH</th><th>HE</th><th>Obs</th></tr></thead><tbody>
+    <div style="background:#f8fafc; padding:14px 18px; border-radius:10px; margin-bottom:24px; font-size:13px">
+      <b style="color:#0f172a">Status de Férias:</b> ${sFerias.icon} ${sFerias.msg}
+    </div>
+
+    <h3 style="font-size:14px; font-weight:700; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">Extras Mensais</h3>
+    ${d.ctrl.length ? `<table style="margin-bottom:24px"><thead><tr><th>Mês</th><th>BH</th><th>HE</th><th>Obs</th></tr></thead><tbody>
       ${d.ctrl.map(c => `<tr><td>${c.mesAno}</td><td>${fmtHoras(c.saldoBanco)}</td><td>${fmtHoras(c.horaExtra)}</td><td><small>${c.observacao||'—'}</small></td></tr>`).join('')}
     </tbody></table>` : '<p style="color:#94a3b8; font-size:12px">Sem lançamentos.</p>'}
 
-    <h3 style="font-size:14px; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">🏖️ Feriados Trabalhados</h3>
-    ${d.feriados.length ? `<table style="margin-bottom:20px"><thead><tr><th>Data</th><th>Status</th></tr></thead><tbody>
+    <h3 style="font-size:14px; font-weight:700; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">Feriados Trabalhados</h3>
+    ${d.feriados.length ? `<table style="margin-bottom:24px"><thead><tr><th>Data</th><th>Status</th></tr></thead><tbody>
       ${d.feriados.map(x => `<tr><td>${x.data}</td><td>${x.status.toUpperCase()}</td></tr>`).join('')}
     </tbody></table>` : '<p style="color:#94a3b8; font-size:12px">Nenhum.</p>'}
 
-    <h3 style="font-size:14px; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">📋 Faltas</h3>
-    ${d.falt.length ? `<table style="margin-bottom:20px"><thead><tr><th>Data</th><th>Atestado</th><th>Obs</th></tr></thead><tbody>
+    <h3 style="font-size:14px; font-weight:700; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">Faltas</h3>
+    ${d.falt.length ? `<table style="margin-bottom:24px"><thead><tr><th>Data</th><th>Atestado</th><th>Obs</th></tr></thead><tbody>
       ${d.falt.map(x => `<tr><td>${x.data}</td><td>${x.comAtestado?'Sim':'Não'}</td><td><small>${x.observacao||'—'}</small></td></tr>`).join('')}
     </tbody></table>` : '<p style="color:#94a3b8; font-size:12px">Nenhuma.</p>'}
 
-    <h3 style="font-size:14px; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">⚖️ Advertências</h3>
-    ${d.adv.length ? `<table style="margin-bottom:20px"><thead><tr><th>Data</th><th>Motivo</th></tr></thead><tbody>
+    <h3 style="font-size:14px; font-weight:700; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">Advertências</h3>
+    ${d.adv.length ? `<table style="margin-bottom:24px"><thead><tr><th>Data</th><th>Motivo</th></tr></thead><tbody>
       ${d.adv.map(x => `<tr><td>${x.data}</td><td>${x.motivo||'—'}</td></tr>`).join('')}
     </tbody></table>` : '<p style="color:#94a3b8; font-size:12px">Nenhuma.</p>'}
 
-    <h3 style="font-size:14px; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">📆 Folgas</h3>
-    ${d.folg.length ? `<table style="margin-bottom:20px"><thead><tr><th>Data</th><th>Origem</th></tr></thead><tbody>
+    <h3 style="font-size:14px; font-weight:700; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">Folgas</h3>
+    ${d.folg.length ? `<table style="margin-bottom:24px"><thead><tr><th>Data</th><th>Origem</th></tr></thead><tbody>
       ${d.folg.map(x => `<tr><td>${x.data}</td><td>${x.origem === 'feriado' ? 'Pagar feriado' : 'Debitar banco'}</td></tr>`).join('')}
     </tbody></table>` : '<p style="color:#94a3b8; font-size:12px">Nenhuma.</p>'}
 
-    <h3 style="font-size:14px; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">🌴 Férias</h3>
-    ${d.fer2.length ? `<table style="margin-bottom:20px"><thead><tr><th>Início</th><th>Fim</th><th>Retorno</th><th>Dias</th><th>Status</th></tr></thead><tbody>
+    <h3 style="font-size:14px; font-weight:700; margin:22px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0">Férias</h3>
+    ${d.fer2.length ? `<table style="margin-bottom:24px"><thead><tr><th>Início</th><th>Fim</th><th>Retorno</th><th>Dias</th><th>Status</th></tr></thead><tbody>
       ${d.fer2.map(x => `<tr><td>${x.inicio}</td><td>${x.fim}</td><td>${x.retorno}</td><td>${x.dias}</td><td>${x.status}</td></tr>`).join('')}
     </tbody></table>` : '<p style="color:#94a3b8; font-size:12px">Nenhuma.</p>'}
 
-    <div style="margin-top:24px; padding-top:14px; border-top:2px solid #1e293b; text-align:center; font-size:10px; color:#94a3b8">
+    <div style="margin-top:28px; padding-top:16px; border-top:2px solid #0f172a; text-align:center; font-size:10px; color:#94a3b8">
       <p>Sistema de Banco de Horas · Documento com validade documental</p>
       <p>Emitido em ${agora}</p>
     </div>
   `;
-  abrirModal('📋 Relatório — ' + f.nome, html);
+  abrirModal('Relatório — ' + f.nome, html);
 }
 
 /* ============================================================
@@ -1125,7 +1526,7 @@ function limparFormFunc() {
   ['f-id','f-nome','f-senha','f-admissao','f-obs'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-tipo').value = 'funcionario';
   document.getElementById('func-editing-id').value = '';
-  document.getElementById('form-func-title').textContent = '➕ Nova Pessoa (Funcionário ou Motoqueiro)';
+  document.getElementById('form-func-title').textContent = 'Nova Pessoa';
   document.getElementById('f-id').disabled = false;
 }
 
@@ -1140,7 +1541,7 @@ function editarFunc(id) {
   document.getElementById('f-admissao').value = f.data_admissao;
   document.getElementById('f-obs').value = f.observacao;
   document.getElementById('func-editing-id').value = f.id;
-  document.getElementById('form-func-title').textContent = '✏️ Editando: ' + f.nome;
+  document.getElementById('form-func-title').textContent = 'Editando: ' + f.nome;
   document.querySelector('.tab[data-pane="funcs"]').click();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1156,30 +1557,27 @@ async function salvarPessoa() {
   if (!id || !nome || !senha) return toast('Preencha ID, Nome e Senha', 'err');
 
   let r;
-  if (editId) {
-    r = await api('updateCadastro', { id: editId, nome, tipo, senha, data_admissao: adm, observacao: obs });
-  } else {
-    r = await api('addCadastro', { id, nome, tipo, senha, data_admissao: adm, observacao: obs });
-  }
+  if (editId) r = await api('updateCadastro', { id: editId, nome, tipo, senha, data_admissao: adm, observacao: obs });
+  else r = await api('addCadastro', { id, nome, tipo, senha, data_admissao: adm, observacao: obs });
 
-  if (r.ok) { toast('✅ Salvo!'); limparFormFunc(); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Salvo!'); limparFormFunc(); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function inativarFunc(id) {
   const f = cadastro.find(c => c.id === id);
   if (!confirm(`Desativar "${f.nome}"?`)) return;
   const r = await api('setStatusCadastro', { id, status: 'inativo' });
-  if (r.ok) { toast('🚫 Inativado'); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Inativado'); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function reativarFunc(id) {
   const f = cadastro.find(c => c.id === id);
   if (!confirm(`Reativar "${f.nome}"?`)) return;
   const r = await api('setStatusCadastro', { id, status: 'ativo' });
-  if (r.ok) { toast('✅ Reativado'); await recarregar(); }
-  else toast('❌ ' + (r.error || 'Erro'), 'err');
+  if (r.ok) { toast('Reativado'); await recarregar(); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 /* ============================================================
