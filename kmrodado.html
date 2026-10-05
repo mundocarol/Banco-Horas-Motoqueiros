@@ -30,9 +30,7 @@
     padding: 40px 32px;
     box-shadow: 0 24px 60px rgba(0,0,0,0.25);
   }
-  .login-box .logo {
-    text-align: center; margin-bottom: 28px;
-  }
+  .login-box .logo { text-align: center; margin-bottom: 28px; }
   .login-box .logo .icon {
     display: inline-flex; align-items: center; justify-content: center;
     width: 64px; height: 64px; border-radius: 16px;
@@ -84,7 +82,7 @@
   .login-error.show { display: block; }
 
   /* ============================================
-     PAINEL PRINCIPAL
+     PAINEL
      ============================================ */
   .app { display: none; }
   .app.show { display: block; }
@@ -118,7 +116,7 @@
   .content { max-width: 900px; margin: 0 auto; padding: 32px; }
 
   /* ============================================
-     FORM LANÇAMENTO
+     FORM
      ============================================ */
   .card {
     background: white;
@@ -168,7 +166,7 @@
     outline: none; border-color: #1d4ed8;
     box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
   }
-  .field-big input.km-input {
+  .field-big input.big-input {
     font-size: 24px; font-weight: 700;
     text-align: center; padding: 18px;
     letter-spacing: 1px;
@@ -188,7 +186,7 @@
   .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* ============================================
-     ÚLTIMOS LANÇAMENTOS
+     HISTÓRICO
      ============================================ */
   .card-historico { padding: 22px 28px; }
   .card-historico .head {
@@ -221,6 +219,17 @@
 
   .km-value {
     font-size: 15px; font-weight: 700; color: #1d4ed8;
+  }
+  .entregas-value {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 28px; height: 24px;
+    padding: 0 8px;
+    background: #f0fdf4; color: #166534;
+    border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+  }
+  .entregas-value.zero {
+    background: #f1f5f9; color: #94a3b8;
   }
 
   .empty {
@@ -275,14 +284,14 @@
     .card { padding: 20px; }
     .card-historico { padding: 16px 20px; }
     .topbar { padding: 12px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 9px 8px; }
   }
 </style>
 </head>
 <body>
 
-<!-- ============================================
-     LOGIN
-     ============================================ -->
+<!-- LOGIN -->
 <div class="login-wrap" id="login-wrap">
   <div class="login-box">
     <div class="logo">
@@ -305,9 +314,7 @@
   </div>
 </div>
 
-<!-- ============================================
-     APP
-     ============================================ -->
+<!-- APP -->
 <div class="app" id="app">
   <div class="topbar">
     <h1><span class="dot"></span>Lançamento de KM <span>· Motoqueiros</span></h1>
@@ -316,10 +323,10 @@
 
   <div class="content">
 
-    <!-- Formulário de lançamento -->
+    <!-- Formulário -->
     <div class="card">
       <h2>Novo Lançamento</h2>
-      <p class="desc">Escolha o motoqueiro e informe os quilômetros rodados no dia.</p>
+      <p class="desc">Escolha o motoqueiro e informe os dados do dia.</p>
 
       <div class="form-row">
         <div class="field-big">
@@ -334,10 +341,14 @@
         </div>
       </div>
 
-      <div class="form-row full">
+      <div class="form-row">
         <div class="field-big">
           <label for="km">KM Rodados</label>
-          <input type="number" class="km-input" id="km" placeholder="0.0" step="0.1" min="0">
+          <input type="number" class="big-input" id="km" placeholder="0.0" step="0.1" min="0">
+        </div>
+        <div class="field-big">
+          <label for="entregas">Nº de Entregas</label>
+          <input type="number" class="big-input" id="entregas" placeholder="0" step="1" min="0">
         </div>
       </div>
 
@@ -441,7 +452,6 @@ async function fazerLogin() {
     return;
   }
 
-  // Login OK
   sessionStorage.setItem('km_admin_logado', '1');
   document.getElementById('login-wrap').style.display = 'none';
   document.getElementById('app').classList.add('show');
@@ -462,7 +472,7 @@ function logout() {
 }
 
 /* ============================================================
-   CARREGAR MOTOQUEIROS DO CADASTRO
+   CARREGAR MOTOQUEIROS
    ============================================================ */
 async function carregarMotoqueiros() {
   const select = document.getElementById('motoqueiro');
@@ -499,7 +509,7 @@ async function carregarMotoqueiros() {
 }
 
 /* ============================================================
-   SALVAR LANÇAMENTO
+   SALVAR
    ============================================================ */
 async function salvar() {
   const select = document.getElementById('motoqueiro');
@@ -507,6 +517,7 @@ async function salvar() {
   const motoNome = select.options[select.selectedIndex]?.dataset.nome || '';
   const data = document.getElementById('data').value.trim();
   const km = document.getElementById('km').value.trim();
+  const entregas = document.getElementById('entregas').value.trim();
 
   if (!motoId) return toast('Selecione o motoqueiro', 'err');
   if (!data) return toast('Informe a data', 'err');
@@ -522,12 +533,13 @@ async function salvar() {
       motoboyNome: motoNome,
       data: data,
       km: km.replace(',', '.'),
-      entregas: ''   // não usamos aqui
+      entregas: entregas ? entregas.replace(',', '.') : ''
     });
 
     if (r.ok) {
       toast('Lançamento salvo!');
       document.getElementById('km').value = '';
+      document.getElementById('entregas').value = '';
       document.getElementById('km').focus();
       await carregarHistorico();
     } else {
@@ -542,7 +554,7 @@ async function salvar() {
 }
 
 /* ============================================================
-   HISTÓRICO (últimos 15 lançamentos de km)
+   HISTÓRICO
    ============================================================ */
 async function carregarHistorico() {
   const container = document.getElementById('historico-container');
@@ -557,15 +569,20 @@ async function carregarHistorico() {
       motoboyNome: (r[1]||'').toString().trim(),
       data: (r[2]||'').toString().trim(),
       km: parseFloat((r[3]||'0').toString().replace(',','.')) || 0,
-      entregas: (r[4]||'').toString().trim(),
+      entregas: parseFloat((r[4]||'0').toString().replace(',','.')) || 0,
       dataReposicao: (r[5]||'').toString().trim()
     }));
 
     // Só corridas (tem data e km) e não reposições
     const corridas = todos.filter(t => t.data && t.km > 0 && !t.dataReposicao);
 
-    // Ordena por data mais recente
-    corridas.sort((a,b) => dataToNum(b.data) - dataToNum(a.data));
+    // Ordenação: por data decrescente (mais recente primeiro).
+    // Empate: quem foi adicionado por último (maior _row) fica no topo.
+    corridas.sort((a, b) => {
+      const diff = dataToNum(b.data) - dataToNum(a.data);
+      if (diff !== 0) return diff;
+      return b._row - a._row;
+    });
 
     // Últimos 15
     const ultimos = corridas.slice(0, 15);
@@ -586,7 +603,8 @@ async function carregarHistorico() {
             <th>Data</th>
             <th>Motoqueiro</th>
             <th>KM</th>
-            <th style="width:60px"></th>
+            <th>Entregas</th>
+            <th style="width:50px"></th>
           </tr>
         </thead>
         <tbody>
@@ -599,6 +617,11 @@ async function carregarHistorico() {
               <td>${c.motoboyNome || c.motoboyId}</td>
               <td><span class="km-value">${c.km.toFixed(1).replace('.',',')} km</span></td>
               <td>
+                <span class="entregas-value ${c.entregas === 0 ? 'zero' : ''}">
+                  ${c.entregas}
+                </span>
+              </td>
+              <td>
                 <button class="btn-del" onclick="apagar(${c._row}, '${c.data}', '${c.motoboyNome}')" title="Apagar lançamento">🗑️</button>
               </td>
             </tr>
@@ -606,7 +629,7 @@ async function carregarHistorico() {
         </tbody>
       </table>
       <div style="margin-top:14px; font-size:12px; color:#94a3b8; text-align:center">
-        Mostrando os últimos 15 lançamentos
+        Mostrando os últimos 15 lançamentos · ordenados do mais recente para o mais antigo
       </div>
     `;
   } catch (e) {
@@ -634,7 +657,7 @@ async function apagar(rowIndex, data, nome) {
 }
 
 /* ============================================================
-   INICIALIZA — verifica se já está logado
+   INICIALIZA
    ============================================================ */
 (async () => {
   if (sessionStorage.getItem('km_admin_logado') === '1') {
