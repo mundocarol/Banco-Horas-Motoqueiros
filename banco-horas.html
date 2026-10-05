@@ -261,9 +261,7 @@
   .btn-sm.danger { color: #dc2626; border-color: #fecaca; }
   .btn-sm.danger:hover { background: #fef2f2; }
 
-  /* ============================================
-     MODAL
-     ============================================ */
+  /* MODAL */
   .modal {
     display: none; position: fixed; inset: 0;
     background: rgba(15,23,42,0.65);
@@ -299,7 +297,6 @@
   .modal-close:hover { background: #f1f5f9; color: #0f172a; }
   .modal-body { padding: 24px 26px; max-height: 78vh; overflow-y: auto; }
 
-  /* ETAPA 1 — Escolha do mês */
   .mes-escolha {
     padding: 20px 0; text-align: center;
   }
@@ -320,7 +317,6 @@
     box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
   }
 
-  /* SEÇÕES DO MODAL */
   .section {
     background: #f8fafc;
     border: 1px solid #dbe1ea;
@@ -354,8 +350,9 @@
     margin-bottom: 6px;
   }
   .row-item.adv { grid-template-columns: 1.5fr 4fr 40px; }
-  .row-item.fer { grid-template-columns: 2fr 2fr 40px; }
-  .row-item.fol { grid-template-columns: 2fr 3fr 40px; }
+  .row-item.fer { grid-template-columns: 2fr 3fr 40px; }
+  .row-item.fol { grid-template-columns: 2fr 2fr 3fr 40px; }
+  .row-item.fol.sem-feriado { grid-template-columns: 2fr 2fr 1fr 40px; }
 
   .row-item input, .row-item select {
     padding: 8px 10px; border: 1px solid #d1d9e3;
@@ -365,6 +362,9 @@
   .row-item input:focus, .row-item select:focus {
     outline: none; border-color: #1d4ed8;
     box-shadow: 0 0 0 2px rgba(29,78,216,0.08);
+  }
+  .row-item select:disabled {
+    background: #f1f5f9; color: #94a3b8; cursor: not-allowed;
   }
   .row-del {
     width: 32px; height: 32px;
@@ -422,7 +422,6 @@
   }
   .btn-cancelar-modal:hover { background: #e2e8f0; }
 
-  /* TOAST */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
     background: #0f172a; color: white;
@@ -533,7 +532,6 @@
 
 </div>
 
-<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <div class="modal-head">
@@ -584,7 +582,8 @@ let modalState = {
   faltas: [],
   advertencias: [],
   feriados: [],
-  folgas: []
+  folgas: [],
+  feriadosPendentes: []
 };
 
 /* ============================================================
@@ -604,11 +603,6 @@ function parseNum(v) {
 }
 
 function fmtHoras(h) { return h.toFixed(2).replace('.', ',') + 'h'; }
-
-function hojeStr() {
-  const d = new Date();
-  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-}
 
 function getDayOfWeek(dateStr) {
   if (!dateStr || !dateStr.includes('/')) return '';
@@ -1061,12 +1055,13 @@ function fecharModal() {
     originalControle: null,
     originalFaltas: [], originalAdvertencias: [], originalFeriados: [], originalFolgas: [],
     controle: { saldoBanco: '', horaExtra: '', observacao: '' },
-    faltas: [], advertencias: [], feriados: [], folgas: []
+    faltas: [], advertencias: [], feriados: [], folgas: [],
+    feriadosPendentes: []
   };
 }
 
 /* ============================================================
-   LANÇAMENTO — ETAPA 1: ESCOLHER MÊS
+   LANÇAMENTO — ETAPA 1
    ============================================================ */
 function abrirLancamento(empId) {
   const f = cadastro.find(c => c.id === empId);
@@ -1105,7 +1100,7 @@ function abrirLancamento(empId) {
 }
 
 /* ============================================================
-   LANÇAMENTO — ETAPA 2: MODAL COMPLETO
+   LANÇAMENTO — ETAPA 2
    ============================================================ */
 async function carregarMesEProximo() {
   const mes = document.getElementById('escolha-mes').value;
@@ -1182,15 +1177,24 @@ async function carregarMesEProximo() {
   modalState.folgas = folMes.map(f => ({
     data: f.data,
     origem: f.origem,
+    feriadoVinculado: f.feriadoVinculado || null,
     _row: f._row,
     _original: true
   }));
+
+  // Feriados pendentes do funcionário (qualquer mês)
+  modalState.feriadosPendentes = feriados
+    .filter(f =>
+      f.funcionario.toLowerCase() === nomeL &&
+      f.status === 'pendente'
+    )
+    .sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
 
   renderModalLancamento();
 }
 
 /* ============================================================
-   RENDER MODAL COMPLETO — ORDEM: Faltas, Folgas, Feriados, Banco, Advertências
+   RENDER MODAL COMPLETO
    ============================================================ */
 function renderModalLancamento() {
   const emp = cadastro.find(c => c.id === modalState.empId);
@@ -1201,9 +1205,7 @@ function renderModalLancamento() {
 
   let html = '';
 
-  // ============================================================
   // 1. FALTAS
-  // ============================================================
   html += `
     <div class="section">
       <div class="section-head">
@@ -1219,13 +1221,16 @@ function renderModalLancamento() {
     </div>
   `;
 
-  // ============================================================
   // 2. FOLGAS
-  // ============================================================
   html += `
     <div class="section">
       <div class="section-head">
         <div class="section-title">📆 Folgas <span class="count">${modalState.folgas.length}</span></div>
+        <div style="font-size:11px; color:#64748b;">
+          ${modalState.feriadosPendentes.length > 0 
+            ? `🏖️ ${modalState.feriadosPendentes.length} feriado(s) pendente(s) disponível(is)` 
+            : '⚠️ Nenhum feriado pendente — apenas débito do banco'}
+        </div>
       </div>
       <div id="section-folgas">
         ${modalState.folgas.length === 0
@@ -1237,9 +1242,7 @@ function renderModalLancamento() {
     </div>
   `;
 
-  // ============================================================
   // 3. FERIADOS
-  // ============================================================
   html += `
     <div class="section">
       <div class="section-head">
@@ -1255,9 +1258,7 @@ function renderModalLancamento() {
     </div>
   `;
 
-  // ============================================================
   // 4. BANCO DE HORAS
-  // ============================================================
   html += `
     <div class="section">
       <div class="section-head">
@@ -1271,9 +1272,7 @@ function renderModalLancamento() {
     </div>
   `;
 
-  // ============================================================
   // 5. ADVERTÊNCIAS
-  // ============================================================
   html += `
     <div class="section">
       <div class="section-head">
@@ -1289,7 +1288,7 @@ function renderModalLancamento() {
     </div>
   `;
 
-  // ---- BARRA SALVAR ----
+  // BARRA SALVAR
   html += `
     <div class="salvar-tudo-bar">
       <button class="btn-cancelar-modal" onclick="fecharModal()">Cancelar</button>
@@ -1302,15 +1301,18 @@ function renderModalLancamento() {
   document.getElementById('modal-sub').textContent = `Etapa 2 de 2 · ${nomeMes}/${modalState.ano}`;
 }
 
+/* ============================================================
+   LINHAS DO MODAL
+   ============================================================ */
 function renderLinhaFalta(f, i) {
   return `
     <div class="row-item">
-      <input type="text" value="${f.data}" placeholder="dd/mm/aaaa" oninput="modalState.faltas[${i}].data = this.value">
+      <input type="text" value="${f.data}" placeholder="Data da falta dd/mm/aaaa" oninput="modalState.faltas[${i}].data = this.value">
       <select onchange="modalState.faltas[${i}].comAtestado = (this.value === '1')">
-        <option value="" ${!f.comAtestado ? 'selected' : ''}>Não</option>
-        <option value="1" ${f.comAtestado ? 'selected' : ''}>Sim</option>
+        <option value="" ${!f.comAtestado ? 'selected' : ''}>❌ Não (sem atestado)</option>
+        <option value="1" ${f.comAtestado ? 'selected' : ''}>✅ Sim (com atestado)</option>
       </select>
-      <input type="text" value="${f.observacao || ''}" placeholder="Observação" oninput="modalState.faltas[${i}].observacao = this.value">
+      <input type="text" value="${f.observacao || ''}" placeholder="Observação (opcional)" oninput="modalState.faltas[${i}].observacao = this.value">
       <button class="row-del" onclick="removerFalta(${i})" title="Remover">🗑</button>
     </div>
   `;
@@ -1329,28 +1331,77 @@ function renderLinhaAdvertencia(a, i) {
 function renderLinhaFeriado(f, i) {
   return `
     <div class="row-item fer">
-      <input type="text" value="${f.data}" placeholder="dd/mm/aaaa" oninput="modalState.feriados[${i}].data = this.value">
-      <select onchange="modalState.feriados[${i}].status = this.value">
-        <option value="pendente" ${f.status === 'pendente' ? 'selected' : ''}>Pendente (não compensado)</option>
-        <option value="compensado" ${f.status === 'compensado' ? 'selected' : ''}>Compensado</option>
-      </select>
+      <input type="text" value="${f.data}" placeholder="Data do feriado trabalhado dd/mm/aaaa" oninput="modalState.feriados[${i}].data = this.value">
+      <div style="font-size:12px; color:#64748b; padding:8px 12px; background:#f8fafc; border-radius:6px; text-align:center; border:1px solid #e2e8f0;">
+        ℹ️ Status gerenciado automaticamente
+      </div>
       <button class="row-del" onclick="removerFeriado(${i})" title="Remover">🗑</button>
     </div>
   `;
 }
 
 function renderLinhaFolga(f, i) {
+  const temFeriadosPendentes = modalState.feriadosPendentes.length > 0;
+
+  // Aplica a regra de padrão
+  let origem = f.origem;
+  if (!origem) {
+    origem = temFeriadosPendentes ? 'feriado' : 'banco';
+    modalState.folgas[i].origem = origem;
+  }
+  if (origem === 'feriado' && !temFeriadosPendentes) {
+    origem = 'banco';
+    modalState.folgas[i].origem = 'banco';
+  }
+
+  // Define o feriado selecionado
+  let feriadoSelecionado = f.feriadoVinculado;
+
+  if (origem === 'feriado' && !feriadoSelecionado && temFeriadosPendentes) {
+    feriadoSelecionado = modalState.feriadosPendentes[0]._row;
+    modalState.folgas[i].feriadoVinculado = feriadoSelecionado;
+  }
+
+  const opcoesFeriados = modalState.feriadosPendentes.map(fer => `
+    <option value="${fer._row}" ${feriadoSelecionado == fer._row ? 'selected' : ''}>
+      ${fer.data} (${getDayOfWeek(fer.data)})
+    </option>
+  `).join('');
+
+  const mostrarFeriado = origem === 'feriado' && temFeriadosPendentes;
+
   return `
-    <div class="row-item fol">
-      <input type="text" value="${f.data}" placeholder="dd/mm/aaaa" oninput="modalState.folgas[${i}].data = this.value">
-      <select onchange="modalState.folgas[${i}].origem = this.value">
-        <option value="banco" ${f.origem === 'banco' ? 'selected' : ''}>📊 Debitar do Banco</option>
-        <option value="feriado" ${f.origem === 'feriado' ? 'selected' : ''}>🏖️ Pagar Feriado</option>
+    <div class="row-item fol ${mostrarFeriado ? '' : 'sem-feriado'}">
+      <input type="text" value="${f.data}" placeholder="Data folga dd/mm/aaaa" oninput="modalState.folgas[${i}].data = this.value">
+      <select onchange="trocarOrigemFolga(${i}, this.value)">
+        <option value="feriado" ${origem === 'feriado' ? 'selected' : ''} ${!temFeriadosPendentes ? 'disabled' : ''}>
+          🏖️ Pagar Feriado ${!temFeriadosPendentes ? '(sem pendentes)' : `(${modalState.feriadosPendentes.length})`}
+        </option>
+        <option value="banco" ${origem === 'banco' ? 'selected' : ''}>📊 Debitar do Banco</option>
       </select>
+      ${mostrarFeriado
+        ? `<select onchange="modalState.folgas[${i}].feriadoVinculado = parseInt(this.value)">
+            <option value="">-- Selecione o feriado --</option>
+            ${opcoesFeriados}
+          </select>`
+        : `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:8px;">—</div>`
+      }
       <button class="row-del" onclick="removerFolga(${i})" title="Remover">🗑</button>
     </div>
   `;
 }
+
+window.trocarOrigemFolga = function(i, novaOrigem) {
+  modalState.folgas[i].origem = novaOrigem;
+  if (novaOrigem === 'banco') {
+    modalState.folgas[i].feriadoVinculado = null;
+  } else if (novaOrigem === 'feriado') {
+    if (!modalState.folgas[i].feriadoVinculado && modalState.feriadosPendentes.length > 0) {
+      modalState.folgas[i].feriadoVinculado = modalState.feriadosPendentes[0]._row;
+    }
+  }
+  renderModalLancamento();
+};
 
 /* ============================================================
    ADICIONAR / REMOVER LINHAS
@@ -1366,12 +1417,19 @@ function adicionarAdvertencia() {
 }
 
 function adicionarFeriado() {
+  // Status sempre 'pendente' — gerenciado pelo sistema
   modalState.feriados.push({ data: '', status: 'pendente', _original: false });
   renderModalLancamento();
 }
 
 function adicionarFolga() {
-  modalState.folgas.push({ data: '', origem: 'banco', _original: false });
+  const temFeriadosPendentes = modalState.feriadosPendentes.length > 0;
+  modalState.folgas.push({
+    data: '',
+    origem: temFeriadosPendentes ? 'feriado' : 'banco',
+    feriadoVinculado: temFeriadosPendentes ? modalState.feriadosPendentes[0]._row : null,
+    _original: false
+  });
   renderModalLancamento();
 }
 
@@ -1400,7 +1458,7 @@ function removerFolga(i) {
 }
 
 /* ============================================================
-   SALVAR TUDO (apaga + recria)
+   SALVAR TUDO
    ============================================================ */
 async function salvarTudo() {
   const btn = document.getElementById('btn-salvar-tudo');
@@ -1408,7 +1466,6 @@ async function salvarTudo() {
   btn.textContent = 'Salvando...';
 
   const emp = cadastro.find(c => c.id === modalState.empId);
-  const nomeL = emp.nome.toLowerCase();
   const mesAno = modalState.mes + '/' + modalState.ano;
 
   let erros = [];
@@ -1510,17 +1567,26 @@ async function salvarTudo() {
     }
     for (const f of modalState.folgas) {
       if (!f.data || !f.data.trim()) continue;
+
       const payload = {
         funcionario: emp.nome,
         data: f.data,
-        origem: f.origem === 'feriado' ? 'banco' : f.origem
+        origem: f.origem
       };
+
+      if (f.origem === 'feriado') {
+        if (!f.feriadoVinculado) {
+          erros.push('Folga de ' + f.data + ': nenhum feriado selecionado');
+          continue;
+        }
+        payload.feriadoRow = f.feriadoVinculado;
+      }
+
       const r = await api('addFolga', payload);
       if (r.ok) sucesso.folgas++;
       else erros.push('Folga: ' + r.error);
     }
 
-    // ---------- FEEDBACK ----------
     const total = sucesso.controle + sucesso.faltas + sucesso.advertencias + sucesso.feriados + sucesso.folgas;
 
     if (erros.length) {
@@ -1542,7 +1608,7 @@ async function salvarTudo() {
 }
 
 /* ============================================================
-   VER DETALHES (modais secundários)
+   VER DETALHES
    ============================================================ */
 function verMensal(empId) {
   const f = cadastro.find(c => c.id === empId);
