@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lançamento de KM - Motoqueiros</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #eef1f5;
+    color: #1e293b;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============================================
+     TELA DE LOGIN
+     ============================================ */
+  .login-wrap {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 20px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  }
+  .login-box {
+    width: 100%; max-width: 400px;
+    background: white;
+    border-radius: 16px;
+    padding: 40px 32px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  }
+  .login-box .logo {
+    text-align: center; margin-bottom: 28px;
+  }
+  .login-box .logo .icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 64px; height: 64px; border-radius: 16px;
+    background: #eff6ff; color: #1d4ed8;
+    font-size: 32px; margin-bottom: 16px;
+  }
+  .login-box h1 {
+    font-size: 20px; font-weight: 700;
+    color: #0f172a; text-align: center;
+    letter-spacing: -0.3px; margin-bottom: 4px;
+  }
+  .login-box .sub {
+    font-size: 13px; color: #64748b;
+    text-align: center; margin-bottom: 28px;
+  }
+  .field { display: flex; flex-direction: column; margin-bottom: 16px; }
+  .field label {
+    font-size: 11px; font-weight: 600; color: #475569;
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .field input {
+    padding: 12px 14px;
+    border: 1px solid #d1d9e3;
+    border-radius: 10px;
+    font-size: 15px; font-family: inherit;
+    background: white; color: #0f172a;
+    transition: all 0.18s;
+  }
+  .field input:focus {
+    outline: none; border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+  }
+  .btn-login {
+    width: 100%; padding: 14px;
+    border: none; border-radius: 10px;
+    background: #1d4ed8; color: white;
+    font-size: 15px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+    transition: all 0.18s; margin-top: 8px;
+  }
+  .btn-login:hover { background: #1e40af; }
+  .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+  .login-error {
+    background: #fef2f2; color: #991b1b;
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 13px; margin-top: 14px;
+    display: none; border: 1px solid #fecaca;
+  }
+  .login-error.show { display: block; }
+
+  /* ============================================
+     PAINEL PRINCIPAL
+     ============================================ */
+  .app { display: none; }
+  .app.show { display: block; }
+
+  .topbar {
+    background: #0f172a; color: white;
+    padding: 14px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.12);
+    flex-wrap: wrap; gap: 12px;
+  }
+  .topbar h1 {
+    font-size: 16px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    letter-spacing: -0.2px;
+  }
+  .topbar h1 .dot {
+    display: inline-block; width: 8px; height: 8px;
+    background: #3b82f6; border-radius: 50%;
+  }
+  .topbar h1 span { color: #93c5fd; font-weight: 500; }
+  .logout-btn {
+    background: transparent; color: #94a3b8;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.18s;
+  }
+  .logout-btn:hover { background: rgba(239,68,68,0.12); color: #fca5a5; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 32px; }
+
+  /* ============================================
+     FORM LANÇAMENTO
+     ============================================ */
+  .card {
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e3e8ef;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+  .card h2 {
+    font-size: 17px; font-weight: 700;
+    color: #0f172a; margin-bottom: 6px;
+    letter-spacing: -0.2px;
+  }
+  .card .desc {
+    font-size: 13px; color: #64748b;
+    margin-bottom: 22px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-row.full { grid-template-columns: 1fr; }
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .field-big { display: flex; flex-direction: column; }
+  .field-big label {
+    font-size: 11px; font-weight: 600; color: #475569;
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .field-big select,
+  .field-big input {
+    padding: 14px 16px;
+    border: 1px solid #d1d9e3;
+    border-radius: 10px;
+    font-size: 15px; font-family: inherit;
+    background: white; color: #0f172a;
+    transition: all 0.18s;
+  }
+  .field-big select:focus,
+  .field-big input:focus {
+    outline: none; border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+  }
+  .field-big input.km-input {
+    font-size: 24px; font-weight: 700;
+    text-align: center; padding: 18px;
+    letter-spacing: 1px;
+  }
+
+  .btn-submit {
+    width: 100%; padding: 16px;
+    border: none; border-radius: 10px;
+    background: #1d4ed8; color: white;
+    font-size: 15px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+    transition: all 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 12px;
+  }
+  .btn-submit:hover { background: #1e40af; }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* ============================================
+     ÚLTIMOS LANÇAMENTOS
+     ============================================ */
+  .card-historico { padding: 22px 28px; }
+  .card-historico .head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+  }
+  .card-historico h2 { margin-bottom: 0; }
+  .card-historico .refresh {
+    background: none; border: none;
+    color: #64748b; font-size: 12px;
+    cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 10px; border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .card-historico .refresh:hover { background: #f1f5f9; color: #0f172a; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td {
+    padding: 11px 12px; text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  th {
+    background: #f8fafc; font-weight: 600;
+    font-size: 11px; text-transform: uppercase;
+    color: #64748b; letter-spacing: 0.3px;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbfc; }
+
+  .km-value {
+    font-size: 15px; font-weight: 700; color: #1d4ed8;
+  }
+
+  .empty {
+    text-align: center; padding: 40px 24px;
+    color: #94a3b8; font-size: 13px;
+  }
+  .empty .icon { font-size: 36px; opacity: 0.4; margin-bottom: 8px; display: block; }
+
+  .btn-del {
+    background: none; border: none;
+    color: #94a3b8; cursor: pointer;
+    padding: 4px 8px; border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .btn-del:hover { background: #fef2f2; color: #dc2626; }
+
+  /* ============================================
+     TOAST
+     ============================================ */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 14px 20px; border-radius: 10px;
+    background: #0f172a; color: white;
+    font-weight: 500; font-size: 13px;
+    box-shadow: 0 12px 32px rgba(15,23,42,0.2);
+    display: none; z-index: 9999;
+  }
+  .toast.show { display: block; animation: slideIn 0.25s ease; }
+  .toast.ok { background: #15803d; }
+  .toast.err { background: #b91c1c; }
+  @keyframes slideIn {
+    from { transform: translateX(20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .loading {
+    text-align: center; padding: 24px;
+    color: #64748b; font-size: 13px;
+  }
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid #e2e8f0; border-radius: 50%;
+    border-top-color: #1d4ed8;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    .content { padding: 16px; }
+    .card { padding: 20px; }
+    .card-historico { padding: 16px 20px; }
+    .topbar { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     LOGIN
+     ============================================ -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-box">
+    <div class="logo">
+      <div class="icon">🏍️</div>
+      <h1>Lançamento de KM</h1>
+      <p class="sub">Acesso restrito ao administrador</p>
+    </div>
+
+    <div class="field">
+      <label for="usuario">Usuário</label>
+      <input type="text" id="usuario" value="admin" readonly autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" placeholder="Digite a senha" autocomplete="current-password" autofocus>
+    </div>
+
+    <button class="btn-login" id="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ============================================
+     APP
+     ============================================ -->
+<div class="app" id="app">
+  <div class="topbar">
+    <h1><span class="dot"></span>Lançamento de KM <span>· Motoqueiros</span></h1>
+    <button class="logout-btn" onclick="logout()">Sair</button>
+  </div>
+
+  <div class="content">
+
+    <!-- Formulário de lançamento -->
+    <div class="card">
+      <h2>Novo Lançamento</h2>
+      <p class="desc">Escolha o motoqueiro e informe os quilômetros rodados no dia.</p>
+
+      <div class="form-row">
+        <div class="field-big">
+          <label for="motoqueiro">Motoqueiro</label>
+          <select id="motoqueiro" disabled>
+            <option value="">Carregando...</option>
+          </select>
+        </div>
+        <div class="field-big">
+          <label for="data">Data</label>
+          <input type="text" id="data" placeholder="dd/mm/aaaa">
+        </div>
+      </div>
+
+      <div class="form-row full">
+        <div class="field-big">
+          <label for="km">KM Rodados</label>
+          <input type="number" class="km-input" id="km" placeholder="0.0" step="0.1" min="0">
+        </div>
+      </div>
+
+      <button class="btn-submit" id="btn-submit" onclick="salvar()">
+        💾 Salvar Lançamento
+      </button>
+    </div>
+
+    <!-- Histórico -->
+    <div class="card card-historico">
+      <div class="head">
+        <h2>Últimos Lançamentos</h2>
+        <button class="refresh" onclick="carregarHistorico()">🔄 Atualizar</button>
+      </div>
+      <div id="historico-container">
+        <div class="loading"><span class="spinner"></span> Carregando...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const SHEET_ID = '1_jZmnHZSuj3J1IO9LtKCYPzgWrGLETUNusswhq-b2WQ';
+const API_KEY  = 'AIzaSyAtHI0KGE9dWSQIQQtQLS95i3kuLTD0bSM';
+const API_URL  = 'https://script.google.com/macros/s/AKfycbxCV_pL-xzrS9Q67MQeYRb_RESvCQVkkJTV6Ar9y29SHBEimCshgyoysdu7fPIKnec/exec';
+
+const ADMIN_USER = 'admin';
+const ADMIN_PWD  = 'Adm456';
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function toast(msg, tipo = 'ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + tipo;
+  setTimeout(() => el.className = 'toast', 3500);
+}
+
+function hojeStr() {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
+
+function getDayOfWeek(dateStr) {
+  if (!dateStr || !dateStr.includes('/')) return '';
+  try {
+    const [d,m,y] = dateStr.split('/');
+    const dt = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+    return ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][dt.getDay()];
+  } catch(e) { return ''; }
+}
+
+function dataToNum(dateStr) {
+  if (!dateStr) return 0;
+  try {
+    const [d,m,y] = dateStr.split('/');
+    return new Date(parseInt(y), parseInt(m)-1, parseInt(d)).getTime();
+  } catch(e) { return 0; }
+}
+
+/* ============================================================
+   API
+   ============================================================ */
+async function lerAba(nome) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${nome}!A2:Z?key=${API_KEY}`;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('HTTP ' + resp.status);
+  return (await resp.json()).values || [];
+}
+
+async function api(action, payload = {}) {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action, ...payload })
+  });
+  return resp.json();
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+async function fazerLogin() {
+  const user = document.getElementById('usuario').value.trim();
+  const pwd  = document.getElementById('senha').value;
+  const err  = document.getElementById('login-error');
+  err.classList.remove('show');
+
+  if (user !== ADMIN_USER || pwd !== ADMIN_PWD) {
+    err.textContent = 'Usuário ou senha inválidos';
+    err.classList.add('show');
+    document.getElementById('senha').value = '';
+    document.getElementById('senha').focus();
+    return;
+  }
+
+  // Login OK
+  sessionStorage.setItem('km_admin_logado', '1');
+  document.getElementById('login-wrap').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('data').value = hojeStr();
+
+  await carregarMotoqueiros();
+  await carregarHistorico();
+}
+
+document.getElementById('senha').addEventListener('keypress', e => {
+  if (e.key === 'Enter') fazerLogin();
+});
+
+function logout() {
+  if (!confirm('Sair do sistema?')) return;
+  sessionStorage.removeItem('km_admin_logado');
+  location.reload();
+}
+
+/* ============================================================
+   CARREGAR MOTOQUEIROS DO CADASTRO
+   ============================================================ */
+async function carregarMotoqueiros() {
+  const select = document.getElementById('motoqueiro');
+  select.innerHTML = '<option value="">Carregando...</option>';
+  try {
+    const linhas = await lerAba('Cadastro');
+    const motos = linhas.map(r => ({
+      id:   (r[0]||'').toString().trim().toLowerCase(),
+      nome: (r[1]||'').toString().trim(),
+      tipo: (r[2]||'').toString().trim().toLowerCase(),
+      status: (r[4]||'').toString().trim().toLowerCase()
+    }))
+    .filter(m => m.tipo === 'motoqueiro' && m.status === 'ativo')
+    .sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+
+    if (!motos.length) {
+      select.innerHTML = '<option value="">— Nenhum motoqueiro ativo —</option>';
+      return;
+    }
+
+    select.innerHTML = '<option value="">Selecione o motoqueiro</option>';
+    motos.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.dataset.nome = m.nome;
+      opt.textContent = m.nome;
+      select.appendChild(opt);
+    });
+    select.disabled = false;
+  } catch (e) {
+    select.innerHTML = '<option value="">Erro ao carregar</option>';
+    toast('Erro ao carregar motoqueiros: ' + e.message, 'err');
+  }
+}
+
+/* ============================================================
+   SALVAR LANÇAMENTO
+   ============================================================ */
+async function salvar() {
+  const select = document.getElementById('motoqueiro');
+  const motoId = select.value;
+  const motoNome = select.options[select.selectedIndex]?.dataset.nome || '';
+  const data = document.getElementById('data').value.trim();
+  const km = document.getElementById('km').value.trim();
+
+  if (!motoId) return toast('Selecione o motoqueiro', 'err');
+  if (!data) return toast('Informe a data', 'err');
+  if (!km || parseFloat(km) <= 0) return toast('Informe os KM rodados', 'err');
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
+  try {
+    const r = await api('addCorrida', {
+      motoboyId: motoId,
+      motoboyNome: motoNome,
+      data: data,
+      km: km.replace(',', '.'),
+      entregas: ''   // não usamos aqui
+    });
+
+    if (r.ok) {
+      toast('Lançamento salvo!');
+      document.getElementById('km').value = '';
+      document.getElementById('km').focus();
+      await carregarHistorico();
+    } else {
+      toast('Erro: ' + (r.error || 'desconhecido'), 'err');
+    }
+  } catch (e) {
+    toast('Erro: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Salvar Lançamento';
+  }
+}
+
+/* ============================================================
+   HISTÓRICO (últimos 15 lançamentos de km)
+   ============================================================ */
+async function carregarHistorico() {
+  const container = document.getElementById('historico-container');
+  container.innerHTML = '<div class="loading"><span class="spinner"></span> Carregando...</div>';
+
+  try {
+    const linhas = await lerAba('Motos');
+
+    const todos = linhas.map((r, i) => ({
+      _row: i + 2,
+      motoboyId: (r[0]||'').toString().trim(),
+      motoboyNome: (r[1]||'').toString().trim(),
+      data: (r[2]||'').toString().trim(),
+      km: parseFloat((r[3]||'0').toString().replace(',','.')) || 0,
+      entregas: (r[4]||'').toString().trim(),
+      dataReposicao: (r[5]||'').toString().trim()
+    }));
+
+    // Só corridas (tem data e km) e não reposições
+    const corridas = todos.filter(t => t.data && t.km > 0 && !t.dataReposicao);
+
+    // Ordena por data mais recente
+    corridas.sort((a,b) => dataToNum(b.data) - dataToNum(a.data));
+
+    // Últimos 15
+    const ultimos = corridas.slice(0, 15);
+
+    if (!ultimos.length) {
+      container.innerHTML = `
+        <div class="empty">
+          <span class="icon">📭</span>
+          Nenhum lançamento registrado ainda.
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Motoqueiro</th>
+            <th>KM</th>
+            <th style="width:60px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ultimos.map(c => `
+            <tr>
+              <td>
+                <b>${c.data}</b>
+                <small style="color:#94a3b8; margin-left:4px">${getDayOfWeek(c.data)}</small>
+              </td>
+              <td>${c.motoboyNome || c.motoboyId}</td>
+              <td><span class="km-value">${c.km.toFixed(1).replace('.',',')} km</span></td>
+              <td>
+                <button class="btn-del" onclick="apagar(${c._row}, '${c.data}', '${c.motoboyNome}')" title="Apagar lançamento">🗑️</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+      <div style="margin-top:14px; font-size:12px; color:#94a3b8; text-align:center">
+        Mostrando os últimos 15 lançamentos
+      </div>
+    `;
+  } catch (e) {
+    container.innerHTML = `
+      <div class="empty">
+        <span class="icon">⚠️</span>
+        Erro ao carregar: ${e.message}
+      </div>`;
+  }
+}
+
+async function apagar(rowIndex, data, nome) {
+  if (!confirm(`Apagar o lançamento de ${nome} em ${data}?`)) return;
+  try {
+    const r = await api('deleteLinhaMoto', { rowIndex });
+    if (r.ok) {
+      toast('Lançamento apagado');
+      await carregarHistorico();
+    } else {
+      toast('Erro: ' + (r.error || 'desconhecido'), 'err');
+    }
+  } catch (e) {
+    toast('Erro: ' + e.message, 'err');
+  }
+}
+
+/* ============================================================
+   INICIALIZA — verifica se já está logado
+   ============================================================ */
+(async () => {
+  if (sessionStorage.getItem('km_admin_logado') === '1') {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('app').classList.add('show');
+    document.getElementById('data').value = hojeStr();
+    await carregarMotoqueiros();
+    await carregarHistorico();
+  }
+})();
+</script>
+</body>
+</html>
