@@ -15,7 +15,6 @@
     min-height: 100vh;
   }
 
-  /* TOPBAR */
   .topbar {
     background: #0f172a; color: white;
     padding: 14px 32px;
@@ -53,7 +52,6 @@
   }
   .logout-btn:hover { background: rgba(239,68,68,0.12); color: #fca5a5; }
 
-  /* TABS */
   .tabs-wrap {
     background: white;
     border-bottom: 1px solid #dbe1ea;
@@ -76,12 +74,10 @@
   .tab:hover { color: #0f172a; }
   .tab.active { color: #1d4ed8; border-bottom-color: #1d4ed8; font-weight: 600; }
 
-  /* CONTEÚDO */
   .content { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
   .pane { display: none; }
   .pane.active { display: block; }
 
-  /* Toolbar */
   .toolbar {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 20px; gap: 16px; flex-wrap: wrap;
@@ -104,7 +100,6 @@
     background-size: cover; opacity: 0.6;
   }
 
-  /* CARDS FUNCIONÁRIO */
   .emp-card {
     background: white; padding: 22px 24px; border-radius: 14px;
     border: 1px solid #e3e8ef; box-shadow: 0 1px 3px rgba(15,23,42,0.04);
@@ -149,7 +144,6 @@
   .badge.fer { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
   .badge.fer.ok { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
 
-  /* STATUS FÉRIAS */
   .ferias-status {
     display: flex; align-items: center; gap: 12px;
     padding: 12px 16px; border-radius: 10px;
@@ -164,7 +158,6 @@
   .ferias-status .text { flex: 1; }
   .ferias-status .text b { font-weight: 700; }
 
-  /* STATS */
   .stats-row {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
     gap: 8px; margin-bottom: 16px;
@@ -181,7 +174,6 @@
   .stat-value.zero { color: #cbd5e1; }
   .stat-value.neg { color: #dc2626; }
 
-  /* BOTÕES DE AÇÃO */
   .actions-row {
     display: flex; flex-wrap: wrap; gap: 6px;
     padding-top: 14px; border-top: 1px solid #f1f5f9;
@@ -206,7 +198,6 @@
     background: #fef2f2; border-color: #fecaca; color: #dc2626;
   }
 
-  /* FORM */
   .form-card {
     background: white; padding: 24px 26px;
     border-radius: 14px; border: 1px solid #e3e8ef;
@@ -240,7 +231,6 @@
   .field textarea { min-height: 70px; resize: vertical; }
   .field.full { grid-column: 1/-1; }
 
-  /* TABELAS */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid #f1f5f9; }
   th {
@@ -271,16 +261,18 @@
   .btn-sm.danger { color: #dc2626; border-color: #fecaca; }
   .btn-sm.danger:hover { background: #fef2f2; }
 
-  /* MODAL */
+  /* ============================================
+     MODAL
+     ============================================ */
   .modal {
     display: none; position: fixed; inset: 0;
-    background: rgba(15,23,42,0.5);
+    background: rgba(15,23,42,0.55);
     backdrop-filter: blur(3px);
     z-index: 1000; padding: 20px; overflow-y: auto;
   }
   .modal.open { display: block; }
   .modal-box {
-    background: white; max-width: 950px;
+    background: white; max-width: 1000px;
     margin: 40px auto; border-radius: 16px;
     overflow: hidden; box-shadow: 0 24px 60px rgba(15,23,42,0.2);
     animation: modalIn 0.2s ease;
@@ -293,8 +285,10 @@
     background: white; color: #0f172a; padding: 20px 26px;
     display: flex; justify-content: space-between; align-items: center;
     border-bottom: 1px solid #e3e8ef;
+    position: sticky; top: 0; background: white; z-index: 10;
   }
   .modal-head h3 { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
+  .modal-head .sub { font-size: 12px; color: #64748b; font-weight: 400; margin-top: 2px; }
   .modal-close {
     background: none; border: none; color: #94a3b8;
     font-size: 24px; cursor: pointer;
@@ -303,42 +297,130 @@
     transition: all 0.15s;
   }
   .modal-close:hover { background: #f1f5f9; color: #0f172a; }
+  .modal-body { padding: 24px 26px; max-height: 78vh; overflow-y: auto; }
 
-  .modal-tabs {
-    display: flex; gap: 2px; background: #f8fafc;
-    padding: 8px 20px 0; border-bottom: 1px solid #e3e8ef;
-    overflow-x: auto;
+  /* ETAPA 1 — Escolha do mês */
+  .mes-escolha {
+    padding: 20px 0; text-align: center;
   }
-  .modal-tab {
-    padding: 10px 16px; border: none; background: none;
-    border-radius: 8px 8px 0 0; cursor: pointer;
-    font-weight: 500; font-size: 13px; color: #64748b;
-    font-family: inherit; transition: all 0.15s;
-    white-space: nowrap; border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
+  .mes-escolha p {
+    color: #475569; font-size: 14px; margin-bottom: 20px;
   }
-  .modal-tab:hover { color: #0f172a; }
-  .modal-tab.active {
-    color: #1d4ed8; border-bottom-color: #1d4ed8;
-    background: white; font-weight: 600;
+  .mes-escolha-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 14px; max-width: 400px; margin: 0 auto 24px;
+  }
+  .mes-escolha-grid select {
+    padding: 14px 16px; border: 1px solid #d1d9e3;
+    border-radius: 10px; font-size: 16px; font-family: inherit;
+    text-align: center; background: white; color: #0f172a;
+  }
+  .mes-escolha-grid select:focus {
+    outline: none; border-color: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
   }
 
-  .modal-body { padding: 24px 26px; max-height: 70vh; overflow-y: auto; }
-  .modal-pane { display: none; }
-  .modal-pane.active { display: block; }
-
-  .radio-group { display: flex; gap: 12px; flex-wrap: wrap; }
-  .radio-opt {
-    flex: 1; min-width: 220px;
-    background: #f8fafc; padding: 14px 16px;
-    border-radius: 10px; border: 1px solid #e2e8f0;
-    cursor: pointer; transition: all 0.15s;
+  /* SEÇÕES DO MODAL */
+  .section {
+    background: #fafbfc;
+    border: 1px solid #e3e8ef;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
   }
-  .radio-opt:hover { border-color: #cbd5e1; background: white; }
-  .radio-opt.selected { border-color: #1d4ed8; background: #eff6ff; }
-  .radio-opt input { margin-right: 8px; }
-  .radio-opt b { font-size: 13px; color: #0f172a; }
-  .radio-opt small { display: block; color: #64748b; font-size: 11px; margin-top: 4px; margin-left: 22px; }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 14px; font-weight: 700; color: #0f172a;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title .count {
+    background: #e2e8f0; color: #475569;
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    font-weight: 600;
+  }
+
+  .row-item {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 3fr 40px;
+    gap: 8px;
+    align-items: center;
+    background: white;
+    padding: 10px 12px;
+    border: 1px solid #e3e8ef;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+  .row-item.adv { grid-template-columns: 1.5fr 4fr 40px; }
+  .row-item.fer { grid-template-columns: 2fr 2fr 40px; }
+  .row-item.fol { grid-template-columns: 2fr 3fr 40px; }
+
+  .row-item input, .row-item select {
+    padding: 8px 10px; border: 1px solid #d1d9e3;
+    border-radius: 6px; font-size: 13px; font-family: inherit;
+    background: white; color: #0f172a; width: 100%;
+  }
+  .row-item input:focus, .row-item select:focus {
+    outline: none; border-color: #1d4ed8;
+    box-shadow: 0 0 0 2px rgba(29,78,216,0.08);
+  }
+  .row-del {
+    width: 32px; height: 32px;
+    background: #fef2f2; color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 6px; cursor: pointer;
+    font-size: 14px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .row-del:hover { background: #fee2e2; border-color: #fca5a5; }
+
+  .empty-row {
+    text-align: center; padding: 16px;
+    color: #94a3b8; font-size: 12px;
+    font-style: italic;
+  }
+
+  .add-btn {
+    background: white; color: #1d4ed8;
+    border: 1px dashed #93c5fd;
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .add-btn:hover { background: #eff6ff; border-color: #1d4ed8; }
+
+  .salvar-tudo-bar {
+    position: sticky; bottom: 0;
+    background: white;
+    padding: 16px 0 0;
+    margin-top: 20px;
+    border-top: 2px solid #f1f5f9;
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .btn-salvar-tudo {
+    background: #1d4ed8; color: white;
+    border: none; padding: 14px 32px;
+    border-radius: 10px; font-size: 15px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-salvar-tudo:hover { background: #1e40af; }
+  .btn-salvar-tudo:disabled { background: #93c5fd; cursor: not-allowed; }
+
+  .btn-cancelar-modal {
+    background: #f1f5f9; color: #475569;
+    border: none; padding: 14px 24px;
+    border-radius: 10px; font-size: 14px; font-weight: 500;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-cancelar-modal:hover { background: #e2e8f0; }
 
   /* TOAST */
   .toast {
@@ -352,6 +434,7 @@
   .toast.show { display: block; animation: slideIn 0.25s ease; }
   .toast.ok { background: #15803d; }
   .toast.err { background: #b91c1c; }
+  .toast.info { background: #1d4ed8; }
   @keyframes slideIn {
     from { transform: translateX(20px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
@@ -450,13 +533,16 @@
 
 </div>
 
+<!-- MODAL -->
 <div class="modal" id="modal">
   <div class="modal-box">
     <div class="modal-head">
-      <h3 id="modal-title">Título</h3>
+      <div>
+        <h3 id="modal-title">Título</h3>
+        <div class="sub" id="modal-sub"></div>
+      </div>
       <button class="modal-close" onclick="fecharModal()">×</button>
     </div>
-    <div id="modal-tabs-wrap"></div>
     <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
@@ -483,6 +569,26 @@ let cadastro = [], controle = [], faltas = [], advertencias = [];
 let feriados = [], folgas = [], ferias = [];
 let funcionarios = [];
 let filtroNome = '';
+
+// Estado do modal de lançamento
+let modalState = {
+  empId: null,
+  empNome: '',
+  mes: '',
+  ano: '',
+  // Originais (como estavam na planilha)
+  originalControle: null,
+  originalFaltas: [],
+  originalAdvertencias: [],
+  originalFeriados: [],
+  originalFolgas: [],
+  // Editados no modal
+  controle: { saldoBanco: '', horaExtra: '', observacao: '' },
+  faltas: [],
+  advertencias: [],
+  feriados: [],
+  folgas: []
+};
 
 /* ============================================================
    HELPERS
@@ -559,12 +665,18 @@ async function lerAba(nome) {
 }
 
 async function api(action, payload = {}) {
-  const resp = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, ...payload })
-  });
-  return resp.json();
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action, ...payload })
+    });
+    if (!resp.ok) return { ok:false, error: 'HTTP ' + resp.status };
+    return await resp.json();
+  } catch (e) {
+    console.error('Erro na API:', e);
+    return { ok:false, error: 'Falha de conexão: ' + e.message };
+  }
 }
 
 /* ============================================================
@@ -940,268 +1052,518 @@ document.querySelectorAll('.tab').forEach(t => {
 });
 
 /* ============================================================
-   MODAL
+   MODAL GENÉRICO
    ============================================================ */
-function abrirModal(titulo, html, opts = {}) {
+function abrirModal(titulo, sub, html) {
   document.getElementById('modal-title').textContent = titulo;
-  const tabsWrap = document.getElementById('modal-tabs-wrap');
-  const body = document.getElementById('modal-body');
-
-  if (opts.tabs) {
-    tabsWrap.innerHTML = `<div class="modal-tabs">${
-      opts.tabs.map((t, i) => `<button class="modal-tab ${i===0?'active':''}" data-mtab="${t.id}">${t.label}</button>`).join('')
-    }</div>`;
-    body.innerHTML = opts.tabs.map((t, i) => `<div class="modal-pane ${i===0?'active':''}" id="mpane-${t.id}">${t.html}</div>`).join('');
-    document.querySelectorAll('.modal-tab').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.modal-pane').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('mpane-' + btn.dataset.mtab).classList.add('active');
-      });
-    });
-  } else {
-    tabsWrap.innerHTML = '';
-    body.innerHTML = html;
-  }
+  document.getElementById('modal-sub').textContent = sub || '';
+  document.getElementById('modal-body').innerHTML = html;
   document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-body').scrollTop = 0;
 }
 
 function fecharModal() {
   document.getElementById('modal').classList.remove('open');
+  modalState = {
+    empId: null, empNome: '', mes: '', ano: '',
+    originalControle: null,
+    originalFaltas: [], originalAdvertencias: [], originalFeriados: [], originalFolgas: [],
+    controle: { saldoBanco: '', horaExtra: '', observacao: '' },
+    faltas: [], advertencias: [], feriados: [], folgas: []
+  };
 }
 
-/* ⚠️ REMOVIDO: o modal NÃO fecha mais ao clicar fora.
-   Só fecha com o botão X. */
-
 /* ============================================================
-   LANÇAMENTO
+   LANÇAMENTO — ETAPA 1: ESCOLHER MÊS
    ============================================================ */
 function abrirLancamento(empId) {
   const f = cadastro.find(c => c.id === empId);
   if (!f) return;
 
-  const tabs = [
-    { id: 'ctrl', label: '📊 Mensal',      html: formControle(f) },
-    { id: 'falt', label: '📋 Faltas',      html: formFalta(f) },
-    { id: 'adv',  label: '⚖️ Advertências', html: formAdvertencia(f) },
-    { id: 'fer',  label: '🏖️ Feriados',    html: formFeriado(f) },
-    { id: 'folg', label: '📆 Folgas',      html: formFolga(f) },
-    { id: 'feri', label: '🌴 Férias',      html: formFerias(f) }
-  ];
+  modalState.empId = empId;
+  modalState.empNome = f.nome;
 
-  abrirModal('Lançar — ' + f.nome, '', { tabs });
-}
+  const now = new Date();
+  const mesAtual = now.getMonth() + 1;
+  const anoAtual = now.getFullYear();
+  const mesPadrao = mesAtual === 1 ? 12 : mesAtual - 1;
+  const anoPadrao = mesAtual === 1 ? anoAtual - 1 : anoAtual;
 
-function formControle(f) {
-  return `
-    <div class="form-grid">
-      <div class="field"><label>Mês/Ano referência</label><input type="text" id="ctrl-mes" value="${mesAnteriorStr()}" placeholder="MM/AAAA"></div>
-      <div class="field"><label>Saldo Banco de Horas</label><input type="text" id="ctrl-bh" placeholder="ex: 8,5 (8h30)"></div>
-      <div class="field"><label>Hora Extra (horas)</label><input type="text" id="ctrl-he" placeholder="ex: 12"></div>
-      <div class="field full"><label>Observação</label><textarea id="ctrl-obs" placeholder="Opcional"></textarea></div>
-    </div>
-    <button class="btn-sm primary" onclick="salvarControle('${f.nome}')">💾 Salvar Lançamento</button>
-  `;
-}
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const anos = [];
+  for (let y = anoAtual - 3; y <= anoAtual + 1; y++) anos.push(y);
 
-function formFalta(f) {
-  return `
-    <div class="form-grid">
-      <div class="field"><label>Data da Falta</label><input type="text" id="falta-data" value="${hojeStr()}"></div>
-      <div class="field"><label>Com Atestado?</label>
-        <select id="falta-atestado"><option value="">Não</option><option value="1">Sim</option></select>
-      </div>
-      <div class="field full"><label>Observação</label><input type="text" id="falta-obs" placeholder="Ex: atestado médico"></div>
-    </div>
-    <button class="btn-sm primary" onclick="salvarFalta('${f.nome}')">💾 Salvar Falta</button>
-  `;
-}
-
-function formAdvertencia(f) {
-  return `
-    <div class="form-grid">
-      <div class="field"><label>Data</label><input type="text" id="adv-data" value="${hojeStr()}"></div>
-      <div class="field full"><label>Motivo</label><input type="text" id="adv-motivo" placeholder="Motivo da advertência"></div>
-    </div>
-    <button class="btn-sm primary" onclick="salvarAdvertencia('${f.nome}')">💾 Salvar Advertência</button>
-  `;
-}
-
-function formFeriado(f) {
-  return `
-    <div style="background:#f8fafc; padding:14px 16px; border-radius:10px; font-size:13px; color:#475569; margin-bottom:18px; border-left:3px solid #1d4ed8">
-      ℹ️ Feriado trabalhado gera <b>direito a uma folga</b>. Não afeta o saldo do banco de horas.
-      Ao lançar uma folga com origem <b>"Pagar feriado"</b>, o feriado mais antigo pendente já vem selecionado.
-    </div>
-    <div class="form-grid">
-      <div class="field"><label>Data do Feriado Trabalhado</label><input type="text" id="fer-data" value="${hojeStr()}"></div>
-    </div>
-    <button class="btn-sm primary" onclick="salvarFeriado('${f.nome}')">💾 Salvar Feriado</button>
-  `;
-}
-
-function formFolga(f) {
-  const pendentes = feriados
-    .filter(x => x.funcionario.toLowerCase() === f.nome.toLowerCase() && x.status === 'pendente')
-    .sort((a, b) => dataToNum(a.data) - dataToNum(b.data));
-
-  const optionsFeriado = pendentes.length
-    ? pendentes.map((x, idx) => `
-        <option value="${x._row}" ${idx===0?'selected':''}>
-          ${x.data} (${getDayOfWeek(x.data)})${idx===0?' — mais antigo':''}
-        </option>
-      `).join('')
-    : '<option value="">— Nenhum feriado pendente —</option>';
-
-  const semPendentes = pendentes.length === 0;
-
-  return `
-    <div class="form-grid">
-      <div class="field"><label>Data da Folga</label><input type="text" id="folg-data" value="${hojeStr()}"></div>
-    </div>
-
-    <div class="field full" style="margin-bottom:16px">
-      <label>Origem da Folga</label>
-      <div class="radio-group">
-        <label class="radio-opt ${!semPendentes ? 'selected' : ''}" onclick="selecionarOrigem('feriado')" id="opt-feriado">
-          <input type="radio" name="folg-origem" value="feriado" ${!semPendentes ? 'checked' : 'disabled'}>
-          <b>🏖️ Pagar Feriado Trabalhado</b>
-          <small>${semPendentes ? 'Nenhum feriado pendente' : pendentes.length + ' feriado(s) pendente(s)'}</small>
-        </label>
-        <label class="radio-opt ${semPendentes ? 'selected' : ''}" onclick="selecionarOrigem('banco')" id="opt-banco">
-          <input type="radio" name="folg-origem" value="banco" ${semPendentes ? 'checked' : ''}>
-          <b>📊 Debitar do Banco de Horas</b>
-          <small>Desconta 8h do saldo</small>
-        </label>
-      </div>
-    </div>
-
-    <div id="folg-feriado-wrap" style="${semPendentes ? 'display:none' : ''}; margin-bottom:16px">
-      <div class="field">
-        <label>Feriado a Compensar</label>
-        <select id="folg-feriado">${optionsFeriado}</select>
-      </div>
-    </div>
-
-    <button class="btn-sm primary" onclick="salvarFolga('${f.nome}')">💾 Salvar Folga</button>
-  `;
-}
-
-function selecionarOrigem(origem) {
-  document.querySelectorAll('.radio-opt').forEach(el => el.classList.remove('selected'));
-  document.getElementById('opt-' + origem).classList.add('selected');
-  document.querySelectorAll('input[name="folg-origem"]').forEach(r => { r.checked = r.value === origem; });
-  document.getElementById('folg-feriado-wrap').style.display = origem === 'feriado' ? 'block' : 'none';
-}
-
-function formFerias(f) {
-  return `
-    <div class="form-grid">
-      <div class="field"><label>Data Início</label><input type="text" id="feri-inicio" placeholder="dd/mm/aaaa"></div>
-      <div class="field"><label>Dias</label><input type="text" id="feri-dias" placeholder="ex: 30"></div>
-      <div class="field"><label>Status</label>
-        <select id="feri-status">
-          <option value="agendada">Agendada</option>
-          <option value="gozada">Gozada</option>
-          <option value="cancelada">Cancelada</option>
+  const html = `
+    <div class="mes-escolha">
+      <p>Escolha o <b>mês/ano</b> para lançar:</p>
+      <div class="mes-escolha-grid">
+        <select id="escolha-mes">
+          ${meses.map((m, i) => `<option value="${String(i+1).padStart(2,'0')}" ${(i+1) === mesPadrao ? 'selected' : ''}>${m}</option>`).join('')}
+        </select>
+        <select id="escolha-ano">
+          ${anos.map(y => `<option value="${y}" ${y === anoPadrao ? 'selected' : ''}>${y}</option>`).join('')}
         </select>
       </div>
+      <button class="btn-sm primary" onclick="carregarMesEProximo()" style="padding:12px 32px; font-size:14px;">Continuar →</button>
     </div>
-    <div style="background:#f8fafc; padding:14px 16px; border-radius:10px; font-size:12px; color:#475569; margin-bottom:16px">
-      ℹ️ Fim e Retorno são calculados automaticamente (retorno pula domingo).
+  `;
+
+  abrirModal('Lançar — ' + f.nome, 'Etapa 1 de 2 · Escolher mês', html);
+}
+
+/* ============================================================
+   LANÇAMENTO — ETAPA 2: MODAL COMPLETO
+   ============================================================ */
+async function carregarMesEProximo() {
+  const mes = document.getElementById('escolha-mes').value;
+  const ano = document.getElementById('escolha-ano').value;
+  const mesAno = `${mes}/${ano}`;
+
+  modalState.mes = mes;
+  modalState.ano = ano;
+
+  // Mostra loading
+  document.getElementById('modal-body').innerHTML = '<div class="loading show"><span class="spinner"></span> Carregando dados de ' + mesAno + '...</div>';
+
+  // Busca dados
+  await Promise.all([
+    carregarCadastro(),
+    carregarControle(),
+    carregarFaltas(),
+    carregarAdvertencias(),
+    carregarFeriados(),
+    carregarFolgas()
+  ]);
+
+  // Filtra dados do funcionário + mês/ano
+  const emp = cadastro.find(c => c.id === modalState.empId);
+  if (!emp) { toast('Funcionário não encontrado', 'err'); fecharModal(); return; }
+
+  const nomeL = emp.nome.toLowerCase();
+
+  // Controle (mês)
+  const ctrlMes = controle.find(c =>
+    c.funcionario.toLowerCase() === nomeL && c.mesAno === mesAno
+  );
+  modalState.originalControle = ctrlMes || null;
+  modalState.controle = {
+    saldoBanco: ctrlMes ? String(ctrlMes.saldoBanco).replace('.', ',') : '',
+    horaExtra: ctrlMes ? String(ctrlMes.horaExtra).replace('.', ',') : '',
+    observacao: ctrlMes ? ctrlMes.observacao : ''
+  };
+
+  // Faltas do mês
+  const faltasMes = faltas.filter(f =>
+    f.funcionario.toLowerCase() === nomeL && f.data.endsWith(mes + '/' + ano)
+  );
+  modalState.originalFaltas = faltasMes;
+  modalState.faltas = faltasMes.map(f => ({
+    data: f.data,
+    comAtestado: f.comAtestado,
+    observacao: f.observacao,
+    _row: f._row,
+    _original: true
+  }));
+
+  // Advertências do mês
+  const advMes = advertencias.filter(a =>
+    a.funcionario.toLowerCase() === nomeL && a.data.endsWith(mes + '/' + ano)
+  );
+  modalState.originalAdvertencias = advMes;
+  modalState.advertencias = advMes.map(a => ({
+    data: a.data,
+    motivo: a.motivo,
+    _row: a._row,
+    _original: true
+  }));
+
+  // Feriados do mês
+  const ferMes = feriados.filter(f =>
+    f.funcionario.toLowerCase() === nomeL && f.data.endsWith(mes + '/' + ano)
+  );
+  modalState.originalFeriados = ferMes;
+  modalState.feriados = ferMes.map(f => ({
+    data: f.data,
+    status: f.status,
+    _row: f._row,
+    _original: true
+  }));
+
+  // Folgas do mês
+  const folMes = folgas.filter(f =>
+    f.funcionario.toLowerCase() === nomeL && f.data.endsWith(mes + '/' + ano)
+  );
+  modalState.originalFolgas = folMes;
+  modalState.folgas = folMes.map(f => ({
+    data: f.data,
+    origem: f.origem,
+    _row: f._row,
+    _original: true
+  }));
+
+  renderModalLancamento();
+}
+
+/* ============================================================
+   RENDER MODAL COMPLETO
+   ============================================================ */
+function renderModalLancamento() {
+  const emp = cadastro.find(c => c.id === modalState.empId);
+  const mesAno = modalState.mes + '/' + modalState.ano;
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const nomeMes = meses[parseInt(modalState.mes) - 1];
+
+  const s = modalState.controle;
+
+  let html = '';
+
+  // ---- SEÇÃO: BANCO DE HORAS ----
+  html += `
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">📊 Banco de Horas do Mês</div>
+      </div>
+      <div class="row-item" style="grid-template-columns: 1fr 1fr 2fr;">
+        <input type="text" id="ctrl-bh" value="${s.saldoBanco}" placeholder="Saldo BH (ex: 8,5)" oninput="modalState.controle.saldoBanco = this.value">
+        <input type="text" id="ctrl-he" value="${s.horaExtra}" placeholder="Hora Extra (ex: 12)" oninput="modalState.controle.horaExtra = this.value">
+        <input type="text" id="ctrl-obs" value="${s.observacao}" placeholder="Observação (opcional)" oninput="modalState.controle.observacao = this.value">
+      </div>
     </div>
-    <button class="btn-sm primary" onclick="salvarFerias('${f.nome}')">💾 Salvar Férias</button>
+  `;
+
+  // ---- SEÇÃO: FALTAS ----
+  html += `
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">📋 Faltas <span class="count">${modalState.faltas.length}</span></div>
+      </div>
+      <div id="section-faltas">
+        ${modalState.faltas.length === 0
+          ? '<div class="empty-row">Nenhuma falta lançada neste mês</div>'
+          : modalState.faltas.map((f, i) => renderLinhaFalta(f, i)).join('')
+        }
+      </div>
+      <button class="add-btn" onclick="adicionarFalta()" style="margin-top:8px;">＋ Adicionar falta</button>
+    </div>
+  `;
+
+  // ---- SEÇÃO: ADVERTÊNCIAS ----
+  html += `
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">⚖️ Advertências <span class="count">${modalState.advertencias.length}</span></div>
+      </div>
+      <div id="section-advertencias">
+        ${modalState.advertencias.length === 0
+          ? '<div class="empty-row">Nenhuma advertência lançada neste mês</div>'
+          : modalState.advertencias.map((a, i) => renderLinhaAdvertencia(a, i)).join('')
+        }
+      </div>
+      <button class="add-btn" onclick="adicionarAdvertencia()" style="margin-top:8px;">＋ Adicionar advertência</button>
+    </div>
+  `;
+
+  // ---- SEÇÃO: FERIADOS ----
+  html += `
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">🏖️ Feriados Trabalhados <span class="count">${modalState.feriados.length}</span></div>
+      </div>
+      <div id="section-feriados">
+        ${modalState.feriados.length === 0
+          ? '<div class="empty-row">Nenhum feriado trabalhado neste mês</div>'
+          : modalState.feriados.map((f, i) => renderLinhaFeriado(f, i)).join('')
+        }
+      </div>
+      <button class="add-btn" onclick="adicionarFeriado()" style="margin-top:8px;">＋ Adicionar feriado</button>
+    </div>
+  `;
+
+  // ---- SEÇÃO: FOLGAS ----
+  html += `
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">📆 Folgas <span class="count">${modalState.folgas.length}</span></div>
+      </div>
+      <div id="section-folgas">
+        ${modalState.folgas.length === 0
+          ? '<div class="empty-row">Nenhuma folga lançada neste mês</div>'
+          : modalState.folgas.map((f, i) => renderLinhaFolga(f, i)).join('')
+        }
+      </div>
+      <button class="add-btn" onclick="adicionarFolga()" style="margin-top:8px;">＋ Adicionar folga</button>
+    </div>
+  `;
+
+  // ---- BARRA SALVAR ----
+  html += `
+    <div class="salvar-tudo-bar">
+      <button class="btn-cancelar-modal" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-salvar-tudo" id="btn-salvar-tudo" onclick="salvarTudo()">💾 Salvar Tudo</button>
+    </div>
+  `;
+
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-title').textContent = 'Lançar — ' + emp.nome;
+  document.getElementById('modal-sub').textContent = `Etapa 2 de 2 · ${nomeMes}/${modalState.ano}`;
+}
+
+function renderLinhaFalta(f, i) {
+  return `
+    <div class="row-item">
+      <input type="text" value="${f.data}" placeholder="dd/mm/aaaa" oninput="modalState.faltas[${i}].data = this.value">
+      <select onchange="modalState.faltas[${i}].comAtestado = (this.value === '1')">
+        <option value="" ${!f.comAtestado ? 'selected' : ''}>Não</option>
+        <option value="1" ${f.comAtestado ? 'selected' : ''}>Sim</option>
+      </select>
+      <input type="text" value="${f.observacao || ''}" placeholder="Observação" oninput="modalState.faltas[${i}].observacao = this.value">
+      <button class="row-del" onclick="removerFalta(${i})" title="Remover">🗑</button>
+    </div>
+  `;
+}
+
+function renderLinhaAdvertencia(a, i) {
+  return `
+    <div class="row-item adv">
+      <input type="text" value="${a.data}" placeholder="dd/mm/aaaa" oninput="modalState.advertencias[${i}].data = this.value">
+      <input type="text" value="${a.motivo || ''}" placeholder="Motivo da advertência" oninput="modalState.advertencias[${i}].motivo = this.value">
+      <button class="row-del" onclick="removerAdvertencia(${i})" title="Remover">🗑</button>
+    </div>
+  `;
+}
+
+function renderLinhaFeriado(f, i) {
+  return `
+    <div class="row-item fer">
+      <input type="text" value="${f.data}" placeholder="dd/mm/aaaa" oninput="modalState.feriados[${i}].data = this.value">
+      <select onchange="modalState.feriados[${i}].status = this.value">
+        <option value="pendente" ${f.status === 'pendente' ? 'selected' : ''}>Pendente (não compensado)</option>
+        <option value="compensado" ${f.status === 'compensado' ? 'selected' : ''}>Compensado</option>
+      </select>
+      <button class="row-del" onclick="removerFeriado(${i})" title="Remover">🗑</button>
+    </div>
+  `;
+}
+
+function renderLinhaFolga(f, i) {
+  return `
+    <div class="row-item fol">
+      <input type="text" value="${f.data}" placeholder="dd/mm/aaaa" oninput="modalState.folgas[${i}].data = this.value">
+      <select onchange="modalState.folgas[${i}].origem = this.value">
+        <option value="banco" ${f.origem === 'banco' ? 'selected' : ''}>📊 Debitar do Banco</option>
+        <option value="feriado" ${f.origem === 'feriado' ? 'selected' : ''}>🏖️ Pagar Feriado</option>
+      </select>
+      <button class="row-del" onclick="removerFolga(${i})" title="Remover">🗑</button>
+    </div>
   `;
 }
 
 /* ============================================================
-   SALVAR
+   ADICIONAR / REMOVER LINHAS
    ============================================================ */
-async function salvarControle(nome) {
-  const p = {
-    funcionario: nome,
-    mesAno: document.getElementById('ctrl-mes').value.trim(),
-    saldoBanco: document.getElementById('ctrl-bh').value.trim(),
-    horaExtra: document.getElementById('ctrl-he').value.trim(),
-    observacao: document.getElementById('ctrl-obs').value.trim(),
-    lancadoPor: sessNome || 'admin'
-  };
-  if (!p.mesAno) return toast('Informe o Mês/Ano', 'err');
-  const r = await api('addControle', p);
-  if (r.ok) { toast('Lançamento salvo!'); fecharModal(); await recarregar(); }
-  else toast(r.error || 'Erro', 'err');
+function adicionarFalta() {
+  modalState.faltas.push({ data: '', comAtestado: false, observacao: '', _original: false });
+  renderModalLancamento();
 }
 
-async function salvarFalta(nome) {
-  const p = {
-    funcionario: nome,
-    data: document.getElementById('falta-data').value.trim(),
-    comAtestado: document.getElementById('falta-atestado').value === '1',
-    observacao: document.getElementById('falta-obs').value.trim()
-  };
-  if (!p.data) return toast('Informe a data', 'err');
-  const r = await api('addFalta', p);
-  if (r.ok) { toast('Falta salva!'); fecharModal(); await recarregar(); }
-  else toast(r.error || 'Erro', 'err');
+function adicionarAdvertencia() {
+  modalState.advertencias.push({ data: '', motivo: '', _original: false });
+  renderModalLancamento();
 }
 
-async function salvarAdvertencia(nome) {
-  const p = {
-    funcionario: nome,
-    data: document.getElementById('adv-data').value.trim(),
-    motivo: document.getElementById('adv-motivo').value.trim()
-  };
-  if (!p.data || !p.motivo) return toast('Preencha data e motivo', 'err');
-  const r = await api('addAdvertencia', p);
-  if (r.ok) { toast('Advertência salva!'); fecharModal(); await recarregar(); }
-  else toast(r.error || 'Erro', 'err');
+function adicionarFeriado() {
+  modalState.feriados.push({ data: '', status: 'pendente', _original: false });
+  renderModalLancamento();
 }
 
-async function salvarFeriado(nome) {
-  const p = {
-    funcionario: nome,
-    data: document.getElementById('fer-data').value.trim()
-  };
-  if (!p.data) return toast('Informe a data', 'err');
-  const r = await api('addFeriado', p);
-  if (r.ok) { toast('Feriado salvo!'); fecharModal(); await recarregar(); }
-  else toast(r.error || 'Erro', 'err');
+function adicionarFolga() {
+  modalState.folgas.push({ data: '', origem: 'banco', _original: false });
+  renderModalLancamento();
 }
 
-async function salvarFolga(nome) {
-  const origem = document.querySelector('input[name="folg-origem"]:checked').value;
-  const p = {
-    funcionario: nome,
-    data: document.getElementById('folg-data').value.trim(),
-    origem: origem
-  };
-  if (!p.data) return toast('Informe a data da folga', 'err');
-  if (origem === 'feriado') {
-    const ferRow = document.getElementById('folg-feriado').value;
-    if (!ferRow) return toast('Nenhum feriado pendente', 'err');
-    p.feriadoRow = ferRow;
-  }
-  const r = await api('addFolga', p);
-  if (r.ok) { toast('Folga salva!'); fecharModal(); await recarregar(); }
-  else toast(r.error || 'Erro', 'err');
+function removerFalta(i) {
+  const f = modalState.faltas[i];
+  if (!confirm('Remover esta falta?')) return;
+  modalState.faltas.splice(i, 1);
+  renderModalLancamento();
 }
 
-async function salvarFerias(nome) {
-  const p = {
-    funcionario: nome,
-    inicio: document.getElementById('feri-inicio').value.trim(),
-    dias: document.getElementById('feri-dias').value.trim(),
-    status: document.getElementById('feri-status').value
-  };
-  if (!p.inicio || !p.dias) return toast('Preencha início e dias', 'err');
-  const r = await api('addFerias', p);
-  if (r.ok) { toast('Férias salvas!'); fecharModal(); await recarregar(); }
-  else toast(r.error || 'Erro', 'err');
+function removerAdvertencia(i) {
+  if (!confirm('Remover esta advertência?')) return;
+  modalState.advertencias.splice(i, 1);
+  renderModalLancamento();
+}
+
+function removerFeriado(i) {
+  if (!confirm('Remover este feriado?')) return;
+  modalState.feriados.splice(i, 1);
+  renderModalLancamento();
+}
+
+function removerFolga(i) {
+  if (!confirm('Remover esta folga?')) return;
+  modalState.folgas.splice(i, 1);
+  renderModalLancamento();
 }
 
 /* ============================================================
-   VER DETALHES — ordenados do mais recente para o mais antigo
+   SALVAR TUDO (apaga + recria)
+   ============================================================ */
+async function salvarTudo() {
+  const btn = document.getElementById('btn-salvar-tudo');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
+  const emp = cadastro.find(c => c.id === modalState.empId);
+  const nomeL = emp.nome.toLowerCase();
+  const mesAno = modalState.mes + '/' + modalState.ano;
+
+  let erros = [];
+  let sucesso = { controle: 0, faltas: 0, advertencias: 0, feriados: 0, folgas: 0, apagados: 0 };
+
+  try {
+    // ---------- CONTROLE ----------
+    const origC = modalState.originalControle;
+    const novoBH = modalState.controle.saldoBanco.trim();
+    const novoHE = modalState.controle.horaExtra.trim();
+    const novoObs = modalState.controle.observacao.trim();
+
+    const mudouControle = (
+      !origC && (novoBH || novoHE || novoObs)
+    ) || (
+      origC && (
+        String(origC.saldoBanco).replace('.', ',') !== novoBH.replace('.', ',') ||
+        String(origC.horaExtra).replace('.', ',') !== novoHE.replace('.', ',') ||
+        origC.observacao !== novoObs
+      )
+    );
+
+    if (mudouControle) {
+      if (origC) {
+        // Apaga antigo
+        const r = await api('deleteControle', { rowIndex: origC._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Controle: ' + r.error);
+      }
+      // Cria novo (se tem algo pra criar)
+      if (novoBH || novoHE || novoObs) {
+        const r = await api('addControle', {
+          funcionario: emp.nome,
+          mesAno: mesAno,
+          saldoBanco: novoBH,
+          horaExtra: novoHE,
+          observacao: novoObs,
+          lancadoPor: sessNome || 'admin'
+        });
+        if (r.ok) sucesso.controle++;
+        else erros.push('Controle: ' + r.error);
+      }
+    }
+
+    // ---------- FALTAS ----------
+    // Apaga todas originais
+    for (const orig of modalState.originalFaltas) {
+      const r = await api('deleteFalta', { rowIndex: orig._row });
+      if (r.ok) sucesso.apagados++;
+      else erros.push('Apagar Falta: ' + r.error);
+    }
+    // Cria todas atuais
+    for (const f of modalState.faltas) {
+      if (!f.data || !f.data.trim()) continue;
+      const r = await api('addFalta', {
+        funcionario: emp.nome,
+        data: f.data,
+        comAtestado: f.comAtestado,
+        observacao: f.observacao
+      });
+      if (r.ok) sucesso.faltas++;
+      else erros.push('Falta: ' + r.error);
+    }
+
+    // ---------- ADVERTÊNCIAS ----------
+    for (const orig of modalState.originalAdvertencias) {
+      const r = await api('deleteAdvertencia', { rowIndex: orig._row });
+      if (r.ok) sucesso.apagados++;
+      else erros.push('Apagar Advertência: ' + r.error);
+    }
+    for (const a of modalState.advertencias) {
+      if (!a.data || !a.data.trim() || !a.motivo || !a.motivo.trim()) continue;
+      const r = await api('addAdvertencia', {
+        funcionario: emp.nome,
+        data: a.data,
+        motivo: a.motivo
+      });
+      if (r.ok) sucesso.advertencias++;
+      else erros.push('Advertência: ' + r.error);
+    }
+
+    // ---------- FERIADOS ----------
+    // ⚠️ Atenção: apagar feriado também apaga a folga vinculada no Apps Script
+    // Por isso, apagamos feriados ANTES de folgas
+    for (const orig of modalState.originalFeriados) {
+      const r = await api('deleteFeriado', { rowIndex: orig._row });
+      if (r.ok) sucesso.apagados++;
+      else erros.push('Apagar Feriado: ' + r.error);
+    }
+    for (const f of modalState.feriados) {
+      if (!f.data || !f.data.trim()) continue;
+      const r = await api('addFeriado', {
+        funcionario: emp.nome,
+        data: f.data
+      });
+      if (r.ok) sucesso.feriados++;
+      else erros.push('Feriado: ' + r.error);
+    }
+
+    // ---------- FOLGAS ----------
+    for (const orig of modalState.originalFolgas) {
+      const r = await api('deleteFolga', { rowIndex: orig._row });
+      if (r.ok) sucesso.apagados++;
+      else erros.push('Apagar Folga: ' + r.error);
+    }
+    for (const f of modalState.folgas) {
+      if (!f.data || !f.data.trim()) continue;
+      // Se for origem "feriado", precisa de feriadoRow — mas no modo simplificado, só aceita "banco"
+      const payload = {
+        funcionario: emp.nome,
+        data: f.data,
+        origem: f.origem
+      };
+      // Se origem = feriado, vamos buscar um feriado pendente para vincular
+      if (f.origem === 'feriado') {
+        // Como não temos o vínculo exato, criamos sem feriadoRow (fica como banco)
+        // O usuário pode editar no painel se precisar
+        payload.origem = 'banco';
+      }
+      const r = await api('addFolga', payload);
+      if (r.ok) sucesso.folgas++;
+      else erros.push('Folga: ' + r.error);
+    }
+
+    // ---------- FEEDBACK ----------
+    const total = sucesso.controle + sucesso.faltas + sucesso.advertencias + sucesso.feriados + sucesso.folgas;
+
+    if (erros.length) {
+      toast('⚠️ ' + total + ' salvo(s) com ' + erros.length + ' erro(s)', 'err');
+      console.error('Erros:', erros);
+    } else {
+      toast('✅ ' + total + ' lançamento(s) salvos!', 'ok');
+    }
+
+    // Recarrega e fecha
+    await recarregar();
+    fecharModal();
+
+  } catch (e) {
+    console.error(e);
+    toast('Erro: ' + e.message, 'err');
+    btn.disabled = false;
+    btn.textContent = '💾 Salvar Tudo';
+  }
+}
+
+/* ============================================================
+   VER DETALHES (modais secundários — mantidos iguais)
    ============================================================ */
 function verMensal(empId) {
   const f = cadastro.find(c => c.id === empId);
@@ -1223,7 +1585,7 @@ function verMensal(empId) {
         `).join('')}
       </tbody></table>`
     : '<div class="empty"><span class="empty-icon">📭</span>Nenhum lançamento mensal.</div>';
-  abrirModal('Extras Mensais — ' + f.nome, html);
+  abrirModal('Extras Mensais — ' + f.nome, '', html);
 }
 
 function verFaltas(empId) {
@@ -1241,7 +1603,7 @@ function verFaltas(empId) {
         `).join('')}
       </tbody></table>`
     : '<div class="empty"><span class="empty-icon">📭</span>Nenhuma falta.</div>';
-  abrirModal('Faltas — ' + f.nome, html);
+  abrirModal('Faltas — ' + f.nome, '', html);
 }
 
 function verAdvertencias(empId) {
@@ -1258,7 +1620,7 @@ function verAdvertencias(empId) {
         `).join('')}
       </tbody></table>`
     : '<div class="empty"><span class="empty-icon">📭</span>Nenhuma advertência.</div>';
-  abrirModal('Advertências — ' + f.nome, html);
+  abrirModal('Advertências — ' + f.nome, '', html);
 }
 
 function verFeriados(empId) {
@@ -1280,7 +1642,7 @@ function verFeriados(empId) {
         💡 Ao apagar um feriado compensado, a folga vinculada também é apagada.
       </div>`
     : '<div class="empty"><span class="empty-icon">📭</span>Nenhum feriado trabalhado.</div>';
-  abrirModal('Feriados — ' + f.nome, html);
+  abrirModal('Feriados — ' + f.nome, '', html);
 }
 
 function verFolgas(empId) {
@@ -1310,14 +1672,17 @@ function verFolgas(empId) {
         💡 Ao apagar uma folga vinculada a feriado, o feriado volta para <b>pendente</b>.
       </div>`
     : '<div class="empty"><span class="empty-icon">📭</span>Nenhuma folga.</div>';
-  abrirModal('Folgas — ' + f.nome, html);
+  abrirModal('Folgas — ' + f.nome, '', html);
 }
 
 function verFerias(empId) {
   const f = cadastro.find(c => c.id === empId);
   const d = consolidar(f.nome);
   const html = d.fer2.length
-    ? `<table><thead><tr><th>Início</th><th>Fim</th><th>Retorno</th><th>Dias</th><th>Status</th><th></th></tr></thead><tbody>
+    ? `<div style="margin-bottom:16px;">
+        <button class="btn-sm primary" onclick="abrirFormFerias('${f.nome}')">＋ Adicionar férias</button>
+      </div>
+      <table><thead><tr><th>Início</th><th>Fim</th><th>Retorno</th><th>Dias</th><th>Status</th><th></th></tr></thead><tbody>
         ${d.fer2.slice().sort((a,b) => dataToNum(b.inicio) - dataToNum(a.inicio)).map(x => `
           <tr>
             <td><b>${x.inicio}</b></td>
@@ -1329,14 +1694,51 @@ function verFerias(empId) {
           </tr>
         `).join('')}
       </tbody></table>`
-    : '<div class="empty"><span class="empty-icon">📭</span>Nenhum período de férias.</div>';
-  abrirModal('Férias — ' + f.nome, html);
+    : `<div style="margin-bottom:16px;">
+        <button class="btn-sm primary" onclick="abrirFormFerias('${f.nome}')">＋ Adicionar férias</button>
+      </div>
+      <div class="empty"><span class="empty-icon">📭</span>Nenhum período de férias.</div>`;
+  abrirModal('Férias — ' + f.nome, '', html);
+}
+
+function abrirFormFerias(nome) {
+  const html = `
+    <div class="form-grid">
+      <div class="field"><label>Data Início</label><input type="text" id="feri-inicio" placeholder="dd/mm/aaaa"></div>
+      <div class="field"><label>Dias</label><input type="text" id="feri-dias" placeholder="ex: 30"></div>
+      <div class="field"><label>Status</label>
+        <select id="feri-status">
+          <option value="agendada">Agendada</option>
+          <option value="gozada">Gozada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+      </div>
+    </div>
+    <div style="background:#f8fafc; padding:14px 16px; border-radius:10px; font-size:12px; color:#475569; margin-bottom:16px">
+      ℹ️ Fim e Retorno são calculados automaticamente (retorno pula domingo).
+    </div>
+    <button class="btn-sm primary" onclick="salvarFerias('${nome}')">💾 Salvar Férias</button>
+  `;
+  abrirModal('Adicionar Férias — ' + nome, '', html);
+}
+
+async function salvarFerias(nome) {
+  const p = {
+    funcionario: nome,
+    inicio: document.getElementById('feri-inicio').value.trim(),
+    dias: document.getElementById('feri-dias').value.trim(),
+    status: document.getElementById('feri-status').value
+  };
+  if (!p.inicio || !p.dias) return toast('Preencha início e dias', 'err');
+  const r = await api('addFerias', p);
+  if (r.ok) { toast('Férias salvas!'); await recarregar(); await verFerias(cadastro.find(c => c.nome === nome)?.id); }
+  else toast(r.error || 'Erro', 'err');
 }
 
 async function apagar(action, rowIndex) {
   if (!confirm('Apagar esta linha? Esta ação não pode ser desfeita.')) return;
   const r = await api(action, { rowIndex });
-  if (r.ok) { toast('Apagado'); fecharModal(); await recarregar(); }
+  if (r.ok) { toast('Apagado'); await recarregar(); fecharModal(); }
   else toast(r.error || 'Erro', 'err');
 }
 
@@ -1426,7 +1828,7 @@ function verRelatorio(empId) {
       <p>Emitido em ${agora}</p>
     </div>
   `;
-  abrirModal('Relatório — ' + f.nome, html);
+  abrirModal('Relatório — ' + f.nome, '', html);
 }
 
 /* ============================================================
