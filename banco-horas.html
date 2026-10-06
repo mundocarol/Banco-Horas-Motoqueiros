@@ -100,6 +100,37 @@
     background-size: cover; opacity: 0.6;
   }
 
+  /* ALERTA DUPLICADOS NO CARD */
+  .dup-alert {
+    background: #fef2f2;
+    border: 2px solid #ef4444;
+    border-left: 6px solid #dc2626;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    animation: pulseAlert 2s infinite;
+  }
+  @keyframes pulseAlert {
+    0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0.15); }
+    50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
+  }
+  .dup-alert h4 {
+    color: #991b1b; font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px;
+  }
+  .dup-alert ul {
+    list-style: none; padding-left: 0;
+    font-size: 12px; color: #7f1d1d;
+  }
+  .dup-alert li {
+    padding: 3px 0;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .dup-alert li::before {
+    content: '•'; font-weight: bold;
+  }
+
   .emp-card {
     background: white; padding: 22px 24px; border-radius: 14px;
     border: 1px solid #e3e8ef; box-shadow: 0 2px 8px rgba(15,23,42,0.06);
@@ -109,6 +140,7 @@
     box-shadow: 0 6px 20px rgba(15,23,42,0.1);
     border-color: #cbd5e1;
   }
+  .emp-card.tem-dup { border-color: #fca5a5; background: #fffbfb; }
   .emp-header {
     display: flex; justify-content: space-between; align-items: flex-start;
     gap: 16px; flex-wrap: wrap; margin-bottom: 18px;
@@ -260,6 +292,9 @@
   .btn-sm.primary:hover { background: #1e40af; }
   .btn-sm.danger { color: #dc2626; border-color: #fecaca; }
   .btn-sm.danger:hover { background: #fef2f2; }
+  .btn-sm.success { background: #16a34a; color: white; border-color: #16a34a; font-weight: 600; }
+  .btn-sm.success:hover { background: #15803d; border-color: #15803d; }
+  .btn-sm.success:disabled { background: #86efac; border-color: #86efac; cursor: not-allowed; }
 
   /* MODAL */
   .modal {
@@ -348,6 +383,12 @@
     border: 1px solid #e3e8ef;
     border-radius: 8px;
     margin-bottom: 6px;
+    transition: all 0.15s;
+  }
+  .row-item.duplicado {
+    background: #fff1f2;
+    border-color: #fca5a5;
+    box-shadow: 0 0 0 1px #fca5a5 inset;
   }
   .row-item.adv { grid-template-columns: 1.5fr 4fr 40px; }
   .row-item.fer { grid-template-columns: 2fr 3fr 40px; }
@@ -377,6 +418,15 @@
   }
   .row-del:hover { background: #fee2e2; border-color: #fca5a5; }
 
+  .dup-badge {
+    position: absolute; right: 6px; top: -8px;
+    background: #dc2626; color: white;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 6px;
+    letter-spacing: 0.3px;
+  }
+  .row-item-wrap { position: relative; margin-bottom: 6px; }
+
   .empty-row {
     text-align: center; padding: 16px;
     color: #94a3b8; font-size: 12px;
@@ -401,6 +451,11 @@
     margin-top: 20px;
     border-top: 2px solid #f1f5f9;
     display: flex; gap: 10px; justify-content: flex-end;
+    align-items: center;
+  }
+  .salvar-progress {
+    flex: 1; font-size: 12px; color: #64748b;
+    font-weight: 500;
   }
   .btn-salvar-tudo {
     background: #1d4ed8; color: white;
@@ -422,18 +477,41 @@
   }
   .btn-cancelar-modal:hover { background: #e2e8f0; }
 
+  /* PAGAMENTOS */
+  .pag-resumo {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px; margin-bottom: 22px;
+  }
+  .pag-resumo-card {
+    background: white; padding: 18px 20px; border-radius: 12px;
+    border: 1px solid #e3e8ef; box-shadow: 0 1px 3px rgba(15,23,42,0.04);
+    text-align: center;
+  }
+  .pag-resumo-label {
+    font-size: 11px; color: #64748b; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 6px;
+  }
+  .pag-resumo-valor {
+    font-size: 26px; font-weight: 800; color: #0f172a;
+    line-height: 1.1;
+  }
+  .pag-resumo-valor.neg { color: #dc2626; }
+  .pag-resumo-valor.pos { color: #15803d; }
+  .pag-resumo-valor.warn { color: #d97706; }
+
   .toast {
     position: fixed; bottom: 24px; right: 24px;
     background: #0f172a; color: white;
     padding: 14px 20px; border-radius: 10px;
     box-shadow: 0 12px 32px rgba(15,23,42,0.3);
     font-weight: 500; font-size: 13px;
-    display: none; z-index: 9999; max-width: 380px;
+    display: none; z-index: 9999; max-width: 420px;
   }
   .toast.show { display: block; animation: slideIn 0.25s ease; }
   .toast.ok { background: #15803d; }
   .toast.err { background: #b91c1c; }
   .toast.info { background: #1d4ed8; }
+  .toast.warn { background: #d97706; }
   @keyframes slideIn {
     from { transform: translateX(20px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
@@ -474,6 +552,7 @@
 <div class="tabs-wrap">
   <div class="tabs">
     <button class="tab active" data-pane="banco">📊 Banco de Horas</button>
+    <button class="tab" data-pane="pagamentos">💰 Pagamentos</button>
     <button class="tab" data-pane="funcs">👥 Gerenciar Pessoas</button>
     <button class="tab" data-pane="inativos">📁 Inativos</button>
   </div>
@@ -481,6 +560,7 @@
 
 <div class="content">
 
+  <!-- ============ BANCO ============ -->
   <div class="pane active" id="pane-banco">
     <div class="toolbar">
       <div class="search-box">
@@ -491,6 +571,26 @@
     <div id="lista-funcionarios"></div>
   </div>
 
+  <!-- ============ PAGAMENTOS ============ -->
+  <div class="pane" id="pane-pagamentos">
+    <div class="toolbar">
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <label style="font-size:12px; font-weight:600; color:#475569;">MÊS/ANO:</label>
+        <select id="pag-mes" style="padding:10px 14px; border:1px solid #d1d9e3; border-radius:8px; font-size:14px; font-family:inherit; background:white;">
+        </select>
+        <button class="btn-sm primary" onclick="renderPagamentos()">🔄 Atualizar</button>
+      </div>
+    </div>
+
+    <div class="pag-resumo" id="pag-resumo"></div>
+
+    <div class="form-card">
+      <h3>📋 Relatório de Pagamentos</h3>
+      <div id="pag-tabela"></div>
+    </div>
+  </div>
+
+  <!-- ============ FUNCIONÁRIOS ============ -->
   <div class="pane" id="pane-funcs">
     <div class="form-card">
       <h3 id="form-func-title">Nova Pessoa</h3>
@@ -520,6 +620,7 @@
     </div>
   </div>
 
+  <!-- ============ INATIVOS ============ -->
   <div class="pane" id="pane-inativos">
     <div class="form-card">
       <h3>Desligados</h3>
@@ -567,6 +668,7 @@ let cadastro = [], controle = [], faltas = [], advertencias = [];
 let feriados = [], folgas = [], ferias = [];
 let funcionarios = [];
 let filtroNome = '';
+let mesPagamento = '';
 
 let modalState = {
   empId: null,
@@ -583,7 +685,8 @@ let modalState = {
   advertencias: [],
   feriados: [],
   folgas: [],
-  feriadosPendentes: []
+  feriadosPendentes: [],
+  feriadosPendentesOriginais: []
 };
 
 /* ============================================================
@@ -593,7 +696,7 @@ function toast(msg, tipo='ok') {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show ' + tipo;
-  setTimeout(() => el.className = 'toast', 3500);
+  setTimeout(() => el.className = 'toast', 4000);
 }
 
 function parseNum(v) {
@@ -638,6 +741,11 @@ function addMeses(dateStr, meses) {
     dt.setMonth(dt.getMonth() + meses);
     return `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
   } catch(e) { return ''; }
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 /* ============================================================
@@ -752,6 +860,88 @@ async function carregarFerias() {
     status: (r[5]||'').toString().trim().toLowerCase() || 'agendada',
     _row: i + 2
   })).filter(f => f.funcionario);
+}
+
+/* ============================================================
+   DETECTOR DE DUPLICADOS
+   ============================================================
+   Retorna array de avisos de duplicação para um funcionário
+   ============================================================ */
+function detectarDuplicados(nomeFunc) {
+  const nomeL = nomeFunc.toLowerCase();
+  const avisos = [];
+
+  // Faltas — mesma data
+  const faltasFunc = faltas.filter(f => f.funcionario.toLowerCase() === nomeL);
+  const faltasPorData = {};
+  faltasFunc.forEach(f => {
+    const key = f.data;
+    if (!faltasPorData[key]) faltasPorData[key] = [];
+    faltasPorData[key].push(f);
+  });
+  Object.entries(faltasPorData).forEach(([data, lista]) => {
+    if (lista.length > 1) {
+      avisos.push(`${lista.length}× falta lançada em ${data}`);
+    }
+  });
+
+  // Advertências — mesma data
+  const advFunc = advertencias.filter(a => a.funcionario.toLowerCase() === nomeL);
+  const advPorData = {};
+  advFunc.forEach(a => {
+    const key = a.data;
+    if (!advPorData[key]) advPorData[key] = [];
+    advPorData[key].push(a);
+  });
+  Object.entries(advPorData).forEach(([data, lista]) => {
+    if (lista.length > 1) {
+      avisos.push(`${lista.length}× advertência lançada em ${data}`);
+    }
+  });
+
+  // Feriados — mesma data
+  const ferFunc = feriados.filter(f => f.funcionario.toLowerCase() === nomeL);
+  const ferPorData = {};
+  ferFunc.forEach(f => {
+    const key = f.data;
+    if (!ferPorData[key]) ferPorData[key] = [];
+    ferPorData[key].push(f);
+  });
+  Object.entries(ferPorData).forEach(([data, lista]) => {
+    if (lista.length > 1) {
+      avisos.push(`${lista.length}× feriado lançado em ${data}`);
+    }
+  });
+
+  // Folgas — mesma data
+  const folgFunc = folgas.filter(f => f.funcionario.toLowerCase() === nomeL);
+  const folgPorData = {};
+  folgFunc.forEach(f => {
+    const key = f.data;
+    if (!folgPorData[key]) folgPorData[key] = [];
+    folgPorData[key].push(f);
+  });
+  Object.entries(folgPorData).forEach(([data, lista]) => {
+    if (lista.length > 1) {
+      avisos.push(`${lista.length}× folga lançada em ${data}`);
+    }
+  });
+
+  // Controle — mesmo mês/ano
+  const ctrlFunc = controle.filter(c => c.funcionario.toLowerCase() === nomeL);
+  const ctrlPorMes = {};
+  ctrlFunc.forEach(c => {
+    const key = c.mesAno;
+    if (!ctrlPorMes[key]) ctrlPorMes[key] = [];
+    ctrlPorMes[key].push(c);
+  });
+  Object.entries(ctrlPorMes).forEach(([mesAno, lista]) => {
+    if (lista.length > 1) {
+      avisos.push(`${lista.length}× lançamento mensal em ${mesAno}`);
+    }
+  });
+
+  return avisos;
 }
 
 /* ============================================================
@@ -887,15 +1077,34 @@ function renderBanco() {
   c.innerHTML = lista.map(f => {
     const d = consolidar(f.nome);
     const sFerias = calcularStatusFerias(f, d);
+    const duplicados = detectarDuplicados(f.nome);
 
     const bhClass = d.totalBH < 0 ? 'neg' : '';
     const ferClass = d.feriadosPendentes > 0 ? '' : 'ok';
+    const cardClass = duplicados.length > 0 ? 'tem-dup' : '';
+
+    let dupHtml = '';
+    if (duplicados.length > 0) {
+      dupHtml = `
+        <div class="dup-alert">
+          <h4>⚠️ ATENÇÃO: DADOS DUPLICADOS ENCONTRADOS</h4>
+          <ul>
+            ${duplicados.map(x => `<li>${escapeHtml(x)}</li>`).join('')}
+          </ul>
+          <p style="font-size:11px; color:#7f1d1d; margin-top:8px; font-style:italic">
+            Entre em <b>Lançar</b> → selecione o mês correspondente → remova as linhas duplicadas.
+          </p>
+        </div>
+      `;
+    }
 
     return `
-      <div class="emp-card">
+      <div class="emp-card ${cardClass}">
+        ${dupHtml}
+
         <div class="emp-header">
           <div class="emp-info">
-            <div class="emp-nome">${f.nome}</div>
+            <div class="emp-nome">${escapeHtml(f.nome)}</div>
             <div class="emp-meta">
               <span>📅 Admissão: ${f.data_admissao || '—'}</span>
               <span>📊 ${d.ctrl.length} lançamento(s)</span>
@@ -959,6 +1168,173 @@ function filtrarFuncionarios() {
 }
 
 /* ============================================================
+   RENDER PAGAMENTOS
+   ============================================================ */
+function initMesPagamento() {
+  const sel = document.getElementById('pag-mes');
+  const now = new Date();
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+  const opcoes = [];
+  for (let i = 0; i < 18; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const mes = String(d.getMonth()+1).padStart(2,'0');
+    const ano = d.getFullYear();
+    const label = `${meses[d.getMonth()]} - ${mes}/${ano}`;
+    opcoes.push({ val: `${mes}/${ano}`, label });
+  }
+
+  sel.innerHTML = opcoes.map(o => `<option value="${o.val}">${o.label}</option>`).join('');
+  if (!mesPagamento) mesPagamento = opcoes[0].val;
+  sel.value = mesPagamento;
+  sel.addEventListener('change', () => { mesPagamento = sel.value; renderPagamentos(); });
+}
+
+function renderPagamentos() {
+  if (!mesPagamento) return;
+
+  const [mes, ano] = mesPagamento.split('/');
+  const funcs = funcionarios;
+
+  // Resumo geral
+  let totalHE = 0;
+  let totalFaltasInjust = 0;
+  let funcionariosComHE = 0;
+  let funcionariosComFaltas = 0;
+
+  const dados = funcs.map(f => {
+    const nomeL = f.nome.toLowerCase();
+
+    const faltasInjustMes = faltas.filter(x =>
+      x.funcionario.toLowerCase() === nomeL &&
+      !x.comAtestado &&
+      x.data.endsWith(mes + '/' + ano)
+    );
+
+    const ctrlMes = controle.filter(c =>
+      c.funcionario.toLowerCase() === nomeL && c.mesAno === mesPagamento
+    );
+
+    const totalHEMes = ctrlMes.reduce((s,c) => s + c.horaExtra, 0);
+    const jaPago = totalHEMes <= 0 && ctrlMes.some(c => c.horaExtra < 0);
+    const temHE = totalHEMes > 0.001;
+
+    totalHE += Math.max(0, totalHEMes);
+    totalFaltasInjust += faltasInjustMes.length;
+    if (temHE) funcionariosComHE++;
+    if (faltasInjustMes.length > 0) funcionariosComFaltas++;
+
+    return {
+      func: f,
+      faltasInjust: faltasInjustMes,
+      totalHEMes,
+      temHE,
+      jaPago
+    };
+  });
+
+  // Renderiza cards de resumo
+  const resumo = document.getElementById('pag-resumo');
+  resumo.innerHTML = `
+    <div class="pag-resumo-card">
+      <div class="pag-resumo-label">⏱️ Total Horas Extras</div>
+      <div class="pag-resumo-valor ${totalHE > 0 ? 'warn' : 'pos'}">${fmtHoras(totalHE)}</div>
+    </div>
+    <div class="pag-resumo-card">
+      <div class="pag-resumo-label">📅 Faltas sem Justificativa</div>
+      <div class="pag-resumo-valor ${totalFaltasInjust > 0 ? 'neg' : 'pos'}">${totalFaltasInjust}</div>
+    </div>
+    <div class="pag-resumo-card">
+      <div class="pag-resumo-label">👤 Funcionários c/ HE</div>
+      <div class="pag-resumo-valor">${funcionariosComHE}</div>
+    </div>
+    <div class="pag-resumo-card">
+      <div class="pag-resumo-label">📉 Funcionários c/ Faltas</div>
+      <div class="pag-resumo-valor">${funcionariosComFaltas}</div>
+    </div>
+  `;
+
+  // Tabela
+  const tabela = document.getElementById('pag-tabela');
+  if (!dados.length) {
+    tabela.innerHTML = '<div class="empty"><span class="empty-icon">📭</span>Nenhum funcionário ativo.</div>';
+    return;
+  }
+
+  tabela.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Funcionário</th>
+          <th style="text-align:center;">Faltas s/ Just.</th>
+          <th style="text-align:center;">Horas Extras</th>
+          <th style="text-align:center;">Status</th>
+          <th style="text-align:right;">Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${dados.map(d => {
+          let statusBadge = '';
+          if (d.jaPago) {
+            statusBadge = '<span style="background:#dcfce7; color:#166534; padding:4px 12px; border-radius:8px; font-weight:600; font-size:11px;">✅ JÁ PAGO</span>';
+          } else if (d.temHE) {
+            statusBadge = '<span style="background:#fffbeb; color:#92400e; padding:4px 12px; border-radius:8px; font-weight:600; font-size:11px;">⏳ PENDENTE</span>';
+          } else {
+            statusBadge = '<span style="background:#f1f5f9; color:#64748b; padding:4px 12px; border-radius:8px; font-weight:600; font-size:11px;">— SEM HE</span>';
+          }
+
+          const heColor = d.totalHEMes > 0.001 ? '#d97706' : (d.jaPago ? '#16a34a' : '#64748b');
+          const faltasColor = d.faltasInjust.length > 0 ? '#dc2626' : '#94a3b8';
+
+          const btnPagar = (d.temHE)
+            ? `<button class="btn-sm success" onclick="pagarHE('${d.func.id}', '${mesPagamento}', ${d.totalHEMes})">💰 Pagar</button>`
+            : `<button class="btn-sm" disabled style="opacity:0.4; cursor:not-allowed;">💰 Pagar</button>`;
+
+          return `
+            <tr>
+              <td><b>${escapeHtml(d.func.nome)}</b></td>
+              <td style="text-align:center; color:${faltasColor}; font-weight:700; font-size:15px;">${d.faltasInjust.length}</td>
+              <td style="text-align:center; color:${heColor}; font-weight:700; font-size:15px;">${fmtHoras(d.totalHEMes)}</td>
+              <td style="text-align:center;">${statusBadge}</td>
+              <td style="text-align:right;">${btnPagar}</td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+async function pagarHE(empId, mesAno, valorHE) {
+  const f = cadastro.find(c => c.id === empId);
+  if (!f) return;
+
+  const valorAbs = Math.abs(valorHE);
+
+  if (!confirm(`Confirmar pagamento de ${fmtHoras(valorAbs)} de Horas Extras para "${f.nome}" em ${mesAno}?\n\nO saldo será zerado com um lançamento de -${valorAbs.toFixed(2)}h.`)) return;
+
+  const hoje = new Date().toLocaleDateString('pt-BR');
+
+  // Cria lançamento com HE negativa para zerar
+  const r = await api('addControle', {
+    funcionario: f.nome,
+    mesAno: mesAno,
+    saldoBanco: '',
+    horaExtra: (-valorAbs).toFixed(2),
+    observacao: `✅ HE paga em ${hoje}`,
+    lancadoPor: sessNome || 'admin'
+  });
+
+  if (r.ok) {
+    toast(`✅ ${f.nome}: HE de ${fmtHoras(valorAbs)} paga!`, 'ok');
+    await recarregar();
+    renderPagamentos();
+  } else {
+    toast('❌ ' + (r.error || 'Erro'), 'err');
+  }
+}
+
+/* ============================================================
    GERENCIAR PESSOAS
    ============================================================ */
 function renderFuncs() {
@@ -978,7 +1354,7 @@ function renderFuncs() {
       <tbody>
         ${ativos.map(f => `
           <tr>
-            <td><b>${f.nome}</b></td>
+            <td><b>${escapeHtml(f.nome)}</b></td>
             <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:11px">${f.id}</code></td>
             <td>${f.tipo === 'motoqueiro' ? '🏍️ Motoqueiro' : '👤 Funcionário'}</td>
             <td>${f.data_admissao || '—'}</td>
@@ -1009,7 +1385,7 @@ function renderInativos() {
       <tbody>
         ${inat.map(f => `
           <tr>
-            <td><b>${f.nome}</b></td>
+            <td><b>${escapeHtml(f.nome)}</b></td>
             <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px; font-size:11px">${f.id}</code></td>
             <td>${f.tipo === 'motoqueiro' ? '🏍️ Motoqueiro' : '👤 Funcionário'}</td>
             <td>${f.data_desligamento || '—'}</td>
@@ -1034,6 +1410,7 @@ document.querySelectorAll('.tab').forEach(t => {
     document.getElementById('pane-' + t.dataset.pane).classList.add('active');
     if (t.dataset.pane === 'funcs') renderFuncs();
     if (t.dataset.pane === 'inativos') renderInativos();
+    if (t.dataset.pane === 'pagamentos') renderPagamentos();
   });
 });
 
@@ -1056,7 +1433,8 @@ function fecharModal() {
     originalFaltas: [], originalAdvertencias: [], originalFeriados: [], originalFolgas: [],
     controle: { saldoBanco: '', horaExtra: '', observacao: '' },
     faltas: [], advertencias: [], feriados: [], folgas: [],
-    feriadosPendentes: []
+    feriadosPendentes: [],
+    feriadosPendentesOriginais: []
   };
 }
 
@@ -1126,16 +1504,23 @@ async function carregarMesEProximo() {
 
   const nomeL = emp.nome.toLowerCase();
 
-  const ctrlMes = controle.find(c =>
+  const ctrlMes = controle.filter(c =>
     c.funcionario.toLowerCase() === nomeL && c.mesAno === mesAno
   );
-  modalState.originalControle = ctrlMes || null;
+
+  // Se tem mais de 1 lançamento no mês, avisa (mas pega o primeiro)
+  if (ctrlMes.length > 1) {
+    toast(`⚠️ ${ctrlMes.length} lançamentos mensais encontrados em ${mesAno}. Edite com cuidado.`, 'warn');
+  }
+
+  modalState.originalControle = ctrlMes[0] || null;
   modalState.controle = {
-    saldoBanco: ctrlMes ? String(ctrlMes.saldoBanco).replace('.', ',') : '',
-    horaExtra: ctrlMes ? String(ctrlMes.horaExtra).replace('.', ',') : '',
-    observacao: ctrlMes ? ctrlMes.observacao : ''
+    saldoBanco: ctrlMes[0] ? String(ctrlMes[0].saldoBanco).replace('.', ',') : '',
+    horaExtra: ctrlMes[0] ? String(ctrlMes[0].horaExtra).replace('.', ',') : '',
+    observacao: ctrlMes[0] ? ctrlMes[0].observacao : ''
   };
 
+  // Faltas
   const faltasMes = faltas.filter(f =>
     f.funcionario.toLowerCase() === nomeL && f.data.endsWith(mes + '/' + ano)
   );
@@ -1148,6 +1533,7 @@ async function carregarMesEProximo() {
     _original: true
   }));
 
+  // Advertências
   const advMes = advertencias.filter(a =>
     a.funcionario.toLowerCase() === nomeL && a.data.endsWith(mes + '/' + ano)
   );
@@ -1159,6 +1545,7 @@ async function carregarMesEProximo() {
     _original: true
   }));
 
+  // Feriados
   const ferMes = feriados.filter(f =>
     f.funcionario.toLowerCase() === nomeL && f.data.endsWith(mes + '/' + ano)
   );
@@ -1170,6 +1557,7 @@ async function carregarMesEProximo() {
     _original: true
   }));
 
+  // Folgas
   const folMes = folgas.filter(f =>
     f.funcionario.toLowerCase() === nomeL && f.data.endsWith(mes + '/' + ano)
   );
@@ -1182,13 +1570,36 @@ async function carregarMesEProximo() {
     _original: true
   }));
 
-  // Feriados pendentes do funcionário (qualquer mês)
-  modalState.feriadosPendentes = feriados
+  // ============================================================
+  // FERIADOS PENDENTES (para escolher em novas folgas)
+  // ============================================================
+  const pendentes = feriados
     .filter(f =>
       f.funcionario.toLowerCase() === nomeL &&
       f.status === 'pendente'
     )
     .sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
+
+  modalState.feriadosPendentes = pendentes.map(p => ({ ...p }));
+  modalState.feriadosPendentesOriginais = pendentes.map(p => ({ ...p }));
+
+  // ============================================================
+  // FERIADOS VINCULADOS a folgas deste mês (mesmo se compensados)
+  // Inclui eles na lista para não sumir do select
+  // ============================================================
+  const vinculados = folMes
+    .filter(f => f.origem === 'feriado' && f.feriadoVinculado)
+    .map(f => f.feriadoVinculado);
+
+  vinculados.forEach(rowFer => {
+    if (!modalState.feriadosPendentes.find(x => x._row === rowFer)) {
+      const fer = feriados.find(x => x._row === rowFer);
+      if (fer) modalState.feriadosPendentes.push(fer);
+    }
+  });
+
+  // Re-ordena
+  modalState.feriadosPendentes.sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
 
   renderModalLancamento();
 }
@@ -1203,6 +1614,12 @@ function renderModalLancamento() {
 
   const s = modalState.controle;
 
+  // Detectar duplicados dentro do próprio modal (visual)
+  const dupFaltas = detectarDuplicadosLista(modalState.faltas, 'data');
+  const dupAdvertencias = detectarDuplicadosLista(modalState.advertencias, 'data');
+  const dupFeriados = detectarDuplicadosLista(modalState.feriados, 'data');
+  const dupFolgas = detectarDuplicadosLista(modalState.folgas, 'data');
+
   let html = '';
 
   // 1. FALTAS
@@ -1214,7 +1631,7 @@ function renderModalLancamento() {
       <div id="section-faltas">
         ${modalState.faltas.length === 0
           ? '<div class="empty-row">Nenhuma falta lançada neste mês</div>'
-          : modalState.faltas.map((f, i) => renderLinhaFalta(f, i)).join('')
+          : modalState.faltas.map((f, i) => renderLinhaFalta(f, i, dupFaltas.has(f.data))).join('')
         }
       </div>
       <button class="add-btn" onclick="adicionarFalta()" style="margin-top:8px;">＋ Adicionar falta</button>
@@ -1228,14 +1645,14 @@ function renderModalLancamento() {
         <div class="section-title">📆 Folgas <span class="count">${modalState.folgas.length}</span></div>
         <div style="font-size:11px; color:#64748b;">
           ${modalState.feriadosPendentes.length > 0 
-            ? `🏖️ ${modalState.feriadosPendentes.length} feriado(s) pendente(s) disponível(is)` 
+            ? `🏖️ ${modalState.feriadosPendentes.length} feriado(s) disponível(is)` 
             : '⚠️ Nenhum feriado pendente — apenas débito do banco'}
         </div>
       </div>
       <div id="section-folgas">
         ${modalState.folgas.length === 0
           ? '<div class="empty-row">Nenhuma folga lançada neste mês</div>'
-          : modalState.folgas.map((f, i) => renderLinhaFolga(f, i)).join('')
+          : modalState.folgas.map((f, i) => renderLinhaFolga(f, i, dupFolgas.has(f.data))).join('')
         }
       </div>
       <button class="add-btn" onclick="adicionarFolga()" style="margin-top:8px;">＋ Adicionar folga</button>
@@ -1251,7 +1668,7 @@ function renderModalLancamento() {
       <div id="section-feriados">
         ${modalState.feriados.length === 0
           ? '<div class="empty-row">Nenhum feriado trabalhado neste mês</div>'
-          : modalState.feriados.map((f, i) => renderLinhaFeriado(f, i)).join('')
+          : modalState.feriados.map((f, i) => renderLinhaFeriado(f, i, dupFeriados.has(f.data))).join('')
         }
       </div>
       <button class="add-btn" onclick="adicionarFeriado()" style="margin-top:8px;">＋ Adicionar feriado</button>
@@ -1281,7 +1698,7 @@ function renderModalLancamento() {
       <div id="section-advertencias">
         ${modalState.advertencias.length === 0
           ? '<div class="empty-row">Nenhuma advertência lançada neste mês</div>'
-          : modalState.advertencias.map((a, i) => renderLinhaAdvertencia(a, i)).join('')
+          : modalState.advertencias.map((a, i) => renderLinhaAdvertencia(a, i, dupAdvertencias.has(a.data))).join('')
         }
       </div>
       <button class="add-btn" onclick="adicionarAdvertencia()" style="margin-top:8px;">＋ Adicionar advertência</button>
@@ -1291,6 +1708,7 @@ function renderModalLancamento() {
   // BARRA SALVAR
   html += `
     <div class="salvar-tudo-bar">
+      <div class="salvar-progress" id="salvar-progress"></div>
       <button class="btn-cancelar-modal" onclick="fecharModal()">Cancelar</button>
       <button class="btn-salvar-tudo" id="btn-salvar-tudo" onclick="salvarTudo()">💾 Salvar Tudo</button>
     </div>
@@ -1301,49 +1719,70 @@ function renderModalLancamento() {
   document.getElementById('modal-sub').textContent = `Etapa 2 de 2 · ${nomeMes}/${modalState.ano}`;
 }
 
+function detectarDuplicadosLista(lista, campo) {
+  const dups = new Set();
+  const vistos = {};
+  lista.forEach(x => {
+    const v = x[campo];
+    if (v && v.trim()) {
+      if (vistos[v]) dups.add(v);
+      vistos[v] = true;
+    }
+  });
+  return dups;
+}
+
 /* ============================================================
    LINHAS DO MODAL
    ============================================================ */
-function renderLinhaFalta(f, i) {
+function renderLinhaFalta(f, i, isDup) {
   return `
-    <div class="row-item">
-      <input type="text" value="${f.data}" placeholder="Data da falta dd/mm/aaaa" oninput="modalState.faltas[${i}].data = this.value">
-      <select onchange="modalState.faltas[${i}].comAtestado = (this.value === '1')">
-        <option value="" ${!f.comAtestado ? 'selected' : ''}>❌ Não (sem atestado)</option>
-        <option value="1" ${f.comAtestado ? 'selected' : ''}>✅ Sim (com atestado)</option>
-      </select>
-      <input type="text" value="${f.observacao || ''}" placeholder="Observação (opcional)" oninput="modalState.faltas[${i}].observacao = this.value">
-      <button class="row-del" onclick="removerFalta(${i})" title="Remover">🗑</button>
-    </div>
-  `;
-}
-
-function renderLinhaAdvertencia(a, i) {
-  return `
-    <div class="row-item adv">
-      <input type="text" value="${a.data}" placeholder="dd/mm/aaaa" oninput="modalState.advertencias[${i}].data = this.value">
-      <input type="text" value="${a.motivo || ''}" placeholder="Motivo da advertência" oninput="modalState.advertencias[${i}].motivo = this.value">
-      <button class="row-del" onclick="removerAdvertencia(${i})" title="Remover">🗑</button>
-    </div>
-  `;
-}
-
-function renderLinhaFeriado(f, i) {
-  return `
-    <div class="row-item fer">
-      <input type="text" value="${f.data}" placeholder="Data do feriado trabalhado dd/mm/aaaa" oninput="modalState.feriados[${i}].data = this.value">
-      <div style="font-size:12px; color:#64748b; padding:8px 12px; background:#f8fafc; border-radius:6px; text-align:center; border:1px solid #e2e8f0;">
-        ℹ️ Status gerenciado automaticamente
+    <div class="row-item-wrap">
+      ${isDup ? '<span class="dup-badge">⚠️ DUPLICADO</span>' : ''}
+      <div class="row-item ${isDup ? 'duplicado' : ''}">
+        <input type="text" value="${f.data}" placeholder="Data da falta dd/mm/aaaa" oninput="modalState.faltas[${i}].data = this.value">
+        <select onchange="modalState.faltas[${i}].comAtestado = (this.value === '1')">
+          <option value="" ${!f.comAtestado ? 'selected' : ''}>❌ Não (sem atestado)</option>
+          <option value="1" ${f.comAtestado ? 'selected' : ''}>✅ Sim (com atestado)</option>
+        </select>
+        <input type="text" value="${f.observacao || ''}" placeholder="Observação (opcional)" oninput="modalState.faltas[${i}].observacao = this.value">
+        <button class="row-del" onclick="removerFalta(${i})" title="Remover">🗑</button>
       </div>
-      <button class="row-del" onclick="removerFeriado(${i})" title="Remover">🗑</button>
     </div>
   `;
 }
 
-function renderLinhaFolga(f, i) {
+function renderLinhaAdvertencia(a, i, isDup) {
+  return `
+    <div class="row-item-wrap">
+      ${isDup ? '<span class="dup-badge">⚠️ DUPLICADO</span>' : ''}
+      <div class="row-item adv ${isDup ? 'duplicado' : ''}">
+        <input type="text" value="${a.data}" placeholder="dd/mm/aaaa" oninput="modalState.advertencias[${i}].data = this.value">
+        <input type="text" value="${a.motivo || ''}" placeholder="Motivo da advertência" oninput="modalState.advertencias[${i}].motivo = this.value">
+        <button class="row-del" onclick="removerAdvertencia(${i})" title="Remover">🗑</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderLinhaFeriado(f, i, isDup) {
+  return `
+    <div class="row-item-wrap">
+      ${isDup ? '<span class="dup-badge">⚠️ DUPLICADO</span>' : ''}
+      <div class="row-item fer ${isDup ? 'duplicado' : ''}">
+        <input type="text" value="${f.data}" placeholder="Data do feriado trabalhado dd/mm/aaaa" oninput="modalState.feriados[${i}].data = this.value">
+        <div style="font-size:12px; color:#64748b; padding:8px 12px; background:#f8fafc; border-radius:6px; text-align:center; border:1px solid #e2e8f0;">
+          ℹ️ Status gerenciado automaticamente
+        </div>
+        <button class="row-del" onclick="removerFeriado(${i})" title="Remover">🗑</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderLinhaFolga(f, i, isDup) {
   const temFeriadosPendentes = modalState.feriadosPendentes.length > 0;
 
-  // Aplica a regra de padrão
   let origem = f.origem;
   if (!origem) {
     origem = temFeriadosPendentes ? 'feriado' : 'banco';
@@ -1354,7 +1793,6 @@ function renderLinhaFolga(f, i) {
     modalState.folgas[i].origem = 'banco';
   }
 
-  // Define o feriado selecionado
   let feriadoSelecionado = f.feriadoVinculado;
 
   if (origem === 'feriado' && !feriadoSelecionado && temFeriadosPendentes) {
@@ -1371,22 +1809,25 @@ function renderLinhaFolga(f, i) {
   const mostrarFeriado = origem === 'feriado' && temFeriadosPendentes;
 
   return `
-    <div class="row-item fol ${mostrarFeriado ? '' : 'sem-feriado'}">
-      <input type="text" value="${f.data}" placeholder="Data folga dd/mm/aaaa" oninput="modalState.folgas[${i}].data = this.value">
-      <select onchange="trocarOrigemFolga(${i}, this.value)">
-        <option value="feriado" ${origem === 'feriado' ? 'selected' : ''} ${!temFeriadosPendentes ? 'disabled' : ''}>
-          🏖️ Pagar Feriado ${!temFeriadosPendentes ? '(sem pendentes)' : `(${modalState.feriadosPendentes.length})`}
-        </option>
-        <option value="banco" ${origem === 'banco' ? 'selected' : ''}>📊 Debitar do Banco</option>
-      </select>
-      ${mostrarFeriado
-        ? `<select onchange="modalState.folgas[${i}].feriadoVinculado = parseInt(this.value)">
-            <option value="">-- Selecione o feriado --</option>
-            ${opcoesFeriados}
-          </select>`
-        : `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:8px;">—</div>`
-      }
-      <button class="row-del" onclick="removerFolga(${i})" title="Remover">🗑</button>
+    <div class="row-item-wrap">
+      ${isDup ? '<span class="dup-badge">⚠️ DUPLICADO</span>' : ''}
+      <div class="row-item fol ${mostrarFeriado ? '' : 'sem-feriado'} ${isDup ? 'duplicado' : ''}">
+        <input type="text" value="${f.data}" placeholder="Data folga dd/mm/aaaa" oninput="modalState.folgas[${i}].data = this.value">
+        <select onchange="trocarOrigemFolga(${i}, this.value)">
+          <option value="feriado" ${origem === 'feriado' ? 'selected' : ''} ${!temFeriadosPendentes ? 'disabled' : ''}>
+            🏖️ Pagar Feriado ${!temFeriadosPendentes ? '(sem pendentes)' : `(${modalState.feriadosPendentes.length})`}
+          </option>
+          <option value="banco" ${origem === 'banco' ? 'selected' : ''}>📊 Debitar do Banco</option>
+        </select>
+        ${mostrarFeriado
+          ? `<select onchange="modalState.folgas[${i}].feriadoVinculado = parseInt(this.value)">
+              <option value="">-- Selecione o feriado --</option>
+              ${opcoesFeriados}
+            </select>`
+          : `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:8px;">—</div>`
+        }
+        <button class="row-del" onclick="removerFolga(${i})" title="Remover">🗑</button>
+      </div>
     </div>
   `;
 }
@@ -1417,7 +1858,6 @@ function adicionarAdvertencia() {
 }
 
 function adicionarFeriado() {
-  // Status sempre 'pendente' — gerenciado pelo sistema
   modalState.feriados.push({ data: '', status: 'pendente', _original: false });
   renderModalLancamento();
 }
@@ -1458,10 +1898,11 @@ function removerFolga(i) {
 }
 
 /* ============================================================
-   SALVAR TUDO
+   SALVAR TUDO (ordem segura: criar → apagar)
    ============================================================ */
 async function salvarTudo() {
   const btn = document.getElementById('btn-salvar-tudo');
+  const progress = document.getElementById('salvar-progress');
   btn.disabled = true;
   btn.textContent = 'Salvando...';
 
@@ -1469,10 +1910,19 @@ async function salvarTudo() {
   const mesAno = modalState.mes + '/' + modalState.ano;
 
   let erros = [];
-  let sucesso = { controle: 0, faltas: 0, advertencias: 0, feriados: 0, folgas: 0, apagados: 0 };
+  let sucesso = { criados: 0, apagados: 0 };
+
+  function setProgress(msg) {
+    if (progress) progress.textContent = msg;
+  }
 
   try {
-    // ---------- CONTROLE ----------
+    // ============================================================
+    // FASE 1: CRIAR OS NOVOS (nunca perde dados)
+    // ============================================================
+    setProgress('📝 Criando novos lançamentos...');
+
+    // CONTROLE — só cria se mudou ou é novo
     const origC = modalState.originalControle;
     const novoBH = modalState.controle.saldoBanco.trim();
     const novoHE = modalState.controle.horaExtra.trim();
@@ -1488,112 +1938,192 @@ async function salvarTudo() {
       )
     );
 
-    if (mudouControle) {
-      if (origC) {
-        const r = await api('deleteControle', { rowIndex: origC._row });
-        if (r.ok) sucesso.apagados++;
-        else erros.push('Apagar Controle: ' + r.error);
-      }
-      if (novoBH || novoHE || novoObs) {
-        const r = await api('addControle', {
-          funcionario: emp.nome,
-          mesAno: mesAno,
-          saldoBanco: novoBH,
-          horaExtra: novoHE,
-          observacao: novoObs,
-          lancadoPor: sessNome || 'admin'
-        });
-        if (r.ok) sucesso.controle++;
-        else erros.push('Controle: ' + r.error);
-      }
+    let criouControleNovo = false;
+
+    if (mudouControle && (novoBH || novoHE || novoObs)) {
+      const r = await api('addControle', {
+        funcionario: emp.nome,
+        mesAno: mesAno,
+        saldoBanco: novoBH,
+        horaExtra: novoHE,
+        observacao: novoObs,
+        lancadoPor: sessNome || 'admin'
+      });
+      if (r.ok) { sucesso.criados++; criouControleNovo = true; }
+      else erros.push('Criar Controle: ' + r.error);
     }
 
-    // ---------- FALTAS ----------
-    for (const orig of modalState.originalFaltas) {
-      const r = await api('deleteFalta', { rowIndex: orig._row });
-      if (r.ok) sucesso.apagados++;
-      else erros.push('Apagar Falta: ' + r.error);
-    }
-    for (const f of modalState.faltas) {
-      if (!f.data || !f.data.trim()) continue;
+    // FALTAS — cria TODAS as novas
+    const faltasValidas = modalState.faltas.filter(f => f.data && f.data.trim());
+    for (const f of faltasValidas) {
       const r = await api('addFalta', {
         funcionario: emp.nome,
         data: f.data,
         comAtestado: f.comAtestado,
         observacao: f.observacao
       });
-      if (r.ok) sucesso.faltas++;
-      else erros.push('Falta: ' + r.error);
+      if (r.ok) sucesso.criados++;
+      else erros.push('Criar Falta ' + f.data + ': ' + r.error);
     }
 
-    // ---------- ADVERTÊNCIAS ----------
-    for (const orig of modalState.originalAdvertencias) {
-      const r = await api('deleteAdvertencia', { rowIndex: orig._row });
-      if (r.ok) sucesso.apagados++;
-      else erros.push('Apagar Advertência: ' + r.error);
-    }
-    for (const a of modalState.advertencias) {
-      if (!a.data || !a.data.trim() || !a.motivo || !a.motivo.trim()) continue;
+    // ADVERTÊNCIAS
+    const advValidas = modalState.advertencias.filter(a => a.data && a.data.trim() && a.motivo && a.motivo.trim());
+    for (const a of advValidas) {
       const r = await api('addAdvertencia', {
         funcionario: emp.nome,
         data: a.data,
         motivo: a.motivo
       });
-      if (r.ok) sucesso.advertencias++;
-      else erros.push('Advertência: ' + r.error);
+      if (r.ok) sucesso.criados++;
+      else erros.push('Criar Advertência ' + a.data + ': ' + r.error);
     }
 
-    // ---------- FERIADOS ----------
-    for (const orig of modalState.originalFeriados) {
-      const r = await api('deleteFeriado', { rowIndex: orig._row });
-      if (r.ok) sucesso.apagados++;
-      else erros.push('Apagar Feriado: ' + r.error);
-    }
-    for (const f of modalState.feriados) {
-      if (!f.data || !f.data.trim()) continue;
+    // FERIADOS
+    const ferValidos = modalState.feriados.filter(f => f.data && f.data.trim());
+    for (const f of ferValidos) {
       const r = await api('addFeriado', {
         funcionario: emp.nome,
         data: f.data
       });
-      if (r.ok) sucesso.feriados++;
-      else erros.push('Feriado: ' + r.error);
+      if (r.ok) sucesso.criados++;
+      else erros.push('Criar Feriado ' + f.data + ': ' + r.error);
     }
 
-    // ---------- FOLGAS ----------
-    for (const orig of modalState.originalFolgas) {
-      const r = await api('deleteFolga', { rowIndex: orig._row });
-      if (r.ok) sucesso.apagados++;
-      else erros.push('Apagar Folga: ' + r.error);
-    }
-    for (const f of modalState.folgas) {
-      if (!f.data || !f.data.trim()) continue;
-
+    // FOLGAS
+    const folValidas = modalState.folgas.filter(f => f.data && f.data.trim());
+    for (const f of folValidas) {
       const payload = {
         funcionario: emp.nome,
         data: f.data,
         origem: f.origem
       };
-
       if (f.origem === 'feriado') {
         if (!f.feriadoVinculado) {
-          erros.push('Folga de ' + f.data + ': nenhum feriado selecionado');
+          erros.push('Folga ' + f.data + ': nenhum feriado selecionado');
           continue;
         }
         payload.feriadoRow = f.feriadoVinculado;
       }
-
       const r = await api('addFolga', payload);
-      if (r.ok) sucesso.folgas++;
-      else erros.push('Folga: ' + r.error);
+      if (r.ok) sucesso.criados++;
+      else erros.push('Criar Folga ' + f.data + ': ' + r.error);
     }
 
-    const total = sucesso.controle + sucesso.faltas + sucesso.advertencias + sucesso.feriados + sucesso.folgas;
+    // ============================================================
+    // FASE 2: RECARREGAR para pegar os _row das linhas novas
+    // ============================================================
+    setProgress('🔍 Verificando lançamentos criados...');
+    await Promise.all([
+      carregarControle(),
+      carregarFaltas(),
+      carregarAdvertencias(),
+      carregarFeriados(),
+      carregarFolgas()
+    ]);
+
+    // ============================================================
+    // FASE 3: APAGAR OS ANTIGOS (que NÃO fazem parte dos novos)
+    // ============================================================
+    setProgress('🗑️ Removendo lançamentos antigos...');
+    const nomeL = emp.nome.toLowerCase();
+
+    // helper para normalizar
+    const normData = (d) => (d || '').trim();
+
+    // CONTROLE — apaga o antigo se criou um novo
+    if (criouControleNovo && origC) {
+      const r = await api('deleteControle', { rowIndex: origC._row });
+      if (r.ok) sucesso.apagados++;
+      else erros.push('Apagar Controle antigo: ' + r.error);
+    }
+    // Se NÃO criou novo e o novo está vazio, apaga o antigo
+    if (!criouControleNovo && origC && !novoBH && !novoHE && !novoObs) {
+      const r = await api('deleteControle', { rowIndex: origC._row });
+      if (r.ok) sucesso.apagados++;
+      else erros.push('Apagar Controle: ' + r.error);
+    }
+
+    // FALTAS — apaga antigos que NÃO estão na lista nova
+    const novosFaltasKeys = new Set(faltasValidas.map(f => normData(f.data) + '|' + (f.comAtestado ? '1':'0') + '|' + (f.observacao||'')));
+    const faltasAtuais = faltas.filter(f => f.funcionario.toLowerCase() === nomeL && f.data.endsWith(modalState.mes + '/' + modalState.ano));
+    for (const old of faltasAtuais) {
+      const key = normData(old.data) + '|' + (old.comAtestado ? '1':'0') + '|' + (old.observacao||'');
+      // Se existir pelo menos 1 novo igual, considera que o "novo" já é ele e apaga o antigo
+      if (novosFaltasKeys.has(key)) {
+        // Apaga apenas UMA vez (a mais antiga), para não apagar o novo
+        const r = await api('deleteFalta', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Falta antiga: ' + r.error);
+        novosFaltasKeys.delete(key); // só apaga 1
+      } else {
+        // Não está na lista nova → apaga (foi removido pelo usuário)
+        const r = await api('deleteFalta', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Falta removida: ' + r.error);
+      }
+    }
+
+    // ADVERTÊNCIAS
+    const novosAdvKeys = new Set(advValidas.map(a => normData(a.data) + '|' + (a.motivo||'')));
+    const advAtuais = advertencias.filter(a => a.funcionario.toLowerCase() === nomeL && a.data.endsWith(modalState.mes + '/' + modalState.ano));
+    for (const old of advAtuais) {
+      const key = normData(old.data) + '|' + (old.motivo||'');
+      if (novosAdvKeys.has(key)) {
+        const r = await api('deleteAdvertencia', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Advertência antiga: ' + r.error);
+        novosAdvKeys.delete(key);
+      } else {
+        const r = await api('deleteAdvertencia', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Advertência removida: ' + r.error);
+      }
+    }
+
+    // FERIADOS
+    const novosFerKeys = new Set(ferValidos.map(f => normData(f.data)));
+    const ferAtuais = feriados.filter(f => f.funcionario.toLowerCase() === nomeL && f.data.endsWith(modalState.mes + '/' + modalState.ano));
+    for (const old of ferAtuais) {
+      const key = normData(old.data);
+      if (novosFerKeys.has(key)) {
+        const r = await api('deleteFeriado', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Feriado antigo: ' + r.error);
+        novosFerKeys.delete(key);
+      } else {
+        const r = await api('deleteFeriado', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Feriado removido: ' + r.error);
+      }
+    }
+
+    // FOLGAS
+    const novosFolKeys = new Set(folValidas.map(f => normData(f.data) + '|' + f.origem));
+    const folAtuais = folgas.filter(f => f.funcionario.toLowerCase() === nomeL && f.data.endsWith(modalState.mes + '/' + modalState.ano));
+    for (const old of folAtuais) {
+      const key = normData(old.data) + '|' + old.origem;
+      if (novosFolKeys.has(key)) {
+        const r = await api('deleteFolga', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Folga antiga: ' + r.error);
+        novosFolKeys.delete(key);
+      } else {
+        const r = await api('deleteFolga', { rowIndex: old._row });
+        if (r.ok) sucesso.apagados++;
+        else erros.push('Apagar Folga removida: ' + r.error);
+      }
+    }
+
+    // ============================================================
+    // FASE 4: FEEDBACK
+    // ============================================================
+    setProgress('');
 
     if (erros.length) {
-      toast('⚠️ ' + total + ' salvo(s) com ' + erros.length + ' erro(s)', 'err');
+      toast(`⚠️ ${sucesso.criados} criado(s), ${sucesso.apagados} apagado(s), ${erros.length} erro(s)`, 'err');
       console.error('Erros:', erros);
     } else {
-      toast('✅ ' + total + ' lançamento(s) salvos!', 'ok');
+      toast(`✅ ${sucesso.criados} criado(s), ${sucesso.apagados} ajustado(s)`, 'ok');
     }
 
     await recarregar();
@@ -1604,6 +2134,7 @@ async function salvarTudo() {
     toast('Erro: ' + e.message, 'err');
     btn.disabled = false;
     btn.textContent = '💾 Salvar Tudo';
+    setProgress('');
   }
 }
 
@@ -1725,7 +2256,7 @@ function verFerias(empId) {
   const d = consolidar(f.nome);
   const html = d.fer2.length
     ? `<div style="margin-bottom:16px;">
-        <button class="btn-sm primary" onclick="abrirFormFerias('${f.nome}')">＋ Adicionar férias</button>
+        <button class="btn-sm primary" onclick="abrirFormFerias('${escapeHtml(f.nome)}')">＋ Adicionar férias</button>
       </div>
       <table><thead><tr><th>Início</th><th>Fim</th><th>Retorno</th><th>Dias</th><th>Status</th><th></th></tr></thead><tbody>
         ${d.fer2.slice().sort((a,b) => dataToNum(b.inicio) - dataToNum(a.inicio)).map(x => `
@@ -1740,7 +2271,7 @@ function verFerias(empId) {
         `).join('')}
       </tbody></table>`
     : `<div style="margin-bottom:16px;">
-        <button class="btn-sm primary" onclick="abrirFormFerias('${f.nome}')">＋ Adicionar férias</button>
+        <button class="btn-sm primary" onclick="abrirFormFerias('${escapeHtml(f.nome)}')">＋ Adicionar férias</button>
       </div>
       <div class="empty"><span class="empty-icon">📭</span>Nenhum período de férias.</div>`;
   abrirModal('Férias — ' + f.nome, '', html);
@@ -1801,7 +2332,7 @@ function verRelatorio(empId) {
     <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:20px; margin-bottom:24px">
       <h2 style="font-size:20px; font-weight:800; letter-spacing:-0.3px; color:#0f172a">RELATÓRIO COMPLETO</h2>
       <p style="color:#475569; font-size:13px; margin-top:6px">
-        <b>${f.nome}</b> · ${f.tipo === 'motoqueiro' ? 'Motoqueiro' : 'Funcionário'} ·
+        <b>${escapeHtml(f.nome)}</b> · ${f.tipo === 'motoqueiro' ? 'Motoqueiro' : 'Funcionário'} ·
         ${f.data_admissao ? 'Admissão ' + f.data_admissao : 'Sem admissão'}
       </p>
       <small style="color:#94a3b8">Gerado em ${agora}</small>
@@ -1950,10 +2481,17 @@ async function recarregar() {
       carregarAdvertencias(), carregarFeriados(), carregarFolgas(), carregarFerias()
     ]);
     renderBanco(); renderFuncs(); renderInativos();
+    if (document.getElementById('pane-pagamentos').classList.contains('active')) {
+      renderPagamentos();
+    }
   } catch(e) { toast('Erro: ' + e.message, 'err'); }
   finally { document.getElementById('load-banco').classList.remove('show'); }
 }
 
+/* ============================================================
+   INICIALIZA
+   ============================================================ */
+initMesPagamento();
 recarregar();
 </script>
 </body>
