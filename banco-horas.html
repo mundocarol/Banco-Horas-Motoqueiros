@@ -81,22 +81,42 @@
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 20px; gap: 16px; flex-wrap: wrap;
   }
-  .search-box { position: relative; flex: 1; max-width: 420px; }
-  .search-box input {
-    width: 100%; padding: 12px 16px 12px 42px;
-    border: 1px solid #d1d9e3; background: white;
-    border-radius: 10px; font-size: 14px; font-family: inherit;
-    color: #0f172a; transition: all 0.18s;
+
+  /* CHIPS DE FILTRO */
+  .chips-wrap {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e3e8ef;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+    align-items: center;
   }
-  .search-box input:focus {
-    outline: none; border-color: #1d4ed8;
-    box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+  .chips-label {
+    font-size: 11px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    margin-right: 4px;
   }
-  .search-box::before {
-    content: ''; position: absolute; left: 14px; top: 50%;
-    transform: translateY(-50%); width: 16px; height: 16px;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'%3e%3c/circle%3e%3cpath d='m21 21-4.35-4.35'%3e%3c/path%3e%3c/svg%3e");
-    background-size: cover; opacity: 0.6;
+  .chip {
+    background: #f1f5f9; color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 7px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:hover { background: #e2e8f0; color: #0f172a; }
+  .chip.active {
+    background: #1d4ed8; color: white; border-color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(29,78,216,0.25);
+  }
+  .chip.all {
+    background: white;
+  }
+  .chip.all.active {
+    background: #0f172a; color: white; border-color: #0f172a;
   }
 
   .cards-grid {
@@ -558,6 +578,77 @@
     color: #0f172a;
   }
 
+  /* RELATÓRIO ENXUTO */
+  .rel-header {
+    text-align: center;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+  .rel-header h2 {
+    font-size: 18px; font-weight: 800; color: #0f172a;
+    letter-spacing: -0.3px;
+  }
+  .rel-header .periodo {
+    color: #475569; font-size: 13px; margin-top: 6px;
+  }
+  .rel-header .gerado {
+    color: #94a3b8; font-size: 11px;
+    margin-top: 4px;
+  }
+  .rel-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .rel-card {
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    background: white;
+  }
+  .rel-card .lbl {
+    font-size: 10px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .rel-card .val {
+    font-size: 22px; font-weight: 800;
+    color: #0f172a;
+  }
+  .rel-card.blue { background: #eff6ff; border-color: #bfdbfe; }
+  .rel-card.blue .lbl { color: #1e40af; }
+  .rel-card.blue .val { color: #1e40af; }
+  .rel-card.amber { background: #fffbeb; border-color: #fde68a; }
+  .rel-card.amber .lbl { color: #92400e; }
+  .rel-card.amber .val { color: #d97706; }
+  .rel-card.red { background: #fef2f2; border-color: #fecaca; }
+  .rel-card.red .lbl { color: #991b1b; }
+  .rel-card.red .val { color: #dc2626; }
+  .rel-card.green { background: #f0fdf4; border-color: #bbf7d0; }
+  .rel-card.green .lbl { color: #166534; }
+  .rel-card.green .val { color: #15803d; }
+  .rel-card.gray { background: #f8fafc; border-color: #e2e8f0; }
+  .rel-card.gray .val { color: #475569; }
+
+  .rel-secao {
+    margin-bottom: 22px;
+  }
+  .rel-secao-title {
+    font-size: 13px; font-weight: 700; color: #0f172a;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .rel-secao-title .tag {
+    background: #f1f5f9; color: #475569;
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    font-weight: 700;
+  }
+
   @media (max-width: 768px) {
     .content { padding: 16px; }
     .topbar { padding: 12px 16px; }
@@ -565,7 +656,6 @@
     .emp-header { flex-direction: column; }
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .modal-body { padding: 18px; }
-    .search-box { max-width: 100%; }
     .actions-grid { grid-template-columns: repeat(2, 1fr); }
     .new-form .fields-grid.falta,
     .new-form .fields-grid.folga,
@@ -573,6 +663,7 @@
     .new-form .fields-grid.advertencia,
     .new-form .fields-grid.ferias,
     .new-form .fields-grid.bancohe { grid-template-columns: 1fr; }
+    .rel-cards { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
@@ -598,10 +689,9 @@
 <div class="content">
 
   <div class="pane active" id="pane-banco">
-    <div class="toolbar">
-      <div class="search-box">
-        <input type="text" id="filtro-nome" placeholder="Buscar por nome..." oninput="filtrarFuncionarios()">
-      </div>
+    <div class="chips-wrap" id="chips-wrap">
+      <span class="chips-label">Filtrar por pessoa:</span>
+      <button class="chip all active" onclick="filtrarPor('')">👥 Todos</button>
     </div>
     <div class="loading" id="load-banco"><span class="spinner"></span> Carregando...</div>
     <div id="lista-funcionarios" class="cards-grid"></div>
@@ -650,8 +740,8 @@
     <div class="form-card">
       <h3>📤 Relatório Mensal para Contabilidade</h3>
       <p style="color:#64748b; font-size:13px; margin-bottom:16px">
-        Texto simples e objetivo, organizado por funcionário — pronto para copiar e enviar no WhatsApp.
-        Só aparece funcionário que <b>tiver</b> falta sem atestado ou hora extra no mês.
+        Texto simples e objetivo, organizado por funcionário. Só aparece funcionário que
+        <b>tiver</b> falta sem atestado ou saldo de hora extra diferente de zero no mês.
       </p>
       <div class="form-grid">
         <div class="field">
@@ -714,7 +804,7 @@ if (!sessUser || sessTipo !== 'admin') location.href = 'index.html';
 let cadastro = [], controle = [], faltas = [], advertencias = [];
 let feriados = [], folgas = [], ferias = [];
 let funcionarios = [];
-let filtroNome = '';
+let filtroIdAtivo = ''; // '' = todos; senão = id específico
 
 let modal = {
   tipo: null, empId: null, empNome: '',
@@ -743,9 +833,8 @@ function fmtHoras(h) { return h.toFixed(2).replace('.', ',') + 'h'; }
 function getDayOfWeek(dateStr) {
   if (!dateStr || dateStr.indexOf('/') === -1) return '';
   try {
-    var partes = dateStr.split('/');
-    var d = parseInt(partes[0]), m = parseInt(partes[1]), y = parseInt(partes[2]);
-    var dt = new Date(y, m-1, d);
+    var p = dateStr.split('/');
+    var dt = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
     return ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'][dt.getDay()];
   } catch(e) { return ''; }
 }
@@ -753,18 +842,16 @@ function getDayOfWeek(dateStr) {
 function dataToNum(dateStr) {
   if (!dateStr) return 0;
   try {
-    var partes = dateStr.split('/');
-    var d = parseInt(partes[0]), m = parseInt(partes[1]), y = parseInt(partes[2]);
-    return new Date(y, m-1, d).getTime();
+    var p = dateStr.split('/');
+    return new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0])).getTime();
   } catch(e) { return 0; }
 }
 
 function diffDias(dateStr) {
   if (!dateStr) return 0;
   try {
-    var partes = dateStr.split('/');
-    var d = parseInt(partes[0]), m = parseInt(partes[1]), y = parseInt(partes[2]);
-    var dt = new Date(y, m-1, d);
+    var p = dateStr.split('/');
+    var dt = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
     var hoje = new Date(); hoje.setHours(0,0,0,0);
     return Math.floor((hoje - dt) / (1000*3600*24));
   } catch(e) { return 0; }
@@ -772,9 +859,8 @@ function diffDias(dateStr) {
 
 function addMeses(dateStr, meses) {
   try {
-    var partes = dateStr.split('/');
-    var d = parseInt(partes[0]), m = parseInt(partes[1]), y = parseInt(partes[2]);
-    var dt = new Date(y, m-1, d);
+    var p = dateStr.split('/');
+    var dt = new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
     dt.setMonth(dt.getMonth() + meses);
     return String(dt.getDate()).padStart(2,'0') + '/' + String(dt.getMonth()+1).padStart(2,'0') + '/' + dt.getFullYear();
   } catch(e) { return ''; }
@@ -817,6 +903,12 @@ function nomeMes(mes) {
   return meses[parseInt(mes) - 1] || mes;
 }
 
+function primeiroEUltimoNome(nome) {
+  var p = nome.trim().split(/\s+/);
+  if (p.length === 1) return p[0];
+  return p[0] + ' ' + p[p.length - 1];
+}
+
 /* ============================================================
    API
    ============================================================ */
@@ -838,7 +930,6 @@ async function api(action, payload) {
     if (!resp.ok) return { ok:false, error: 'HTTP ' + resp.status };
     return await resp.json();
   } catch (e) {
-    console.error('Erro na API:', e);
     return { ok:false, error: 'Falha de conexão: ' + e.message };
   }
 }
@@ -955,6 +1046,7 @@ async function recarregarTudo() {
       carregarCadastro(), carregarControle(), carregarFaltas(),
       carregarAdvertencias(), carregarFeriados(), carregarFolgas(), carregarFerias()
     ]);
+    renderChips();
     renderBanco(); renderFuncs(); renderInativos();
   } catch(e) { toast('Erro: ' + e.message, 'err'); }
   finally { document.getElementById('load-banco').classList.remove('show'); }
@@ -1075,17 +1167,40 @@ function calcularStatusFerias(f, dados) {
 }
 
 /* ============================================================
+   CHIPS DE FILTRO
+   ============================================================ */
+function renderChips() {
+  var wrap = document.getElementById('chips-wrap');
+  var html = '<span class="chips-label">Filtrar por pessoa:</span>';
+  html += '<button class="chip all ' + (filtroIdAtivo === '' ? 'active' : '') + '" onclick="filtrarPor(\'\')">👥 Todos</button>';
+  funcionarios.forEach(function(f) {
+    var ativo = filtroIdAtivo === f.id ? 'active' : '';
+    var label = primeiroEUltimoNome(f.nome);
+    html += '<button class="chip ' + ativo + '" onclick="filtrarPor(\'' + f.id + '\')">' + escapeHtml(label) + '</button>';
+  });
+  wrap.innerHTML = html;
+}
+
+function filtrarPor(id) {
+  filtroIdAtivo = id;
+  renderChips();
+  renderBanco();
+}
+
+/* ============================================================
    RENDER BANCO
    ============================================================ */
 function renderBanco() {
   var c = document.getElementById('lista-funcionarios');
   var lista = funcionarios;
-  if (filtroNome) lista = lista.filter(function(f) { return f.nome.toLowerCase().indexOf(filtroNome) !== -1; });
+  if (filtroIdAtivo) {
+    lista = lista.filter(function(f) { return f.id === filtroIdAtivo; });
+  }
 
   if (!lista.length) {
     c.innerHTML = '<div class="empty" style="grid-column:1/-1;">' +
       '<span class="empty-icon">📭</span>' +
-      (filtroNome ? 'Nenhum funcionário encontrado.' : 'Nenhum funcionário ativo.') +
+      'Nenhum funcionário para exibir.' +
     '</div>';
     return;
   }
@@ -1170,11 +1285,6 @@ function renderBanco() {
     '</div>';
   });
   c.innerHTML = html;
-}
-
-function filtrarFuncionarios() {
-  filtroNome = document.getElementById('filtro-nome').value.trim().toLowerCase();
-  renderBanco();
 }
 
 /* ============================================================
@@ -2261,7 +2371,7 @@ async function excluirFerias(rowIndex, label) {
 }
 
 /* ============================================================
-   MODAL — RELATÓRIO
+   MODAL — RELATÓRIO (NOVO, ENXUTO)
    ============================================================ */
 function abrirModalRelatorio(empId) {
   var emp = cadastro.filter(function(c) { return c.id === empId; })[0];
@@ -2272,181 +2382,280 @@ function abrirModalRelatorio(empId) {
   modal.empNome = emp.nome;
   modal.mes = padrao.mes;
   modal.ano = padrao.ano;
+  modal.relModo = 'mes'; // 'mes' | 'periodo' | 'tudo'
+  modal.relInicio = '';
+  modal.relFim = '';
 
   var filterBar = '<div class="modal-filter-bar">' +
-    '<label>Mês/Ano:</label>' +
-    '<select id="modal-mes" onchange="mudarMesRel()">' + getMesesOptions(modal.mes) + '</select>' +
-    '<select id="modal-ano" onchange="mudarMesRel()">' + getAnosOptions(modal.ano) + '</select>' +
+    '<label>Exibir:</label>' +
+    '<select id="rel-modo" onchange="mudarModoRel()">' +
+      '<option value="mes"' + (modal.relModo === 'mes' ? ' selected' : '') + '>📅 Mês específico</option>' +
+      '<option value="periodo"' + (modal.relModo === 'periodo' ? ' selected' : '') + '>📆 Período (de/até)</option>' +
+      '<option value="tudo"' + (modal.relModo === 'tudo' ? ' selected' : '') + '>🌐 Todo o histórico</option>' +
+    '</select>' +
+    '<div id="rel-extra"></div>' +
   '</div>';
-  abrirModal('📄 Relatório — ' + emp.nome, 'Análise do mês selecionado', { wide: true, filterBar: filterBar });
+
+  abrirModal('📄 Relatório — ' + emp.nome, 'Resumo enxuto dos lançamentos', {
+    wide: true,
+    filterBar: filterBar
+  });
+  renderRelExtra();
   renderRelatorio();
 }
 
-function mudarMesRel() {
-  modal.mes = document.getElementById('modal-mes').value;
-  modal.ano = document.getElementById('modal-ano').value;
+function renderRelExtra() {
+  var extra = document.getElementById('rel-extra');
+  if (!extra) return;
+
+  if (modal.relModo === 'mes') {
+    extra.innerHTML =
+      '<select id="modal-mes" onchange="atualizarRel()">' + getMesesOptions(modal.mes) + '</select>' +
+      '<select id="modal-ano" onchange="atualizarRel()">' + getAnosOptions(modal.ano) + '</select>';
+  } else if (modal.relModo === 'periodo') {
+    extra.innerHTML =
+      '<input type="text" id="rel-inicio" placeholder="De dd/mm/aaaa" value="' + (modal.relInicio || '') + '" oninput="modal.relInicio=this.value;renderRelatorio()">' +
+      '<input type="text" id="rel-fim" placeholder="Até dd/mm/aaaa" value="' + (modal.relFim || '') + '" oninput="modal.relFim=this.value;renderRelatorio()">';
+  } else {
+    extra.innerHTML = '<span style="font-size:12px; color:#64748b;">Mostrando tudo</span>';
+  }
+}
+
+function mudarModoRel() {
+  modal.relModo = document.getElementById('rel-modo').value;
+  renderRelExtra();
   renderRelatorio();
+}
+
+function atualizarRel() {
+  var m = document.getElementById('modal-mes');
+  var a = document.getElementById('modal-ano');
+  if (m) modal.mes = m.value;
+  if (a) modal.ano = a.value;
+  renderRelatorio();
+}
+
+function _dentroDoFiltroData(dateStr) {
+  if (!dateStr) return false;
+  if (modal.relModo === 'tudo') return true;
+  if (modal.relModo === 'mes') {
+    return dateStr.slice(-7) === (modal.mes + '/' + modal.ano);
+  }
+  if (modal.relModo === 'periodo') {
+    var t = dataToNum(dateStr);
+    var ini = modal.relInicio ? dataToNum(modal.relInicio) : 0;
+    var fim = modal.relFim ? dataToNum(modal.relFim) : Infinity;
+    return t >= ini && t <= fim;
+  }
+  return true;
+}
+
+function _dentroDoFiltroMesAno(mesAno) {
+  if (modal.relModo === 'tudo') return true;
+  if (modal.relModo === 'mes') {
+    return mesAno === (modal.mes + '/' + modal.ano);
+  }
+  if (modal.relModo === 'periodo') {
+    var p = mesAno.split('/');
+    var ref = new Date(parseInt(p[1]), parseInt(p[0]) - 1, 15).getTime();
+    var ini = modal.relInicio ? dataToNum(modal.relInicio) : 0;
+    var fim = modal.relFim ? dataToNum(modal.relFim) : Infinity;
+    return ref >= ini && ref <= fim;
+  }
+  return true;
 }
 
 function renderRelatorio() {
   var nomeL = modal.empNome.toLowerCase();
-  var mesAno = modal.mes + '/' + modal.ano;
   var agora = new Date().toLocaleString('pt-BR');
 
-  var ctrlF = controle.filter(function(c) { return c.funcionario.toLowerCase() === nomeL && c.mesAno === mesAno; });
-  var faltasF = faltas.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && f.data.slice(-7) === mesAno; });
-  var advF = advertencias.filter(function(a) { return a.funcionario.toLowerCase() === nomeL && a.data.slice(-7) === mesAno; });
-  var ferF = feriados.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && f.data.slice(-7) === mesAno; });
-  var folgF = folgas.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && f.data.slice(-7) === mesAno; });
-  var fer2F = ferias.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && f.inicio.slice(-7) === mesAno; });
+  var ctrlF  = controle.filter(function(c) { return c.funcionario.toLowerCase() === nomeL && _dentroDoFiltroMesAno(c.mesAno); });
+  var faltF  = faltas.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && _dentroDoFiltroData(f.data); });
+  var advF   = advertencias.filter(function(a) { return a.funcionario.toLowerCase() === nomeL && _dentroDoFiltroData(a.data); });
+  var ferF   = feriados.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && _dentroDoFiltroData(f.data); });
+  var folgF  = folgas.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && _dentroDoFiltroData(f.data); });
+  var fer2F  = ferias.filter(function(f) { return f.funcionario.toLowerCase() === nomeL && _dentroDoFiltroData(f.inicio); });
 
   var totalBH = ctrlF.reduce(function(s,c) { return s + c.saldoBanco; }, 0);
   var folgasBancoF = folgF.filter(function(f) { return f.origem === 'banco'; });
   totalBH -= folgasBancoF.length * 8;
   var totalHE = ctrlF.reduce(function(s,c) { return s + c.horaExtra; }, 0);
 
-  var faltasJust = faltasF.filter(function(f) { return f.comAtestado; }).length;
-  var faltasInjust = faltasF.filter(function(f) { return !f.comAtestado; }).length;
-  var feriadosPend = ferF.filter(function(f) { return f.status === 'pendente'; }).length;
+  var faltasInjust = faltF.filter(function(f) { return !f.comAtestado; }).length;
+  var faltasJust = faltF.filter(function(f) { return f.comAtestado; }).length;
 
-  var corBH = totalBH >= 0 ? '#15803d' : '#b91c1c';
-  var corAdv = advF.length > 0 ? '#dc2626' : '#0f172a';
+  // Período label
+  var periodoLabel = '';
+  if (modal.relModo === 'mes') {
+    periodoLabel = nomeMes(modal.mes) + '/' + modal.ano;
+  } else if (modal.relModo === 'periodo') {
+    periodoLabel = 'De ' + (modal.relInicio || '—') + ' até ' + (modal.relFim || '—');
+  } else {
+    periodoLabel = 'Todo o histórico';
+  }
 
-  var html = '<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:16px; margin-bottom:20px;">' +
-    '<h2 style="font-size:18px; font-weight:800; color:#0f172a;">RELATÓRIO — ' + escapeHtml(modal.empNome).toUpperCase() + '</h2>' +
-    '<p style="color:#475569; font-size:13px; margin-top:6px;">Mês: <b>' + nomeMes(modal.mes) + '/' + modal.ano + '</b></p>' +
-    '<small style="color:#94a3b8;">Gerado em ' + agora + '</small>' +
-  '</div>' +
+  // Resumo consolidado
+  var totalLanc = ctrlF.length + faltF.length + advF.length + ferF.length + folgF.length + fer2F.length;
 
-  '<div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px;">' +
-    '<div style="background:#f0f9ff; padding:14px; border-radius:10px; text-align:center; border:1px solid #bae6fd;">' +
-      '<small style="color:#0369a1; font-size:10px; font-weight:600; text-transform:uppercase;">Banco Horas</small>' +
-      '<div style="font-size:20px; font-weight:800; color:' + corBH + '; margin-top:4px;">' + fmtHoras(totalBH) + '</div>' +
-    '</div>' +
-    '<div style="background:#fffbeb; padding:14px; border-radius:10px; text-align:center; border:1px solid #fde68a;">' +
-      '<small style="color:#92400e; font-size:10px; font-weight:600; text-transform:uppercase;">Hora Extra</small>' +
-      '<div style="font-size:20px; font-weight:800; color:#d97706; margin-top:4px;">' + fmtHoras(totalHE) + '</div>' +
-    '</div>' +
-    '<div style="background:#fee2e2; padding:14px; border-radius:10px; text-align:center; border:1px solid #fecaca;">' +
-      '<small style="color:#991b1b; font-size:10px; font-weight:600; text-transform:uppercase;">Faltas Injust.</small>' +
-      '<div style="font-size:20px; font-weight:800; color:#991b1b; margin-top:4px;">' + faltasInjust + '</div>' +
-    '</div>' +
-    '<div style="background:#dcfce7; padding:14px; border-radius:10px; text-align:center; border:1px solid #bbf7d0;">' +
-      '<small style="color:#166534; font-size:10px; font-weight:600; text-transform:uppercase;">Faltas Just.</small>' +
-      '<div style="font-size:20px; font-weight:800; color:#166534; margin-top:4px;">' + faltasJust + '</div>' +
-    '</div>' +
-  '</div>' +
+  var html = '<div class="rel-header">' +
+    '<h2>RELATÓRIO — ' + escapeHtml(modal.empNome).toUpperCase() + '</h2>' +
+    '<div class="periodo">📅 ' + periodoLabel + '</div>' +
+    '<div class="gerado">Gerado em ' + agora + ' · ' + totalLanc + ' lançamento(s) no total</div>' +
+  '</div>';
 
-  '<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;">' +
-    '<div style="background:#f8fafc; padding:12px; border-radius:10px; text-align:center; border:1px solid #e2e8f0;">' +
-      '<small style="color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase;">Advertências</small>' +
-      '<div style="font-size:18px; font-weight:700; color:' + corAdv + '; margin-top:2px;">' + advF.length + '</div>' +
+  // Cards resumo
+  html += '<div class="rel-cards">' +
+    '<div class="rel-card blue">' +
+      '<div class="lbl">Banco de Horas</div>' +
+      '<div class="val">' + fmtHoras(totalBH) + '</div>' +
     '</div>' +
-    '<div style="background:#f8fafc; padding:12px; border-radius:10px; text-align:center; border:1px solid #e2e8f0;">' +
-      '<small style="color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase;">Folgas</small>' +
-      '<div style="font-size:18px; font-weight:700; color:#0f172a; margin-top:2px;">' + folgF.length + '</div>' +
+    '<div class="rel-card amber">' +
+      '<div class="lbl">Horas Extras</div>' +
+      '<div class="val">' + fmtHoras(totalHE) + '</div>' +
     '</div>' +
-    '<div style="background:#f8fafc; padding:12px; border-radius:10px; text-align:center; border:1px solid #e2e8f0;">' +
-      '<small style="color:#64748b; font-size:10px; font-weight:600; text-transform:uppercase;">Feriados Trab.</small>' +
-      '<div style="font-size:18px; font-weight:700; color:#0f172a; margin-top:2px;">' + ferF.length + (feriadosPend > 0 ? ' <span style="font-size:11px; color:#dc2626;">(' + feriadosPend + ' pend.)</span>' : '') + '</div>' +
+    '<div class="rel-card red">' +
+      '<div class="lbl">Faltas Injust.</div>' +
+      '<div class="val">' + faltasInjust + '</div>' +
+    '</div>' +
+    '<div class="rel-card green">' +
+      '<div class="lbl">Faltas Just.</div>' +
+      '<div class="val">' + faltasJust + '</div>' +
+    '</div>' +
+    '<div class="rel-card gray">' +
+      '<div class="lbl">Advertências</div>' +
+      '<div class="val">' + advF.length + '</div>' +
+    '</div>' +
+    '<div class="rel-card gray">' +
+      '<div class="lbl">Folgas</div>' +
+      '<div class="val">' + folgF.length + '</div>' +
     '</div>' +
   '</div>';
 
-  // Controle
-  html += '<h3 style="font-size:14px; font-weight:700; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0;">📊 Lançamentos do Mês</h3>';
-  if (ctrlF.length === 0) {
-    html += '<p style="color:#94a3b8; font-size:12px;">Sem lançamentos.</p>';
-  } else {
-    var linhasCtrl = ctrlF.map(function(c) {
-      var corB = c.saldoBanco >= 0 ? '#15803d' : '#b91c1c';
-      var corH = c.horaExtra >= 0 ? '#d97706' : '#16a34a';
-      return '<tr>' +
-        '<td style="color:' + corB + '; font-weight:600;">' + (c.saldoBancoRaw !== '' ? fmtHoras(c.saldoBanco) : '—') + '</td>' +
-        '<td style="color:' + corH + '; font-weight:600;">' + (c.horaExtraRaw !== '' ? fmtHoras(c.horaExtra) : '—') + '</td>' +
-        '<td><small>' + escapeHtml(c.observacao || '—') + '</small></td>' +
-      '</tr>';
-    }).join('');
-    html += '<table style="margin-bottom:20px;"><thead><tr><th>BH</th><th>HE</th><th>Obs</th></tr></thead><tbody>' + linhasCtrl + '</tbody></table>';
+  // === Lista de lançamentos organizada ===
+
+  // 1. Controle (BH/HE)
+  if (ctrlF.length > 0) {
+    var ctrlOrdenado = ctrlF.slice().sort(function(a,b) {
+      var pa = a.mesAno.split('/'), pb = b.mesAno.split('/');
+      return new Date(pb[1], pb[0]-1) - new Date(pa[1], pa[0]-1);
+    });
+    html += '<div class="rel-secao">' +
+      '<div class="rel-secao-title">📊 Banco de Horas / Hora Extra <span class="tag">' + ctrlF.length + '</span></div>' +
+      '<table><thead><tr><th>Mês</th><th>BH</th><th>HE</th><th>Observação</th></tr></thead><tbody>' +
+      ctrlOrdenado.map(function(c) {
+        var corB = c.saldoBanco >= 0 ? '#15803d' : '#b91c1c';
+        var corH = c.horaExtra >= 0 ? '#d97706' : '#16a34a';
+        return '<tr>' +
+          '<td><b>' + c.mesAno + '</b></td>' +
+          '<td style="color:' + corB + '; font-weight:600;">' + (c.saldoBancoRaw !== '' ? fmtHoras(c.saldoBanco) : '—') + '</td>' +
+          '<td style="color:' + corH + '; font-weight:600;">' + (c.horaExtraRaw !== '' ? fmtHoras(c.horaExtra) : '—') + '</td>' +
+          '<td><small>' + escapeHtml(c.observacao || '—') + '</small></td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' +
+    '</div>';
   }
 
-  // Faltas
-  html += '<h3 style="font-size:14px; font-weight:700; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0;">📋 Faltas</h3>';
-  if (faltasF.length === 0) {
-    html += '<p style="color:#94a3b8; font-size:12px;">Nenhuma falta.</p>';
-  } else {
-    var linhasFalt = faltasF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); }).map(function(f) {
-      return '<tr>' +
-        '<td><b>' + f.data + '</b></td>' +
-        '<td>' + (f.comAtestado ? '✅ Sim' : '❌ Não') + '</td>' +
-        '<td><small>' + escapeHtml(f.observacao || '—') + '</small></td>' +
-      '</tr>';
-    }).join('');
-    html += '<table style="margin-bottom:20px;"><thead><tr><th>Data</th><th>Atestado</th><th>Obs</th></tr></thead><tbody>' + linhasFalt + '</tbody></table>';
+  // 2. Faltas
+  if (faltF.length > 0) {
+    var faltOrd = faltF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); });
+    html += '<div class="rel-secao">' +
+      '<div class="rel-secao-title">📋 Faltas <span class="tag">' + faltF.length + '</span></div>' +
+      '<table><thead><tr><th>Data</th><th>Dia</th><th>Atestado</th><th>Observação</th></tr></thead><tbody>' +
+      faltOrd.map(function(f) {
+        return '<tr>' +
+          '<td><b>' + f.data + '</b></td>' +
+          '<td>' + getDayOfWeek(f.data) + '</td>' +
+          '<td>' + (f.comAtestado ? '✅ Sim' : '❌ Não') + '</td>' +
+          '<td><small>' + escapeHtml(f.observacao || '—') + '</small></td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' +
+    '</div>';
   }
 
-  // Advertências
-  html += '<h3 style="font-size:14px; font-weight:700; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0;">⚖️ Advertências</h3>';
-  if (advF.length === 0) {
-    html += '<p style="color:#94a3b8; font-size:12px;">Nenhuma advertência.</p>';
-  } else {
-    var linhasAdv = advF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); }).map(function(a) {
-      return '<tr><td><b>' + a.data + '</b></td><td>' + escapeHtml(a.motivo || '—') + '</td></tr>';
-    }).join('');
-    html += '<table style="margin-bottom:20px;"><thead><tr><th>Data</th><th>Motivo</th></tr></thead><tbody>' + linhasAdv + '</tbody></table>';
+  // 3. Advertências
+  if (advF.length > 0) {
+    var advOrd = advF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); });
+    html += '<div class="rel-secao">' +
+      '<div class="rel-secao-title">⚖️ Advertências <span class="tag">' + advF.length + '</span></div>' +
+      '<table><thead><tr><th>Data</th><th>Dia</th><th>Motivo</th></tr></thead><tbody>' +
+      advOrd.map(function(a) {
+        return '<tr>' +
+          '<td><b>' + a.data + '</b></td>' +
+          '<td>' + getDayOfWeek(a.data) + '</td>' +
+          '<td>' + escapeHtml(a.motivo || '—') + '</td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' +
+    '</div>';
   }
 
-  // Folgas
-  html += '<h3 style="font-size:14px; font-weight:700; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0;">📆 Folgas</h3>';
-  if (folgF.length === 0) {
-    html += '<p style="color:#94a3b8; font-size:12px;">Nenhuma folga.</p>';
-  } else {
-    var linhasFolg = folgF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); }).map(function(f) {
-      var det = f.origem === 'banco' ? 'Debita 8h do banco' : '—';
-      if (f.origem === 'feriado' && f.feriadoVinculado) {
-        var fer = feriados.filter(function(y) { return y._row === f.feriadoVinculado; })[0];
-        det = fer ? 'Compensa feriado de ' + fer.data : '(vínculo perdido)';
-      }
-      return '<tr>' +
-        '<td><b>' + f.data + '</b> <small style="color:#94a3b8;">(' + getDayOfWeek(f.data) + ')</small></td>' +
-        '<td>' + (f.origem === 'feriado' ? '🏖️ Feriado' : '📊 Banco') + '</td>' +
-        '<td><small>' + det + '</small></td>' +
-      '</tr>';
-    }).join('');
-    html += '<table style="margin-bottom:20px;"><thead><tr><th>Data</th><th>Origem</th><th>Detalhe</th></tr></thead><tbody>' + linhasFolg + '</tbody></table>';
+  // 4. Folgas
+  if (folgF.length > 0) {
+    var folgOrd = folgF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); });
+    html += '<div class="rel-secao">' +
+      '<div class="rel-secao-title">📆 Folgas <span class="tag">' + folgF.length + '</span></div>' +
+      '<table><thead><tr><th>Data</th><th>Dia</th><th>Origem</th><th>Detalhe</th></tr></thead><tbody>' +
+      folgOrd.map(function(f) {
+        var det = f.origem === 'banco' ? 'Debita 8h do banco' : '—';
+        if (f.origem === 'feriado' && f.feriadoVinculado) {
+          var fer = feriados.filter(function(y) { return y._row === f.feriadoVinculado; })[0];
+          det = fer ? 'Compensa feriado de ' + fer.data : '(vínculo perdido)';
+        }
+        return '<tr>' +
+          '<td><b>' + f.data + '</b></td>' +
+          '<td>' + getDayOfWeek(f.data) + '</td>' +
+          '<td>' + (f.origem === 'feriado' ? '🏖️ Feriado' : '📊 Banco') + '</td>' +
+          '<td><small>' + det + '</small></td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' +
+    '</div>';
   }
 
-  // Feriados
-  html += '<h3 style="font-size:14px; font-weight:700; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0;">🏖️ Feriados Trabalhados</h3>';
-  if (ferF.length === 0) {
-    html += '<p style="color:#94a3b8; font-size:12px;">Nenhum feriado trabalhado.</p>';
-  } else {
-    var linhasFer = ferF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); }).map(function(f) {
-      var st = f.status === 'pendente'
-        ? '<span style="background:#fffbeb; color:#92400e; padding:3px 10px; border-radius:6px; font-weight:600; font-size:11px;">⏳ PENDENTE</span>'
-        : '<span style="background:#f0fdf4; color:#166534; padding:3px 10px; border-radius:6px; font-weight:600; font-size:11px;">✅ COMPENSADO</span>';
-      return '<tr>' +
-        '<td><b>' + f.data + '</b> <small style="color:#94a3b8;">(' + getDayOfWeek(f.data) + ')</small></td>' +
-        '<td>' + st + '</td>' +
-      '</tr>';
-    }).join('');
-    html += '<table style="margin-bottom:20px;"><thead><tr><th>Data</th><th>Status</th></tr></thead><tbody>' + linhasFer + '</tbody></table>';
+  // 5. Feriados trabalhados
+  if (ferF.length > 0) {
+    var ferOrd = ferF.slice().sort(function(a,b) { return dataToNum(b.data) - dataToNum(a.data); });
+    html += '<div class="rel-secao">' +
+      '<div class="rel-secao-title">🏖️ Feriados Trabalhados <span class="tag">' + ferF.length + '</span></div>' +
+      '<table><thead><tr><th>Data</th><th>Dia</th><th>Status</th></tr></thead><tbody>' +
+      ferOrd.map(function(f) {
+        var st = f.status === 'pendente' ? '⏳ Pendente' : '✅ Compensado';
+        return '<tr>' +
+          '<td><b>' + f.data + '</b></td>' +
+          '<td>' + getDayOfWeek(f.data) + '</td>' +
+          '<td>' + st + '</td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' +
+    '</div>';
   }
 
-  // Férias
-  html += '<h3 style="font-size:14px; font-weight:700; margin:20px 0 10px; padding-bottom:6px; border-bottom:1px solid #e2e8f0;">🌴 Férias</h3>';
-  if (fer2F.length === 0) {
-    html += '<p style="color:#94a3b8; font-size:12px;">Nenhum período de férias.</p>';
-  } else {
-    var linhasFer2 = fer2F.slice().sort(function(a,b) { return dataToNum(b.inicio) - dataToNum(a.inicio); }).map(function(f) {
-      return '<tr>' +
-        '<td><b>' + f.inicio + '</b></td>' +
-        '<td>' + f.fim + '</td>' +
-        '<td>' + f.retorno + '</td>' +
-        '<td>' + f.dias + '</td>' +
-        '<td>' + f.status + '</td>' +
-      '</tr>';
-    }).join('');
-    html += '<table style="margin-bottom:20px;"><thead><tr><th>Início</th><th>Fim</th><th>Retorno</th><th>Dias</th><th>Status</th></tr></thead><tbody>' + linhasFer2 + '</tbody></table>';
+  // 6. Férias
+  if (fer2F.length > 0) {
+    var f2Ord = fer2F.slice().sort(function(a,b) { return dataToNum(b.inicio) - dataToNum(a.inicio); });
+    html += '<div class="rel-secao">' +
+      '<div class="rel-secao-title">🌴 Férias <span class="tag">' + fer2F.length + '</span></div>' +
+      '<table><thead><tr><th>Início</th><th>Fim</th><th>Retorno</th><th>Dias</th><th>Status</th></tr></thead><tbody>' +
+      f2Ord.map(function(f) {
+        return '<tr>' +
+          '<td><b>' + f.inicio + '</b></td>' +
+          '<td>' + f.fim + '</td>' +
+          '<td>' + f.retorno + '</td>' +
+          '<td>' + f.dias + '</td>' +
+          '<td>' + f.status + '</td>' +
+        '</tr>';
+      }).join('') +
+      '</tbody></table>' +
+    '</div>';
+  }
+
+  if (totalLanc === 0) {
+    html += '<div class="empty" style="padding:32px;">' +
+      '<span class="empty-icon">📭</span>' +
+      'Nenhum lançamento no período selecionado.' +
+    '</div>';
   }
 
   html += '<div style="margin-top:24px; padding-top:14px; border-top:2px solid #0f172a; text-align:center; font-size:10px; color:#94a3b8;">' +
@@ -2553,21 +2762,26 @@ function gerarRelatorioContab() {
   funcionarios.forEach(function(f) {
     var nomeL = f.nome.toLowerCase();
 
+    // Faltas sem atestado
     var faltasInjust = faltas
       .filter(function(x) { return x.funcionario.toLowerCase() === nomeL && x.data.slice(-7) === mesAno && !x.comAtestado; })
       .sort(function(a,b) { return dataToNum(a.data) - dataToNum(b.data); });
 
+    // HE do mês: soma real
     var ctrlMes = controle.filter(function(c) { return c.funcionario.toLowerCase() === nomeL && c.mesAno === mesAno; });
     var saldoHE = ctrlMes.reduce(function(s,c) { return s + c.horaExtra; }, 0);
-    var temHE = ctrlMes.some(function(c) { return c.horaExtraRaw !== '' && c.horaExtra !== 0; });
 
-    if (faltasInjust.length === 0 && !temHE) return;
+    // Critérios: só aparece se tiver falta sem atestado OU saldo HE != 0
+    var temFaltaInjust = faltasInjust.length > 0;
+    var temHE = Math.abs(saldoHE) > 0.001;
+
+    if (!temFaltaInjust && !temHE) return;
 
     algumComDados = true;
     linhas.push('👤 ' + f.nome);
     linhas.push('─────────────────────────────');
 
-    if (faltasInjust.length > 0) {
+    if (temFaltaInjust) {
       linhas.push('❌ Faltas SEM atestado (' + faltasInjust.length + '):');
       faltasInjust.forEach(function(x) {
         linhas.push('   • ' + x.data + ' (' + getDayOfWeek(x.data) + ')');
@@ -2575,16 +2789,15 @@ function gerarRelatorioContab() {
     }
 
     if (temHE) {
-      if (saldoHE > 0.001) linhas.push('💵 Horas Extras: ' + fmtHoras(saldoHE) + ' (crédito)');
+      if (saldoHE > 0.001) linhas.push('💵 Horas Extras: ' + fmtHoras(saldoHE) + ' (a pagar)');
       else if (saldoHE < -0.001) linhas.push('💵 Horas Extras: ' + fmtHoras(Math.abs(saldoHE)) + ' (paga)');
-      else linhas.push('💵 Horas Extras: ' + fmtHoras(saldoHE) + ' (zerado)');
     }
 
     linhas.push('');
   });
 
   if (!algumComDados) {
-    linhas.push('ℹ️ Nenhuma falta sem atestado e nenhuma hora extra lançada neste mês.');
+    linhas.push('ℹ️ Nenhum funcionário com falta sem atestado ou hora extra neste mês.');
   }
 
   linhas.push('─────────────────────────────');
