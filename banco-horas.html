@@ -100,10 +100,21 @@
     background-size: cover; opacity: 0.6;
   }
 
+  /* 2 cards por linha */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 980px) {
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+
   .emp-card {
     background: white; padding: 22px 24px; border-radius: 14px;
     border: 1px solid #e3e8ef; box-shadow: 0 2px 8px rgba(15,23,42,0.06);
-    margin-bottom: 14px; transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    display: flex; flex-direction: column;
   }
   .emp-card:hover {
     box-shadow: 0 6px 20px rgba(15,23,42,0.1);
@@ -163,6 +174,14 @@
     font-size: 12px; font-weight: 600;
     display: inline-flex; align-items: center; gap: 6px;
     letter-spacing: -0.1px;
+    border: 1px solid transparent;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .badge.clickable { cursor: pointer; }
+  .badge.clickable:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15,23,42,0.12);
   }
   .badge small {
     display: block; font-size: 10px; font-weight: 500;
@@ -175,6 +194,7 @@
   .badge.bh strong, .badge.he strong { font-size: 14px; }
   .badge.fer { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
   .badge.fer.ok { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+  .badge.fer.clickable:hover { background: #fef3c7; }
 
   .ferias-status {
     display: flex; align-items: center; gap: 12px;
@@ -211,6 +231,7 @@
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 8px;
     padding-top: 14px; border-top: 1px solid #f1f5f9;
+    margin-top: auto;
   }
   .btn-tool {
     padding: 10px 14px; border-radius: 8px;
@@ -501,6 +522,20 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* RELATÓRIO CONTABILIDADE — texto mono */
+  .rel-contab {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    background: #f8fafc;
+    border: 1px solid #dbe1ea;
+    border-radius: 10px;
+    padding: 20px 22px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: #0f172a;
+  }
+
   @media (max-width: 768px) {
     .content { padding: 16px; }
     .topbar { padding: 12px 16px; }
@@ -528,6 +563,7 @@
     <button class="tab active" data-pane="banco">📊 Banco de Horas</button>
     <button class="tab" data-pane="funcs">👥 Gerenciar Pessoas</button>
     <button class="tab" data-pane="inativos">📁 Inativos</button>
+    <button class="tab" data-pane="contab">📤 Relatório Contabilidade</button>
   </div>
 </div>
 
@@ -541,7 +577,7 @@
       </div>
     </div>
     <div class="loading" id="load-banco"><span class="spinner"></span> Carregando...</div>
-    <div id="lista-funcionarios"></div>
+    <div id="lista-funcionarios" class="cards-grid"></div>
   </div>
 
   <!-- ============ FUNCIONÁRIOS ============ -->
@@ -582,6 +618,33 @@
         Não aparecem no login. Dados preservados para consulta e uso jurídico.
       </p>
       <div id="tabela-inativos"></div>
+    </div>
+  </div>
+
+  <!-- ============ RELATÓRIO CONTABILIDADE ============ -->
+  <div class="pane" id="pane-contab">
+    <div class="form-card">
+      <h3>📤 Relatório Mensal para Contabilidade</h3>
+      <p style="color:#64748b; font-size:13px; margin-bottom:16px">
+        Texto simples e objetivo, organizado por funcionário — pronto para copiar e enviar no WhatsApp.
+      </p>
+      <div class="form-grid">
+        <div class="field">
+          <label>Mês</label>
+          <select id="contab-mes"></select>
+        </div>
+        <div class="field">
+          <label>Ano</label>
+          <select id="contab-ano"></select>
+        </div>
+      </div>
+      <button class="btn-sm primary" onclick="gerarRelatorioContab()">📄 Gerar Relatório</button>
+    </div>
+
+    <div class="form-card">
+      <div id="contab-output">
+        <div class="empty"><span class="empty-icon">📤</span>Selecione o mês e clique em Gerar.</div>
+      </div>
     </div>
   </div>
 
@@ -628,23 +691,20 @@ let feriados = [], folgas = [], ferias = [];
 let funcionarios = [];
 let filtroNome = '';
 
-// Estado do modal atual
 let modal = {
-  tipo: null,       // 'faltas' | 'folgas' | 'feriados' | 'bancohe' | 'advertencias' | 'ferias' | 'relatorio'
+  tipo: null,
   empId: null,
   empNome: '',
   mes: '',
   ano: '',
-  // Dados carregados do mês
   originais: [],
   atuais: [],
-  // Controle especial (Banco/HE)
   ctrlOriginais: [],
   ctrlAtuais: [],
-  // Filtro de relatório
   relFiltro: 'mes',
   relInicio: '',
-  relFim: ''
+  relFim: '',
+  salvando: false
 };
 
 /* ============================================================
@@ -727,6 +787,11 @@ function mesPadrao() {
   const anoAtual = d.getFullYear();
   if (mesAtual === 1) return { mes: '12', ano: String(anoAtual - 1) };
   return { mes: String(mesAtual - 1).padStart(2,'0'), ano: String(anoAtual) };
+}
+
+function nomeMes(mes) {
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  return meses[parseInt(mes) - 1] || mes;
 }
 
 /* ============================================================
@@ -864,71 +929,40 @@ function detectarDuplicados(nomeFunc) {
   const nomeL = nomeFunc.toLowerCase();
   const avisos = [];
 
-  // Faltas — mesma data
-  const faltasFunc = faltas.filter(f => f.funcionario.toLowerCase() === nomeL);
-  const faltasPorData = {};
-  faltasFunc.forEach(f => {
-    if (!faltasPorData[f.data]) faltasPorData[f.data] = 0;
-    faltasPorData[f.data]++;
-  });
-  Object.entries(faltasPorData).forEach(([data, count]) => {
-    if (count > 1) avisos.push(`${count}× falta em ${data}`);
-  });
+  function checar(arr, label, campoData) {
+    const filt = arr.filter(f => f.funcionario.toLowerCase() === nomeL);
+    const porData = {};
+    filt.forEach(f => {
+      const d = f[campoData] || '';
+      if (!d) return;
+      if (!porData[d]) porData[d] = 0;
+      porData[d]++;
+    });
+    Object.entries(porData).forEach(([data, count]) => {
+      if (count > 1) avisos.push(`${count}× ${label} em ${data}`);
+    });
+  }
 
-  // Advertências — mesma data
-  const advFunc = advertencias.filter(a => a.funcionario.toLowerCase() === nomeL);
-  const advPorData = {};
-  advFunc.forEach(a => {
-    if (!advPorData[a.data]) advPorData[a.data] = 0;
-    advPorData[a.data]++;
-  });
-  Object.entries(advPorData).forEach(([data, count]) => {
-    if (count > 1) avisos.push(`${count}× advertência em ${data}`);
-  });
+  checar(faltas, 'falta', 'data');
+  checar(advertencias, 'advertência', 'data');
+  checar(feriados, 'feriado', 'data');
+  checar(folgas, 'folga', 'data');
 
-  // Feriados — mesma data
-  const ferFunc = feriados.filter(f => f.funcionario.toLowerCase() === nomeL);
-  const ferPorData = {};
-  ferFunc.forEach(f => {
-    if (!ferPorData[f.data]) ferPorData[f.data] = 0;
-    ferPorData[f.data]++;
-  });
-  Object.entries(ferPorData).forEach(([data, count]) => {
-    if (count > 1) avisos.push(`${count}× feriado em ${data}`);
-  });
-
-  // Folgas — mesma data
-  const folgFunc = folgas.filter(f => f.funcionario.toLowerCase() === nomeL);
-  const folgPorData = {};
-  folgFunc.forEach(f => {
-    if (!folgPorData[f.data]) folgPorData[f.data] = 0;
-    folgPorData[f.data]++;
-  });
-  Object.entries(folgPorData).forEach(([data, count]) => {
-    if (count > 1) avisos.push(`${count}× folga em ${data}`);
-  });
-
-  // Controle — 2+ lançamentos no mesmo mês COM BH
+  // Controle: 2+ linhas no mesmo mês com BH ou HE
   const ctrlFunc = controle.filter(c => c.funcionario.toLowerCase() === nomeL);
-  const ctrlPorMesBH = {};
-  const ctrlPorMesHE = {};
+  const ctrlPorMes = {};
   ctrlFunc.forEach(c => {
     const temBH = c.saldoBancoRaw !== '' && c.saldoBanco !== 0;
     const temHE = c.horaExtraRaw !== '' && c.horaExtra !== 0;
-    if (temBH) {
-      if (!ctrlPorMesBH[c.mesAno]) ctrlPorMesBH[c.mesAno] = 0;
-      ctrlPorMesBH[c.mesAno]++;
-    }
-    if (temHE) {
-      if (!ctrlPorMesHE[c.mesAno]) ctrlPorMesHE[c.mesAno] = 0;
-      ctrlPorMesHE[c.mesAno]++;
+    if (temBH || temHE) {
+      if (!ctrlPorMes[c.mesAno]) ctrlPorMes[c.mesAno] = { bh: 0, he: 0 };
+      if (temBH) ctrlPorMes[c.mesAno].bh++;
+      if (temHE) ctrlPorMes[c.mesAno].he++;
     }
   });
-  Object.entries(ctrlPorMesBH).forEach(([mesAno, count]) => {
-    if (count > 1) avisos.push(`${count}× BH lançado em ${mesAno}`);
-  });
-  Object.entries(ctrlPorMesHE).forEach(([mesAno, count]) => {
-    if (count > 1) avisos.push(`${count}× HE lançada em ${mesAno}`);
+  Object.entries(ctrlPorMes).forEach(([mesAno, o]) => {
+    if (o.bh > 1) avisos.push(`${o.bh}× BH lançado em ${mesAno}`);
+    if (o.he > 1) avisos.push(`${o.he}× HE lançada em ${mesAno}`);
   });
 
   return avisos;
@@ -1033,7 +1067,7 @@ function renderBanco() {
   }
 
   if (!lista.length) {
-    c.innerHTML = `<div class="empty">
+    c.innerHTML = `<div class="empty" style="grid-column:1/-1;">
       <span class="empty-icon">📭</span>
       ${filtroNome ? 'Nenhum funcionário encontrado com esse nome.' : 'Nenhum funcionário ativo. Vá em <b>Gerenciar Pessoas</b> e adicione.'}
     </div>`;
@@ -1058,7 +1092,7 @@ function renderBanco() {
             ${duplicados.map(x => `<li>${escapeHtml(x)}</li>`).join('')}
           </ul>
           <p style="font-size:11px; color:#7f1d1d; margin-top:8px; font-style:italic">
-            Abra o modal correspondente para remover as linhas duplicadas.
+            Abra o modal correspondente e remova as linhas duplicadas.
           </p>
         </div>
       `;
@@ -1077,15 +1111,15 @@ function renderBanco() {
             </div>
           </div>
           <div class="emp-badges">
-            <div class="badge bh ${bhClass}">
+            <button class="badge bh clickable ${bhClass}" onclick="abrirRelBanco('${f.id}')" title="Ver histórico completo">
               <div><small>Banco Horas</small><strong>${fmtHoras(d.totalBH)}</strong></div>
-            </div>
-            <div class="badge he">
+            </button>
+            <button class="badge he clickable" onclick="abrirRelHE('${f.id}')" title="Ver histórico completo">
               <div><small>Horas Extras</small><strong>${fmtHoras(d.totalHE)}</strong></div>
-            </div>
-            <div class="badge fer ${ferClass}">
+            </button>
+            <button class="badge fer clickable ${ferClass}" onclick="abrirModalFeriadosPendentes('${f.id}')" title="Ver feriados pendentes">
               <div><small>Feriados Pend.</small><strong>${d.feriadosPendentes}</strong></div>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -1207,6 +1241,7 @@ document.querySelectorAll('.tab').forEach(t => {
     document.getElementById('pane-' + t.dataset.pane).classList.add('active');
     if (t.dataset.pane === 'funcs') renderFuncs();
     if (t.dataset.pane === 'inativos') renderInativos();
+    if (t.dataset.pane === 'contab') initContab();
   });
 });
 
@@ -1224,6 +1259,7 @@ function abrirModal(titulo, sub, opts = {}) {
   if (opts.showSave) {
     saveBtn.style.display = 'inline-flex';
     saveBtn.textContent = opts.saveLabel || '💾 Salvar';
+    saveBtn.disabled = false;
   } else {
     saveBtn.style.display = 'none';
   }
@@ -1236,12 +1272,19 @@ function abrirModal(titulo, sub, opts = {}) {
 
 function fecharModal() {
   document.getElementById('modal').classList.remove('open');
-  modal = {
-    tipo: null, empId: null, empNome: '', mes: '', ano: '',
-    originais: [], atuais: [],
-    ctrlOriginais: [], ctrlAtuais: [],
-    relFiltro: 'mes', relInicio: '', relFim: ''
-  };
+  modal.tipo = null;
+  modal.empId = null;
+  modal.empNome = '';
+  modal.mes = '';
+  modal.ano = '';
+  modal.originais = [];
+  modal.atuais = [];
+  modal.ctrlOriginais = [];
+  modal.ctrlAtuais = [];
+  modal.relFiltro = 'mes';
+  modal.relInicio = '';
+  modal.relFim = '';
+  modal.salvando = false;
 }
 
 /* ============================================================
@@ -1266,7 +1309,7 @@ async function abrirModalFaltas(empId) {
     </div>
   `;
 
-  abrirModal('📋 Faltas — ' + emp.nome, 'Gerencie as faltas do mês', {
+  abrirModal('📋 Faltas — ' + emp.nome, 'Mostrando apenas as faltas deste mês. Edite ou remova livremente.', {
     showSave: true,
     saveLabel: '💾 Salvar Faltas',
     filterBar,
@@ -1303,6 +1346,9 @@ function renderFaltasModal() {
     <div class="section">
       <div class="section-head">
         <div class="section-title">📋 Faltas em ${modal.mes}/${modal.ano} <span class="count">${lista.length}</span></div>
+      </div>
+      <div style="background:#eff6ff; padding:10px 14px; border-radius:8px; font-size:12px; color:#1e40af; margin-bottom:10px;">
+        ℹ️ Só serão salvas as linhas desta tela. Linhas removidas daqui serão apagadas.
       </div>
       <div>
         ${lista.length === 0
@@ -1355,7 +1401,7 @@ async function abrirModalFolgas(empId) {
     </div>
   `;
 
-  abrirModal('📆 Folgas — ' + emp.nome, 'Gerencie as folgas do mês', {
+  abrirModal('📆 Folgas — ' + emp.nome, 'Mostrando apenas as folgas deste mês.', {
     showSave: true,
     saveLabel: '💾 Salvar Folgas',
     filterBar,
@@ -1388,26 +1434,27 @@ async function carregarFolgasModal() {
 
 function renderFolgasModal() {
   const lista = modal.atuais;
-
-  // Feriados pendentes (para vincular)
   const nomeL = modal.empNome.toLowerCase();
+
+  // Feriados PENDENTES (não compensados) do funcionário
   const pendentes = feriados
     .filter(f => f.funcionario.toLowerCase() === nomeL && f.status === 'pendente')
     .sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
 
-  // Feriados vinculados a essas folgas (mesmo se compensados)
-  const vinculados = new Set(
+  // Feriados que já estão vinculados nas folgas desta tela (para edição)
+  const vinculadosNestaTela = new Set(
     modal.atuais.filter(f => f.origem === 'feriado' && f.feriadoVinculado).map(f => f.feriadoVinculado)
   );
 
-  const todosDisponiveis = [...pendentes];
-  vinculados.forEach(rowFer => {
-    if (!todosDisponiveis.find(x => x._row === rowFer)) {
+  // Opções = pendentes + os que já estão vinculados nesta tela (para não sumir ao editar)
+  const disponiveis = pendentes.slice();
+  vinculadosNestaTela.forEach(rowFer => {
+    if (!disponiveis.find(x => x._row === rowFer)) {
       const fer = feriados.find(x => x._row === rowFer);
-      if (fer) todosDisponiveis.push(fer);
+      if (fer && fer.status !== 'compensado') disponiveis.push(fer);
     }
   });
-  todosDisponiveis.sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
+  disponiveis.sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
 
   const temFeriadosPendentes = pendentes.length > 0;
 
@@ -1421,25 +1468,29 @@ function renderFolgasModal() {
             : '⚠️ Nenhum feriado pendente — apenas débito do banco'}
         </div>
       </div>
+      <div style="background:#eff6ff; padding:10px 14px; border-radius:8px; font-size:12px; color:#1e40af; margin-bottom:10px;">
+        ℹ️ Ao escolher "Pagar Feriado", só aparecem feriados <b>pendentes</b> (já compensados são ocultados).
+      </div>
       <div>
         ${lista.length === 0
           ? '<div class="empty-row">Nenhuma folga lançada neste mês</div>'
           : lista.map((f, i) => {
             const ferSel = f.feriadoVinculado;
-            const opcoesFer = todosDisponiveis.map(fer => `
+            const opcoesFer = disponiveis.map(fer => `
               <option value="${fer._row}" ${ferSel == fer._row ? 'selected' : ''}>
-                ${fer.data} (${getDayOfWeek(fer.data)})${fer.status === 'compensado' ? ' ✓' : ''}
+                ${fer.data} (${getDayOfWeek(fer.data)})
               </option>
             `).join('');
 
-            const mostrarFer = f.origem === 'feriado' && todosDisponiveis.length > 0;
+            const mostrarFer = f.origem === 'feriado' && disponiveis.length > 0;
+            const avisoSemFeriado = f.origem === 'feriado' && disponiveis.length === 0;
 
             return `
               <div class="row-item folga" style="${mostrarFer ? '' : 'grid-template-columns: 1.5fr 2fr 1fr 40px;'}">
                 <input type="text" value="${f.data}" placeholder="Data folga dd/mm/aaaa" oninput="modal.atuais[${i}].data = this.value">
                 <select onchange="trocarOrigem(${i}, this.value)">
-                  <option value="feriado" ${f.origem === 'feriado' ? 'selected' : ''} ${!temFeriadosPendentes && !vinculados.size ? 'disabled' : ''}>
-                    🏖️ Pagar Feriado ${todosDisponiveis.length ? `(${todosDisponiveis.length})` : '(sem)'}
+                  <option value="feriado" ${f.origem === 'feriado' ? 'selected' : ''} ${!temFeriadosPendentes && !vinculadosNestaTela.size ? 'disabled' : ''}>
+                    🏖️ Pagar Feriado ${disponiveis.length ? `(${disponiveis.length})` : '(sem)'}
                   </option>
                   <option value="banco" ${f.origem === 'banco' ? 'selected' : ''}>📊 Debitar do Banco</option>
                 </select>
@@ -1448,7 +1499,9 @@ function renderFolgasModal() {
                       <option value="">-- Selecione o feriado --</option>
                       ${opcoesFer}
                     </select>`
-                  : `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:8px;">—</div>`
+                  : avisoSemFeriado
+                    ? `<div style="font-size:11px; color:#b91c1c; text-align:center; padding:8px;">Sem feriados pendentes</div>`
+                    : `<div style="font-size:11px; color:#94a3b8; text-align:center; padding:8px;">—</div>`
                 }
                 <button class="row-del" onclick="removerItemAtual(${i})">🗑</button>
               </div>
@@ -1468,7 +1521,6 @@ function trocarOrigem(i, novaOrigem) {
   if (novaOrigem === 'banco') {
     modal.atuais[i].feriadoVinculado = null;
   } else if (novaOrigem === 'feriado') {
-    // Se não tem vínculo, tenta selecionar o primeiro disponível
     if (!modal.atuais[i].feriadoVinculado) {
       const nomeL = modal.empNome.toLowerCase();
       const pendentes = feriados
@@ -1508,7 +1560,7 @@ async function abrirModalFeriados(empId) {
     </div>
   `;
 
-  abrirModal('🏖️ Feriados Trabalhados — ' + emp.nome, 'Gerencie os feriados trabalhados do mês', {
+  abrirModal('🏖️ Feriados Trabalhados — ' + emp.nome, 'Mostrando apenas os feriados deste mês.', {
     showSave: true,
     saveLabel: '💾 Salvar Feriados',
     filterBar,
@@ -1545,7 +1597,7 @@ function renderFeriadosModal() {
         <div class="section-title">🏖️ Feriados em ${modal.mes}/${modal.ano} <span class="count">${lista.length}</span></div>
       </div>
       <div style="background:#fffbeb; padding:10px 14px; border-radius:8px; font-size:12px; color:#92400e; margin-bottom:10px;">
-        ℹ️ O status (pendente/compensado) é gerenciado automaticamente pelo sistema.
+        ℹ️ Status (pendente/compensado) gerenciado automaticamente ao lançar folga vinculada.
       </div>
       <div>
         ${lista.length === 0
@@ -1575,6 +1627,186 @@ function mudarMesFeriados() {
 }
 
 /* ============================================================
+   MODAL — FERIADOS PENDENTES (botão do badge)
+   ============================================================ */
+function abrirModalFeriadosPendentes(empId) {
+  const emp = cadastro.find(c => c.id === empId);
+  if (!emp) return;
+
+  const nomeL = emp.nome.toLowerCase();
+  const pendentes = feriados
+    .filter(f => f.funcionario.toLowerCase() === nomeL && f.status === 'pendente')
+    .sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
+
+  let html = '';
+  if (pendentes.length === 0) {
+    html = `<div class="empty"><span class="empty-icon">✅</span>Nenhum feriado pendente. Tudo compensado!</div>`;
+  } else {
+    html = `
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">🏖️ Feriados Pendentes <span class="count">${pendentes.length}</span></div>
+        </div>
+        <div style="background:#fffbeb; padding:10px 14px; border-radius:8px; font-size:12px; color:#92400e; margin-bottom:12px;">
+          ℹ️ Estes feriados foram trabalhados e ainda não foram compensados com folga.
+        </div>
+        <table>
+          <thead><tr><th>Data</th><th>Dia da Semana</th></tr></thead>
+          <tbody>
+            ${pendentes.map(f => `<tr>
+              <td><b>${f.data}</b></td>
+              <td>${getDayOfWeek(f.data)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  abrirModal('🏖️ Feriados Pendentes — ' + emp.nome, 'Feriados trabalhados aguardando compensação', {
+    body: html
+  });
+}
+
+/* ============================================================
+   MODAL — RELATÓRIO BANCO DE HORAS (badge)
+   ============================================================ */
+function abrirRelBanco(empId) {
+  const emp = cadastro.find(c => c.id === empId);
+  if (!emp) return;
+
+  const nomeL = emp.nome.toLowerCase();
+  const registros = controle
+    .filter(c => c.funcionario.toLowerCase() === nomeL && c.saldoBancoRaw !== '' && c.saldoBanco !== 0)
+    .sort((a,b) => {
+      const [ma, aa] = a.mesAno.split('/');
+      const [mb, ab] = b.mesAno.split('/');
+      return new Date(aa, ma-1) - new Date(ab, mb-1);
+    });
+
+  const folgasBanco = folgas.filter(f => f.funcionario.toLowerCase() === nomeL && f.origem === 'banco');
+
+  // Total
+  const totalLanc = registros.reduce((s,c) => s + c.saldoBanco, 0);
+  const totalFolgas = folgasBanco.length * 8;
+  const saldoFinal = totalLanc - totalFolgas;
+
+  let html = '';
+
+  if (registros.length === 0 && folgasBanco.length === 0) {
+    html = `<div class="empty"><span class="empty-icon">📊</span>Nenhum lançamento de banco de horas.</div>`;
+  } else {
+    html += `
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">📊 Histórico de Banco de Horas <span class="count">${registros.length} mês(es)</span></div>
+        </div>
+        <table>
+          <thead><tr><th>Mês</th><th>Crédito/Débito</th><th>Observação</th></tr></thead>
+          <tbody>
+            ${registros.map(c => `<tr>
+              <td><b>${c.mesAno}</b></td>
+              <td style="color:${c.saldoBanco >= 0 ? '#15803d' : '#b91c1c'}; font-weight:700;">${fmtHoras(c.saldoBanco)}</td>
+              <td><small>${escapeHtml(c.observacao || '—')}</small></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      ${folgasBanco.length > 0 ? `
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">📆 Folgas debitadas do banco <span class="count">${folgasBanco.length}</span></div>
+          </div>
+          <table>
+            <thead><tr><th>Data</th><th>Débito</th></tr></thead>
+            <tbody>
+              ${folgasBanco.sort((a,b) => dataToNum(a.data) - dataToNum(b.data)).map(f => `<tr>
+                <td><b>${f.data}</b> <small style="color:#94a3b8;">(${getDayOfWeek(f.data)})</small></td>
+                <td style="color:#b91c1c; font-weight:700;">-8,00h</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      ` : ''}
+
+      <div class="he-resumo" style="background:#ecfdf5; border-color:#86efac;">
+        <div>📈 Total Lançado: <span style="color:#0f172a;">${fmtHoras(totalLanc)}</span></div>
+        <div>📉 Folgas (-8h cada): <span style="color:#b91c1c;">${fmtHoras(-totalFolgas)}</span></div>
+        <div>💰 <b>Saldo Final:</b> <span style="color:${saldoFinal >= 0 ? '#15803d' : '#b91c1c'}; font-size:16px;">${fmtHoras(saldoFinal)}</span></div>
+      </div>
+    `;
+  }
+
+  abrirModal('📊 Banco de Horas — ' + emp.nome, 'Histórico completo mês a mês', {
+    wide: true,
+    body: html
+  });
+}
+
+/* ============================================================
+   MODAL — RELATÓRIO HORA EXTRA (badge)
+   ============================================================ */
+function abrirRelHE(empId) {
+  const emp = cadastro.find(c => c.id === empId);
+  if (!emp) return;
+
+  const nomeL = emp.nome.toLowerCase();
+  const registros = controle
+    .filter(c => c.funcionario.toLowerCase() === nomeL && c.horaExtraRaw !== '' && c.horaExtra !== 0)
+    .sort((a,b) => {
+      const [ma, aa] = a.mesAno.split('/');
+      const [mb, ab] = b.mesAno.split('/');
+      return new Date(ab, mb-1) - new Date(aa, ma-1);
+    });
+
+  const totalCredito = registros.filter(c => c.horaExtra > 0).reduce((s,c) => s + c.horaExtra, 0);
+  const totalPago = registros.filter(c => c.horaExtra < 0).reduce((s,c) => s + Math.abs(c.horaExtra), 0);
+  const saldoFinal = totalCredito - totalPago;
+
+  let html = '';
+
+  if (registros.length === 0) {
+    html = `<div class="empty"><span class="empty-icon">💵</span>Nenhum lançamento de hora extra.</div>`;
+  } else {
+    html += `
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">💵 Histórico de Horas Extras <span class="count">${registros.length} lançamento(s)</span></div>
+        </div>
+        <table>
+          <thead><tr><th>Mês</th><th>Valor</th><th>Tipo</th><th>Observação</th></tr></thead>
+          <tbody>
+            ${registros.map(c => {
+              const pos = c.horaExtra > 0;
+              const label = pos ? '🟡 Crédito' : '🟢 Pagamento';
+              const cor = pos ? '#d97706' : '#16a34a';
+              return `<tr>
+                <td><b>${c.mesAno}</b></td>
+                <td style="color:${cor}; font-weight:700;">${pos ? '' : '-'}${fmtHoras(Math.abs(c.horaExtra))}</td>
+                <td>${label}</td>
+                <td><small>${escapeHtml(c.observacao || '—')}</small></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="he-resumo" style="background:#fffbeb; border-color:#fde68a;">
+        <div>🟡 Total Créditos: <span style="color:#d97706;">${fmtHoras(totalCredito)}</span></div>
+        <div>🟢 Total Pago: <span style="color:#16a34a;">${fmtHoras(totalPago)}</span></div>
+        <div>💰 <b>Saldo a Pagar:</b> <span style="color:${saldoFinal > 0.001 ? '#d97706' : (saldoFinal < -0.001 ? '#b91c1c' : '#64748b')}; font-size:16px;">${fmtHoras(saldoFinal)}</span></div>
+      </div>
+    `;
+  }
+
+  abrirModal('💵 Horas Extras — ' + emp.nome, 'Histórico completo de créditos e pagamentos', {
+    wide: true,
+    body: html
+  });
+}
+
+/* ============================================================
    MODAL — ADVERTÊNCIAS
    ============================================================ */
 async function abrirModalAdvertencias(empId) {
@@ -1596,7 +1828,7 @@ async function abrirModalAdvertencias(empId) {
     </div>
   `;
 
-  abrirModal('⚖️ Advertências — ' + emp.nome, 'Gerencie as advertências do mês', {
+  abrirModal('⚖️ Advertências — ' + emp.nome, 'Mostrando apenas as advertências deste mês.', {
     showSave: true,
     saveLabel: '💾 Salvar Advertências',
     filterBar,
@@ -1680,7 +1912,7 @@ async function abrirModalBancoHE(empId) {
     </div>
   `;
 
-  abrirModal('📊 Banco de Horas / Hora Extra — ' + emp.nome, 'Gerencie banco de horas e horas extras do mês', {
+  abrirModal('📊 Banco de Horas / Hora Extra — ' + emp.nome, 'Edite o lançamento do mês ou pague HE', {
     showSave: true,
     saveLabel: '💾 Salvar',
     filterBar,
@@ -1699,45 +1931,39 @@ async function carregarBancoHEModal() {
     c.funcionario.toLowerCase() === nomeL && c.mesAno === mesAno
   );
 
-  modal.ctrlAtuais = modal.ctrlOriginais.map(c => ({
-    saldoBanco: c.saldoBancoRaw,
-    horaExtra: c.horaExtraRaw,
-    observacao: c.observacao,
-    _row: c._row,
-    _original: true
-  }));
+  // Só o lançamento "principal" (sem obs de HE paga) fica editável
+  const principal = modal.ctrlOriginais.find(c => !c.observacao.includes('HE paga'));
 
-  // Se não tem nenhum lançamento, adiciona um em branco
-  if (modal.ctrlAtuais.length === 0) {
-    modal.ctrlAtuais.push({
-      saldoBanco: '',
-      horaExtra: '',
-      observacao: '',
-      _row: null,
-      _original: false
-    });
-  }
+  modal.ctrlAtuais = principal ? [{
+    saldoBanco: principal.saldoBancoRaw,
+    horaExtra: principal.horaExtraRaw,
+    observacao: principal.observacao,
+    _row: principal._row,
+    _original: true
+  }] : [{
+    saldoBanco: '',
+    horaExtra: '',
+    observacao: '',
+    _row: null,
+    _original: false
+  }];
 
   renderBancoHEModal();
 }
 
 function renderBancoHEModal() {
-  const lista = modal.ctrlAtuais;
-
-  // Histórico com pagamentos (para ver os -12)
   const nomeL = modal.empNome.toLowerCase();
+  const mesAno = modal.mes + '/' + modal.ano;
   const todosDoMes = controle.filter(c =>
-    c.funcionario.toLowerCase() === nomeL && c.mesAno === modal.mes + '/' + modal.ano
+    c.funcionario.toLowerCase() === nomeL && c.mesAno === mesAno
   );
 
-  // Saldo calculado
   let saldoBH = 0, saldoHE = 0;
   todosDoMes.forEach(c => {
     saldoBH += c.saldoBanco;
     saldoHE += c.horaExtra;
   });
 
-  // Linhas do histórico (editáveis)
   let histHtml = '';
   if (todosDoMes.length === 0) {
     histHtml = '<div class="empty-row">Nenhum lançamento neste mês</div>';
@@ -1770,14 +1996,13 @@ function renderBancoHEModal() {
     }).join('');
   }
 
-  // Linha editável (só se não existir 1 lançamento do mês ainda, ou para editar o principal)
   let editHtml = '';
   if (modal.ctrlAtuais.length > 0) {
     const c = modal.ctrlAtuais[0];
     editHtml = `
       <div class="section">
         <div class="section-head">
-          <div class="section-title">📝 Lançamento do Mês</div>
+          <div class="section-title">📝 Lançamento do Mês (${mesAno})</div>
         </div>
         <div class="row-item" style="grid-template-columns: 1fr 1fr 2fr;">
           <div>
@@ -1829,7 +2054,7 @@ async function pagarHE(rowIndex, valorHE) {
   const mesAno = modal.mes + '/' + modal.ano;
   const hoje = new Date().toLocaleDateString('pt-BR');
 
-  if (!confirm(`Confirmar pagamento de ${fmtHoras(valorAbs)} de Horas Extras para "${f.nome}" em ${mesAno}?\n\nO saldo será zerado com um lançamento de -${valorAbs.toFixed(2)}h.`)) return;
+  if (!confirm(`Confirmar pagamento de ${fmtHoras(valorAbs)} de Horas Extras para "${f.nome}" em ${mesAno}?`)) return;
 
   const r = await api('addControle', {
     funcionario: f.nome,
@@ -1894,7 +2119,7 @@ function renderFeriasModal() {
         <div class="section-title">🌴 Períodos de Férias <span class="count">${lista.length}</span></div>
       </div>
       <div style="background:#f8fafc; padding:10px 14px; border-radius:8px; font-size:12px; color:#475569; margin-bottom:10px;">
-        ℹ️ O fim e a data de retorno são calculados automaticamente (retorno pula domingo).
+        ℹ️ Fim e retorno calculados automaticamente (retorno pula domingo).
       </div>
       <div>
         ${lista.length === 0
@@ -2004,7 +2229,6 @@ function renderRelatorio() {
   const nomeL = modal.empNome.toLowerCase();
   const agora = new Date().toLocaleString('pt-BR');
 
-  // Função para verificar se uma data está no filtro
   function inRange(dataStr) {
     if (!dataStr) return false;
     if (modal.relFiltro === 'tudo') return true;
@@ -2020,7 +2244,6 @@ function renderRelatorio() {
     return true;
   }
 
-  // Filtro para mês/ano (Ctrl)
   function ctrlInRange(mesAno) {
     if (modal.relFiltro === 'tudo') return true;
     if (modal.relFiltro === 'mes') {
@@ -2036,7 +2259,6 @@ function renderRelatorio() {
     return true;
   }
 
-  // Dados filtrados
   const ctrlF = controle.filter(c => c.funcionario.toLowerCase() === nomeL && ctrlInRange(c.mesAno));
   const faltasF = faltas.filter(f => f.funcionario.toLowerCase() === nomeL && inRange(f.data));
   const advF = advertencias.filter(a => a.funcionario.toLowerCase() === nomeL && inRange(a.data));
@@ -2044,7 +2266,6 @@ function renderRelatorio() {
   const folgF = folgas.filter(f => f.funcionario.toLowerCase() === nomeL && inRange(f.data));
   const fer2F = ferias.filter(f => f.funcionario.toLowerCase() === nomeL && inRange(f.inicio));
 
-  // Totais
   let totalBH = ctrlF.reduce((s,c) => s + c.saldoBanco, 0);
   const folgasBancoF = folgF.filter(f => f.origem === 'banco');
   totalBH -= folgasBancoF.length * 8;
@@ -2055,18 +2276,15 @@ function renderRelatorio() {
   const feriadosTrab = ferF.length;
   const feriadosPend = ferF.filter(f => f.status === 'pendente').length;
 
-  // Título do filtro
   let filtroLabel = '';
   if (modal.relFiltro === 'mes') {
-    const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-    filtroLabel = `${meses[parseInt(modal.mes) - 1]}/${modal.ano}`;
+    filtroLabel = `${nomeMes(modal.mes)}/${modal.ano}`;
   } else if (modal.relFiltro === 'periodo') {
     filtroLabel = `De ${modal.relInicio || '—'} até ${modal.relFim || '—'}`;
   } else {
     filtroLabel = 'Todo o histórico';
   }
 
-  // Monta HTML
   let html = `
     <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:16px; margin-bottom:20px;">
       <h2 style="font-size:18px; font-weight:800; color:#0f172a;">RELATÓRIO — ${escapeHtml(modal.empNome).toUpperCase()}</h2>
@@ -2209,7 +2427,6 @@ function renderRelatorio() {
     </tbody></table>`;
   }
 
-  // Rodapé
   html += `
     <div style="margin-top:24px; padding-top:14px; border-top:2px solid #0f172a; text-align:center; font-size:10px; color:#94a3b8;">
       <p>Sistema de Banco de Horas · Documento com validade documental</p>
@@ -2221,7 +2438,7 @@ function renderRelatorio() {
 }
 
 /* ============================================================
-   ADICIONAR / REMOVER ITENS (genérico para todos os modais)
+   ADICIONAR / REMOVER ITENS
    ============================================================ */
 function adicionarItemAtual() {
   const tipo = modal.tipo;
@@ -2251,7 +2468,7 @@ function adicionarItemAtual() {
 }
 
 function removerItemAtual(i) {
-  if (!confirm('Remover esta linha? (só será apagada ao clicar em Salvar)')) return;
+  if (!confirm('Remover esta linha? (será apagada ao clicar em Salvar)')) return;
   modal.atuais.splice(i, 1);
   const tipo = modal.tipo;
   if (tipo === 'faltas') renderFaltasModal();
@@ -2265,13 +2482,19 @@ function removerItemAtual(i) {
    SALVAR MODAL (roteador)
    ============================================================ */
 async function salvarModalAtual() {
-  const tipo = modal.tipo;
-  if (tipo === 'faltas') await salvarFaltas();
-  else if (tipo === 'folgas') await salvarFolgas();
-  else if (tipo === 'feriados') await salvarFeriados();
-  else if (tipo === 'advertencias') await salvarAdvertencias();
-  else if (tipo === 'bancohe') await salvarBancoHE();
-  else if (tipo === 'ferias') await salvarFerias();
+  if (modal.salvando) return;
+  modal.salvando = true;
+  try {
+    const tipo = modal.tipo;
+    if (tipo === 'faltas') await salvarFaltas();
+    else if (tipo === 'folgas') await salvarFolgas();
+    else if (tipo === 'feriados') await salvarFeriados();
+    else if (tipo === 'advertencias') await salvarAdvertencias();
+    else if (tipo === 'bancohe') await salvarBancoHE();
+    else if (tipo === 'ferias') await salvarFerias();
+  } finally {
+    modal.salvando = false;
+  }
 }
 
 /* ============================================================
@@ -2279,6 +2502,7 @@ async function salvarModalAtual() {
    ============================================================ */
 async function salvarFaltas() {
   const btn = document.getElementById('modal-save-btn');
+  const txtOriginal = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Salvando...';
 
@@ -2287,31 +2511,26 @@ async function salvarFaltas() {
   let criadas = 0, apagadas = 0;
 
   try {
-    // Remove as originais que sumiram ou mudaram
-    const originais = modal.originais;
-    const atuais = modal.atuais;
-
-    // Apaga TODAS as originais (vamos recriar tudo)
-    for (const orig of originais) {
+    // Apaga TODAS as originais (do mês) e recria as atuais — evita duplicidade
+    for (const orig of modal.originais) {
       const r = await api('deleteFalta', { rowIndex: orig._row });
       if (r.ok) apagadas++;
       else erros.push('Apagar: ' + (r.error || ''));
     }
 
-    // Cria TODAS as atuais (só as que têm data)
-    for (const f of atuais) {
+    for (const f of modal.atuais) {
       if (!f.data || !f.data.trim()) continue;
       const r = await api('addFalta', {
         funcionario: emp,
-        data: f.data,
+        data: f.data.trim(),
         comAtestado: f.comAtestado,
-        observacao: f.observacao || ''
+        observacao: (f.observacao || '').trim()
       });
       if (r.ok) criadas++;
       else erros.push('Criar ' + f.data + ': ' + (r.error || ''));
     }
 
-    if (erros.length) toast(`⚠️ ${criadas} criada(s), ${apagadas} apagada(s), ${erros.length} erro(s)`, 'err');
+    if (erros.length) toast(`⚠️ ${criadas} salva(s), ${erros.length} erro(s)`, 'err');
     else toast(`✅ ${criadas} falta(s) salva(s)`, 'ok');
 
     await recarregarTudo();
@@ -2320,7 +2539,7 @@ async function salvarFaltas() {
     toast('Erro: ' + e.message, 'err');
   } finally {
     btn.disabled = false;
-    btn.textContent = '💾 Salvar Faltas';
+    btn.textContent = txtOriginal;
   }
 }
 
@@ -2329,6 +2548,7 @@ async function salvarFaltas() {
    ============================================================ */
 async function salvarFolgas() {
   const btn = document.getElementById('modal-save-btn');
+  const txtOriginal = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Salvando...';
 
@@ -2337,22 +2557,17 @@ async function salvarFolgas() {
   let criadas = 0, apagadas = 0;
 
   try {
-    const originais = modal.originais;
-    const atuais = modal.atuais;
-
-    // Apaga todas as originais
-    for (const orig of originais) {
+    for (const orig of modal.originais) {
       const r = await api('deleteFolga', { rowIndex: orig._row });
       if (r.ok) apagadas++;
       else erros.push('Apagar: ' + (r.error || ''));
     }
 
-    // Cria todas as atuais
-    for (const f of atuais) {
+    for (const f of modal.atuais) {
       if (!f.data || !f.data.trim()) continue;
       const payload = {
         funcionario: emp,
-        data: f.data,
+        data: f.data.trim(),
         origem: f.origem
       };
       if (f.origem === 'feriado') {
@@ -2367,7 +2582,7 @@ async function salvarFolgas() {
       else erros.push('Criar ' + f.data + ': ' + (r.error || ''));
     }
 
-    if (erros.length) toast(`⚠️ ${criadas} criada(s), ${apagadas} apagada(s), ${erros.length} erro(s)`, 'err');
+    if (erros.length) toast(`⚠️ ${criadas} salva(s), ${erros.length} erro(s)`, 'err');
     else toast(`✅ ${criadas} folga(s) salva(s)`, 'ok');
 
     await recarregarTudo();
@@ -2376,7 +2591,7 @@ async function salvarFolgas() {
     toast('Erro: ' + e.message, 'err');
   } finally {
     btn.disabled = false;
-    btn.textContent = '💾 Salvar Folgas';
+    btn.textContent = txtOriginal;
   }
 }
 
@@ -2385,6 +2600,7 @@ async function salvarFolgas() {
    ============================================================ */
 async function salvarFeriados() {
   const btn = document.getElementById('modal-save-btn');
+  const txtOriginal = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Salvando...';
 
@@ -2393,28 +2609,23 @@ async function salvarFeriados() {
   let criados = 0, apagados = 0;
 
   try {
-    const originais = modal.originais;
-    const atuais = modal.atuais;
-
-    // Apaga os originais
-    for (const orig of originais) {
+    for (const orig of modal.originais) {
       const r = await api('deleteFeriado', { rowIndex: orig._row });
       if (r.ok) apagados++;
       else erros.push('Apagar: ' + (r.error || ''));
     }
 
-    // Cria os atuais
-    for (const f of atuais) {
+    for (const f of modal.atuais) {
       if (!f.data || !f.data.trim()) continue;
       const r = await api('addFeriado', {
         funcionario: emp,
-        data: f.data
+        data: f.data.trim()
       });
       if (r.ok) criados++;
       else erros.push('Criar ' + f.data + ': ' + (r.error || ''));
     }
 
-    if (erros.length) toast(`⚠️ ${criados} criado(s), ${apagados} apagado(s), ${erros.length} erro(s)`, 'err');
+    if (erros.length) toast(`⚠️ ${criados} salvo(s), ${erros.length} erro(s)`, 'err');
     else toast(`✅ ${criados} feriado(s) salvo(s)`, 'ok');
 
     await recarregarTudo();
@@ -2423,7 +2634,7 @@ async function salvarFeriados() {
     toast('Erro: ' + e.message, 'err');
   } finally {
     btn.disabled = false;
-    btn.textContent = '💾 Salvar Feriados';
+    btn.textContent = txtOriginal;
   }
 }
 
@@ -2432,6 +2643,7 @@ async function salvarFeriados() {
    ============================================================ */
 async function salvarAdvertencias() {
   const btn = document.getElementById('modal-save-btn');
+  const txtOriginal = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Salvando...';
 
@@ -2440,27 +2652,24 @@ async function salvarAdvertencias() {
   let criadas = 0, apagadas = 0;
 
   try {
-    const originais = modal.originais;
-    const atuais = modal.atuais;
-
-    for (const orig of originais) {
+    for (const orig of modal.originais) {
       const r = await api('deleteAdvertencia', { rowIndex: orig._row });
       if (r.ok) apagadas++;
       else erros.push('Apagar: ' + (r.error || ''));
     }
 
-    for (const a of atuais) {
+    for (const a of modal.atuais) {
       if (!a.data || !a.data.trim() || !a.motivo || !a.motivo.trim()) continue;
       const r = await api('addAdvertencia', {
         funcionario: emp,
-        data: a.data,
-        motivo: a.motivo
+        data: a.data.trim(),
+        motivo: a.motivo.trim()
       });
       if (r.ok) criadas++;
       else erros.push('Criar ' + a.data + ': ' + (r.error || ''));
     }
 
-    if (erros.length) toast(`⚠️ ${criadas} criada(s), ${apagadas} apagada(s), ${erros.length} erro(s)`, 'err');
+    if (erros.length) toast(`⚠️ ${criadas} salva(s), ${erros.length} erro(s)`, 'err');
     else toast(`✅ ${criadas} advertência(s) salva(s)`, 'ok');
 
     await recarregarTudo();
@@ -2469,7 +2678,7 @@ async function salvarAdvertencias() {
     toast('Erro: ' + e.message, 'err');
   } finally {
     btn.disabled = false;
-    btn.textContent = '💾 Salvar Advertências';
+    btn.textContent = txtOriginal;
   }
 }
 
@@ -2478,6 +2687,7 @@ async function salvarAdvertencias() {
    ============================================================ */
 async function salvarBancoHE() {
   const btn = document.getElementById('modal-save-btn');
+  const txtOriginal = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Salvando...';
 
@@ -2487,12 +2697,8 @@ async function salvarBancoHE() {
   let criados = 0, apagados = 0;
 
   try {
-    const originais = modal.ctrlOriginais;
-    const atuais = modal.ctrlAtuais;
-
-    // Apaga o controle original (só o "principal", não os de pagamento)
-    for (const orig of originais) {
-      // Só apaga se for o "lançamento do mês" (não tem obs de pagamento)
+    // Apaga SOMENTE o lançamento principal original (não apaga pagamentos "HE paga")
+    for (const orig of modal.ctrlOriginais) {
       if (!orig.observacao.includes('HE paga')) {
         const r = await api('deleteControle', { rowIndex: orig._row });
         if (r.ok) apagados++;
@@ -2500,8 +2706,8 @@ async function salvarBancoHE() {
       }
     }
 
-    // Cria os atuais
-    for (const c of atuais) {
+    // Cria o novo lançamento principal
+    for (const c of modal.ctrlAtuais) {
       const hasBH = c.saldoBanco && c.saldoBanco.trim();
       const hasHE = c.horaExtra && c.horaExtra.trim();
       const hasObs = c.observacao && c.observacao.trim();
@@ -2520,7 +2726,7 @@ async function salvarBancoHE() {
       else erros.push('Criar: ' + (r.error || ''));
     }
 
-    if (erros.length) toast(`⚠️ ${criados} salvo(s), ${apagados} apagado(s), ${erros.length} erro(s)`, 'err');
+    if (erros.length) toast(`⚠️ ${criados} salvo(s), ${erros.length} erro(s)`, 'err');
     else toast(`✅ Banco/HE salvos`, 'ok');
 
     await recarregarTudo();
@@ -2529,7 +2735,7 @@ async function salvarBancoHE() {
     toast('Erro: ' + e.message, 'err');
   } finally {
     btn.disabled = false;
-    btn.textContent = '💾 Salvar';
+    btn.textContent = txtOriginal;
   }
 }
 
@@ -2538,6 +2744,7 @@ async function salvarBancoHE() {
    ============================================================ */
 async function salvarFerias() {
   const btn = document.getElementById('modal-save-btn');
+  const txtOriginal = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Salvando...';
 
@@ -2546,29 +2753,26 @@ async function salvarFerias() {
   let criadas = 0, apagadas = 0;
 
   try {
-    const originais = modal.originais;
-    const atuais = modal.atuais;
-
-    for (const orig of originais) {
+    for (const orig of modal.originais) {
       const r = await api('deleteFerias', { rowIndex: orig._row });
       if (r.ok) apagadas++;
       else erros.push('Apagar: ' + (r.error || ''));
     }
 
-    for (const f of atuais) {
+    for (const f of modal.atuais) {
       if (!f.inicio || !f.inicio.trim() || !f.dias || !f.dias.trim()) continue;
       const r = await api('addFerias', {
         funcionario: emp,
-        inicio: f.inicio,
-        dias: f.dias,
+        inicio: f.inicio.trim(),
+        dias: f.dias.trim(),
         status: f.status || 'agendada'
       });
       if (r.ok) criadas++;
       else erros.push('Criar ' + f.inicio + ': ' + (r.error || ''));
     }
 
-    if (erros.length) toast(`⚠️ ${criadas} criada(s), ${apagadas} apagada(s), ${erros.length} erro(s)`, 'err');
-    else toast(`✅ ${criadas} período(s) de férias salvo(s)`, 'ok');
+    if (erros.length) toast(`⚠️ ${criadas} salva(s), ${erros.length} erro(s)`, 'err');
+    else toast(`✅ ${criadas} período(s) salvo(s)`, 'ok');
 
     await recarregarTudo();
     await carregarFeriasModal();
@@ -2576,7 +2780,7 @@ async function salvarFerias() {
     toast('Erro: ' + e.message, 'err');
   } finally {
     btn.disabled = false;
-    btn.textContent = '💾 Salvar Férias';
+    btn.textContent = txtOriginal;
   }
 }
 
@@ -2642,6 +2846,96 @@ async function reativarFunc(id) {
 }
 
 /* ============================================================
+   RELATÓRIO CONTABILIDADE
+   ============================================================ */
+function initContab() {
+  const selMes = document.getElementById('contab-mes');
+  const selAno = document.getElementById('contab-ano');
+  if (selMes.options.length === 0) {
+    const padrao = mesPadrao();
+    selMes.innerHTML = getMesesOptions(padrao.mes);
+    selAno.innerHTML = getAnosOptions(padrao.ano);
+  }
+}
+
+function gerarRelatorioContab() {
+  const mes = document.getElementById('contab-mes').value;
+  const ano = document.getElementById('contab-ano').value;
+  const mesAno = mes + '/' + ano;
+
+  if (funcionarios.length === 0) {
+    document.getElementById('contab-output').innerHTML = '<div class="empty"><span class="empty-icon">📭</span>Nenhum funcionário ativo.</div>';
+    return;
+  }
+
+  const linhas = [];
+  linhas.push(`📊 RELATÓRIO MENSAL — ${nomeMes(mes).toUpperCase()}/${ano}`);
+  linhas.push(`Gerado em: ${new Date().toLocaleString('pt-BR')}`);
+  linhas.push('');
+
+  let algumComDados = false;
+
+  funcionarios.forEach(f => {
+    const nomeL = f.nome.toLowerCase();
+
+    // Faltas injustificadas (sem atestado)
+    const faltasInjust = faltas
+      .filter(x => x.funcionario.toLowerCase() === nomeL && x.data.endsWith(mesAno) && !x.comAtestado)
+      .sort((a,b) => dataToNum(a.data) - dataToNum(b.data));
+
+    // Saldo HE do mês
+    const ctrlMes = controle.filter(c => c.funcionario.toLowerCase() === nomeL && c.mesAno === mesAno);
+    const saldoHE = ctrlMes.reduce((s,c) => s + c.horaExtra, 0);
+    const temHE = ctrlMes.some(c => c.horaExtraRaw !== '' && c.horaExtra !== 0);
+
+    if (faltasInjust.length === 0 && !temHE) return; // sem dados relevantes
+
+    algumComDados = true;
+
+    linhas.push(`👤 ${f.nome}`);
+    linhas.push(`─────────────────────────────`);
+
+    // Faltas
+    if (faltasInjust.length > 0) {
+      linhas.push(`❌ Faltas SEM atestado (${faltasInjust.length}):`);
+      faltasInjust.forEach(x => {
+        linhas.push(`   • ${x.data} (${getDayOfWeek(x.data)})`);
+      });
+    } else {
+      linhas.push(`✅ Faltas sem atestado: nenhuma`);
+    }
+
+    // Hora extra
+    if (temHE) {
+      if (saldoHE > 0.001) {
+        linhas.push(`💵 Horas Extras: ${fmtHoras(saldoHE)} (crédito)`);
+      } else if (saldoHE < -0.001) {
+        linhas.push(`💵 Horas Extras: ${fmtHoras(Math.abs(saldoHE))} (paga)`);
+      } else {
+        linhas.push(`💵 Horas Extras: ${fmtHoras(saldoHE)} (zerado)`);
+      }
+    } else {
+      linhas.push(`💵 Horas Extras: —`);
+    }
+
+    linhas.push('');
+  });
+
+  if (!algumComDados) {
+    linhas.push('ℹ️ Nenhuma falta sem atestado e nenhuma hora extra lançada neste mês.');
+  }
+
+  linhas.push('─────────────────────────────');
+  linhas.push('Fim do relatório.');
+
+  const texto = linhas.join('\n');
+
+  document.getElementById('contab-output').innerHTML = `
+    <div class="rel-contab">${escapeHtml(texto)}</div>
+  `;
+}
+
+/* ============================================================
    LOGOUT
    ============================================================ */
 function logout() { sessionStorage.clear(); location.href = 'index.html'; }
@@ -2650,6 +2944,7 @@ function logout() { sessionStorage.clear(); location.href = 'index.html'; }
    INICIALIZA
    ============================================================ */
 recarregarTudo();
+initContab();
 </script>
 </body>
 </html>
