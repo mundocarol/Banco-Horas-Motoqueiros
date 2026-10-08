@@ -111,8 +111,12 @@
   }
   .resumo-valor { font-size: 24px; font-weight: 800; color: #0f172a; }
 
+  .sub-tabs-row {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+  }
   .sub-tabs {
-    display: flex; gap: 6px; margin-bottom: 18px;
+    display: flex; gap: 6px;
     background: white; padding: 6px; border-radius: 12px;
     border: 1px solid #eef2f6; width: fit-content;
   }
@@ -124,6 +128,18 @@
   }
   .sub-tab:hover { background: #f8fafc; color: #0f172a; }
   .sub-tab.active { background: #0f172a; color: white; }
+
+  .btn-recibo {
+    padding: 11px 22px; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white; font-weight: 700; font-size: 13px;
+    font-family: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.35);
+    transition: all 0.2s;
+  }
+  .btn-recibo:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(99,102,241,0.45); }
+  .btn-recibo:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
   .actions {
     display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
@@ -203,6 +219,7 @@
     margin: 30px auto; border-radius: 16px;
     overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
   }
+  .modal-box.wide { max-width: 900px; }
   .modal-head {
     background: #0f172a; color: white;
     padding: 16px 24px;
@@ -216,7 +233,203 @@
     display: flex; align-items: center; justify-content: center;
   }
   .modal-close:hover { background: rgba(255,255,255,0.1); color: white; }
-  .modal-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
+  .modal-body { padding: 24px; max-height: 75vh; overflow-y: auto; }
+
+  /* RECIBO — prévia na tela */
+  .recibo-totais {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+    margin-bottom: 18px;
+  }
+  .recibo-total-card {
+    padding: 14px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+  }
+  .recibo-total-card .lbl {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    color: #64748b; margin-bottom: 4px;
+  }
+  .recibo-total-card .val {
+    font-size: 18px; font-weight: 800; color: #0f172a;
+  }
+  .recibo-total-card.amber { background: #fffbeb; border-color: #fde68a; }
+  .recibo-total-card.amber .lbl { color: #92400e; }
+  .recibo-total-card.amber .val { color: #d97706; }
+  .recibo-total-card.green { background: #f0fdf4; border-color: #bbf7d0; }
+  .recibo-total-card.green .lbl { color: #166534; }
+  .recibo-total-card.green .val { color: #15803d; }
+  .recibo-total-card.indigo { background: #eef2ff; border-color: #c7d2fe; }
+  .recibo-total-card.indigo .lbl { color: #3730a3; }
+  .recibo-total-card.indigo .val { color: #4338ca; }
+
+  .recibo-resumo {
+    background: #0f172a;
+    color: white;
+    padding: 18px 22px;
+    border-radius: 12px;
+    margin-top: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .recibo-resumo .lbl {
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    opacity: 0.7;
+  }
+  .recibo-resumo .val {
+    font-size: 26px; font-weight: 800;
+  }
+
+  .recibo-info-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #1e40af;
+    line-height: 1.6;
+  }
+
+  /* PRINT — A4 */
+  @media print {
+    body * { visibility: hidden; }
+    #print-area, #print-area * { visibility: visible; }
+    #print-area {
+      position: absolute; left: 0; top: 0;
+      width: 100%;
+      padding: 20mm;
+      font-family: 'Inter', sans-serif;
+      color: #000;
+      background: white;
+    }
+    .no-print { display: none !important; }
+  }
+
+  .print-area-hidden {
+    position: fixed; left: -9999px; top: 0;
+    width: 210mm; background: white;
+  }
+
+  .recibo-print {
+    font-family: 'Inter', sans-serif;
+    color: #000;
+    line-height: 1.7;
+    font-size: 13px;
+  }
+  .recibo-print .rp-header {
+    text-align: center;
+    border-bottom: 3px double #000;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .recibo-print .rp-header h1 {
+    font-size: 22px; font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .recibo-print .rp-header .cnpj {
+    font-size: 12px; color: #333;
+    margin-top: 4px;
+  }
+  .recibo-print .rp-title {
+    text-align: center;
+    font-size: 16px; font-weight: 800;
+    letter-spacing: 2px;
+    margin: 18px 0 24px;
+    text-transform: uppercase;
+  }
+  .recibo-print .rp-subtitle {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .recibo-print .rp-corpo {
+    font-size: 13px;
+    text-align: justify;
+    margin-bottom: 20px;
+  }
+  .recibo-print .rp-tabela {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+  .recibo-print .rp-tabela th,
+  .recibo-print .rp-tabela td {
+    border: 1px solid #000;
+    padding: 10px 12px;
+  }
+  .recibo-print .rp-tabela th {
+    background: #f0f0f0;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+  .recibo-print .rp-tabela .rp-total-row td {
+    background: #f0f0f0;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .recibo-print .rp-tabela .rp-subtotal td {
+    font-weight: 700;
+    background: #fafafa;
+  }
+  .recibo-print .rp-obs {
+    font-size: 11px;
+    text-align: justify;
+    background: #f8f8f8;
+    border-left: 3px solid #333;
+    padding: 12px 16px;
+    margin: 22px 0;
+    line-height: 1.6;
+  }
+  .recibo-print .rp-obs-title {
+    font-weight: 800;
+    font-size: 12px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .recibo-print .rp-declaracao {
+    text-align: justify;
+    font-size: 13px;
+    margin: 20px 0;
+  }
+  .recibo-print .rp-periodo {
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+    margin: 24px 0;
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 4px;
+  }
+  .recibo-print .rp-assinatura {
+    margin-top: 60px;
+    text-align: center;
+  }
+  .recibo-print .rp-assinatura .linha {
+    border-top: 1px solid #000;
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 8px;
+  }
+  .recibo-print .rp-assinatura .nome {
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .recibo-print .rp-assinatura .cargo {
+    font-size: 11px;
+    color: #333;
+  }
+  .recibo-print .rp-rodape {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+  }
 
   .toast {
     position: fixed; bottom: 24px; right: 24px;
@@ -257,6 +470,9 @@
     .moto-btn { padding: 12px 16px; font-size: 13px; }
     .saldos-grid { grid-template-columns: 1fr; }
     .resumo-grid { grid-template-columns: 1fr 1fr; }
+    .sub-tabs-row { flex-direction: column; align-items: stretch; }
+    .btn-recibo { justify-content: center; }
+    .recibo-totais { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -293,9 +509,12 @@
 
   <div class="resumo-grid" id="resumo"></div>
 
-  <div class="sub-tabs">
-    <button class="sub-tab active" onclick="selecionarSub('corridas')">📦 Corridas / Entregas</button>
-    <button class="sub-tab" onclick="selecionarSub('pagamentos')">💰 Pagamentos / Reposições</button>
+  <div class="sub-tabs-row">
+    <div class="sub-tabs">
+      <button class="sub-tab active" onclick="selecionarSub('corridas')">📦 Corridas / Entregas</button>
+      <button class="sub-tab" onclick="selecionarSub('pagamentos')">💰 Pagamentos / Reposições</button>
+    </div>
+    <button class="btn-recibo" id="btn-recibo" onclick="abrirRecibo()" disabled>📄 Recibo</button>
   </div>
 
   <div class="panel">
@@ -311,8 +530,9 @@
 
 </div>
 
+<!-- MODAL GENÉRICO -->
 <div class="modal" id="modal">
-  <div class="modal-box">
+  <div class="modal-box" id="modal-box">
     <div class="modal-head">
       <h3 id="modal-title">Título</h3>
       <button class="modal-close" onclick="fecharModal()">×</button>
@@ -320,6 +540,9 @@
     <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
+
+<!-- ÁREA DE IMPRESSÃO (invisível na tela) -->
+<div class="print-area-hidden" id="print-area"></div>
 
 <div class="toast" id="toast"></div>
 
@@ -339,6 +562,11 @@ const REGRAS = {
   KM_POR_BONUS_PNEU: 15000
 };
 
+const EMPRESA = {
+  NOME: 'Mundo Carol',
+  CNPJ: '10.648.303/0001-79'
+};
+
 /* ============================================================
    SESSÃO
    ============================================================ */
@@ -355,6 +583,13 @@ let motoqueiros = [];
 let motoAtual = null;
 let subAtual  = 'corridas';
 let todasMotos = [];
+
+let reciboState = {
+  mes: '', ano: '',
+  faltas: 0,
+  aluguel: 0,
+  deslocamento: 0
+};
 
 /* ============================================================
    HELPERS
@@ -386,7 +621,6 @@ function hojeStr() {
   return `${dd}/${mm}/${d.getFullYear()}`;
 }
 
-/* Ordena lista por data decrescente. Empate: último lançado (maior _row) no topo. */
 function ordenarPorDataDesc(lista, campoData) {
   return lista.slice().sort((a, b) => {
     const dataA = (a[campoData] || '').split('/').reverse().join('');
@@ -395,6 +629,36 @@ function ordenarPorDataDesc(lista, campoData) {
     if (cmp !== 0) return cmp;
     return (b._row || 0) - (a._row || 0);
   });
+}
+
+function getMesesOptions(selecionado) {
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  return meses.map((m,i) => {
+    const val = String(i+1).padStart(2,'0');
+    return `<option value="${val}" ${val === selecionado ? 'selected' : ''}>${m}</option>`;
+  }).join('');
+}
+
+function getAnosOptions(selecionado) {
+  const now = new Date();
+  let out = '';
+  for (let y = now.getFullYear() - 3; y <= now.getFullYear() + 1; y++) {
+    out += `<option value="${y}" ${String(y) === String(selecionado) ? 'selected' : ''}>${y}</option>`;
+  }
+  return out;
+}
+
+function nomeMes(mes) {
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  return meses[parseInt(mes) - 1] || mes;
+}
+
+function mesPadrao() {
+  const d = new Date();
+  const mesAtual = d.getMonth() + 1;
+  const anoAtual = d.getFullYear();
+  if (mesAtual === 1) return { mes: '12', ano: String(anoAtual - 1) };
+  return { mes: String(mesAtual - 1).padStart(2,'0'), ano: String(anoAtual) };
 }
 
 /* ============================================================
@@ -544,6 +808,8 @@ function selecionarMoto(motoId) {
   document.querySelectorAll('.moto-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.id === motoId);
   });
+  // Habilita/desabilita botão Recibo
+  document.getElementById('btn-recibo').disabled = (motoId === 'TODOS' || !motoId);
   renderizar();
 }
 
@@ -621,7 +887,6 @@ function renderizar() {
   }
 
   if (subAtual === 'corridas') {
-    // Ordena por data decrescente
     const ordenada = ordenarPorDataDesc(lista, 'data');
     container.innerHTML = `
       <table>
@@ -645,7 +910,6 @@ function renderizar() {
       </table>
     `;
   } else {
-    // Ordena por data de reposição decrescente
     const ordenada = ordenarPorDataDesc(lista, 'dataReposicao');
     container.innerHTML = `
       <table>
@@ -678,18 +942,16 @@ function renderizar() {
 /* ============================================================
    MODAL
    ============================================================ */
-function abrirModal(titulo, html) {
+function abrirModal(titulo, html, wide) {
   document.getElementById('modal-title').textContent = titulo;
   document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-box').classList.toggle('wide', wide === true);
   document.getElementById('modal').classList.add('open');
 }
 
 function fecharModal() {
   document.getElementById('modal').classList.remove('open');
 }
-
-/* ⚠️ REMOVIDO: linha que fechava o modal ao clicar fora
-   Agora o modal só fecha clicando no X. */
 
 /* ============================================================
    FORMULÁRIOS
@@ -804,6 +1066,356 @@ async function apagarLinha(rowIndex) {
 }
 
 /* ============================================================
+   RECIBO — ABRIR MODAL
+   ============================================================ */
+function abrirRecibo() {
+  if (!motoAtual || motoAtual === 'TODOS') return toast('Selecione um motoqueiro', 'err');
+  const m = motoqueiros.find(x => x.id === motoAtual);
+  if (!m) return;
+
+  const padrao = mesPadrao();
+  reciboState.mes = padrao.mes;
+  reciboState.ano = padrao.ano;
+  reciboState.faltas = 0;
+  reciboState.aluguel = 0;
+  reciboState.deslocamento = 0;
+
+  const html = `
+    <div class="recibo-info-box">
+      ℹ️ Selecione o mês/ano e preencha os campos abaixo. Os valores de reposição são calculados
+      automaticamente a partir dos lançamentos de <b>Gasolina, Óleo e Pneu</b> do motoqueiro.
+      O cálculo de faltas considera o mês com 30 dias — cada falta desconta 1 diária.
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Mês</label>
+        <select id="rec-mes" onchange="atualizarRecibo()">${getMesesOptions(reciboState.mes)}</select>
+      </div>
+      <div class="field">
+        <label>Ano</label>
+        <select id="rec-ano" onchange="atualizarRecibo()">${getAnosOptions(reciboState.ano)}</select>
+      </div>
+      <div class="field">
+        <label>Faltas no mês</label>
+        <input type="number" id="rec-faltas" min="0" value="0" oninput="atualizarRecibo()" placeholder="ex: 2">
+      </div>
+      <div class="field">
+        <label>Valor do Aluguel (R$)</label>
+        <input type="text" id="rec-aluguel" value="" oninput="atualizarRecibo()" placeholder="ex: 600,00">
+      </div>
+      <div class="field">
+        <label>Valor do Deslocamento (R$)</label>
+        <input type="text" id="rec-desloc" value="" oninput="atualizarRecibo()" placeholder="ex: 200,00">
+      </div>
+    </div>
+
+    <div id="recibo-preview"></div>
+
+    <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="imprimirRecibo()">🖨️ Imprimir / Salvar PDF</button>
+      <button class="btn btn-ghost" onclick="fecharModal()">Fechar</button>
+    </div>
+  `;
+  abrirModal('📄 Recibo — ' + m.nome, html, true);
+  atualizarRecibo();
+}
+
+function atualizarRecibo() {
+  const mes = document.getElementById('rec-mes').value;
+  const ano = document.getElementById('rec-ano').value;
+  const faltas = parseInt(document.getElementById('rec-faltas').value) || 0;
+  const aluguel = parseNum(document.getElementById('rec-aluguel').value);
+  const desloc  = parseNum(document.getElementById('rec-desloc').value);
+
+  reciboState.mes = mes;
+  reciboState.ano = ano;
+  reciboState.faltas = faltas;
+  reciboState.aluguel = aluguel;
+  reciboState.deslocamento = desloc;
+
+  const calc = calcularRecibo(mes, ano, faltas, aluguel, desloc);
+
+  // Prévia na tela
+  const preview = document.getElementById('recibo-preview');
+  preview.innerHTML = `
+    <div class="recibo-totais">
+      <div class="recibo-total-card amber">
+        <div class="lbl">⛽ Gasolina</div>
+        <div class="val">${formataMoeda(calc.gas)}</div>
+      </div>
+      <div class="recibo-total-card green">
+        <div class="lbl">🛢️ Óleo</div>
+        <div class="val">${formataMoeda(calc.oleo)}</div>
+      </div>
+      <div class="recibo-total-card indigo">
+        <div class="lbl">🛞 Pneu</div>
+        <div class="val">${formataMoeda(calc.pneu)}</div>
+      </div>
+    </div>
+
+    <div class="recibo-totais">
+      <div class="recibo-total-card">
+        <div class="lbl">Total Reposições</div>
+        <div class="val">${formataMoeda(calc.totalReposicoes)}</div>
+      </div>
+      <div class="recibo-total-card">
+        <div class="lbl">Aluguel Líquido</div>
+        <div class="val">${formataMoeda(calc.aluguelLiquido)}</div>
+      </div>
+      <div class="recibo-total-card">
+        <div class="lbl">Deslocamento Líquido</div>
+        <div class="val">${formataMoeda(calc.deslocLiquido)}</div>
+      </div>
+    </div>
+
+    ${faltas > 0 ? `
+      <div class="recibo-info-box" style="background:#fef2f2; border-color:#fecaca; color:#991b1b;">
+        <b>Descontos por ${faltas} falta(s):</b>
+        Aluguel −${formataMoeda(calc.descontoAluguel)} · Deslocamento −${formataMoeda(calc.descontoDesloc)}
+        (diária = valor ÷ 30)
+      </div>
+    ` : ''}
+
+    <div class="recibo-resumo">
+      <div>
+        <div class="lbl">Total Geral a Receber</div>
+        <div style="font-size:11px; opacity:0.6; margin-top:2px;">
+          Reposições + Aluguel + Deslocamento
+        </div>
+      </div>
+      <div class="val">${formataMoeda(calc.totalGeral)}</div>
+    </div>
+  `;
+}
+
+function calcularRecibo(mes, ano, faltas, aluguel, desloc) {
+  const mesAno = mes + '/' + ano;
+
+  // Filtra reposições do motoqueiro no mês/ano escolhido
+  const linhas = todasMotos.filter(x => x.motoboyId === motoAtual);
+  const pagamentosMes = linhas.filter(p => {
+    if (!p.dataReposicao) return false;
+    // dataReposicao no formato dd/mm/aaaa
+    const partes = p.dataReposicao.split('/');
+    if (partes.length !== 3) return false;
+    return partes[1] === mes && partes[2] === ano;
+  });
+
+  const gas = pagamentosMes
+    .filter(p => p.tipoPagamento.toLowerCase() === 'gasolina')
+    .reduce((s, p) => s + p.valor, 0);
+  const oleo = pagamentosMes
+    .filter(p => {
+      const t = p.tipoPagamento.toLowerCase();
+      return t === 'óleo' || t === 'oleo';
+    })
+    .reduce((s, p) => s + p.valor, 0);
+  const pneu = pagamentosMes
+    .filter(p => p.tipoPagamento.toLowerCase() === 'pneu')
+    .reduce((s, p) => s + p.valor, 0);
+
+  const totalReposicoes = gas + oleo + pneu;
+
+  // Cálculo de faltas sobre aluguel e deslocamento (mês = 30 dias)
+  const diariaAluguel = aluguel / 30;
+  const diariaDesloc  = desloc / 30;
+  const descontoAluguel = diariaAluguel * faltas;
+  const descontoDesloc  = diariaDesloc * faltas;
+
+  const aluguelLiquido = aluguel - descontoAluguel;
+  const deslocLiquido  = desloc - descontoDesloc;
+
+  const totalGeral = totalReposicoes + aluguelLiquido + deslocLiquido;
+
+  return {
+    gas, oleo, pneu,
+    totalReposicoes,
+    diariaAluguel, diariaDesloc,
+    descontoAluguel, descontoDesloc,
+    aluguelLiquido, deslocLiquido,
+    totalGeral
+  };
+}
+
+/* ============================================================
+   RECIBO — IMPRESSÃO
+   ============================================================ */
+function imprimirRecibo() {
+  const m = motoqueiros.find(x => x.id === motoAtual);
+  if (!m) return;
+
+  const calc = calcularRecibo(
+    reciboState.mes,
+    reciboState.ano,
+    reciboState.faltas,
+    reciboState.aluguel,
+    reciboState.deslocamento
+  );
+
+  const periodoTexto = nomeMes(reciboState.mes) + ' de ' + reciboState.ano;
+
+  // Monta lista de reposições detalhadas para a tabela
+  const linhas = todasMotos.filter(x => x.motoboyId === motoAtual);
+  const pagamentosMes = linhas.filter(p => {
+    if (!p.dataReposicao) return false;
+    const partes = p.dataReposicao.split('/');
+    if (partes.length !== 3) return false;
+    return partes[1] === reciboState.mes && partes[2] === reciboState.ano;
+  });
+
+  const linhasTabela = [];
+  linhasTabela.push(`
+    <tr>
+      <td>Reposição de Combustível (Gasolina)</td>
+      <td style="text-align:right">${formataMoeda(calc.gas)}</td>
+    </tr>
+  `);
+  linhasTabela.push(`
+    <tr>
+      <td>Reposição de Óleo</td>
+      <td style="text-align:right">${formataMoeda(calc.oleo)}</td>
+    </tr>
+  `);
+  linhasTabela.push(`
+    <tr>
+      <td>Reposição de Pneu</td>
+      <td style="text-align:right">${formataMoeda(calc.pneu)}</td>
+    </tr>
+  `);
+  linhasTabela.push(`
+    <tr class="rp-subtotal">
+      <td>Total de Reposições (Gasolina + Óleo + Pneu)</td>
+      <td style="text-align:right">${formataMoeda(calc.totalReposicoes)}</td>
+    </tr>
+  `);
+  linhasTabela.push(`
+    <tr>
+      <td>Aluguel da Moto (30 dias)</td>
+      <td style="text-align:right">${formataMoeda(reciboState.aluguel)}</td>
+    </tr>
+  `);
+  if (reciboState.faltas > 0) {
+    linhasTabela.push(`
+      <tr>
+        <td style="padding-left:28px">
+          Desconto por ${reciboState.faltas} falta(s) — diária ${formataMoeda(calc.diariaAluguel)}
+        </td>
+        <td style="text-align:right; color:#b91c1c">− ${formataMoeda(calc.descontoAluguel)}</td>
+      </tr>
+    `);
+  }
+  linhasTabela.push(`
+    <tr class="rp-subtotal">
+      <td>Aluguel Líquido</td>
+      <td style="text-align:right">${formataMoeda(calc.aluguelLiquido)}</td>
+    </tr>
+  `);
+  linhasTabela.push(`
+    <tr>
+      <td>Ajuda de Custo — Deslocamento (30 dias)</td>
+      <td style="text-align:right">${formataMoeda(reciboState.deslocamento)}</td>
+    </tr>
+  `);
+  if (reciboState.faltas > 0) {
+    linhasTabela.push(`
+      <tr>
+        <td style="padding-left:28px">
+          Desconto por ${reciboState.faltas} falta(s) — diária ${formataMoeda(calc.diariaDesloc)}
+        </td>
+        <td style="text-align:right; color:#b91c1c">− ${formataMoeda(calc.descontoDesloc)}</td>
+      </tr>
+    `);
+  }
+  linhasTabela.push(`
+    <tr class="rp-subtotal">
+      <td>Deslocamento Líquido</td>
+      <td style="text-align:right">${formataMoeda(calc.deslocLiquido)}</td>
+    </tr>
+  `);
+  linhasTabela.push(`
+    <tr class="rp-total-row">
+      <td>TOTAL GERAL</td>
+      <td style="text-align:right">${formataMoeda(calc.totalGeral)}</td>
+    </tr>
+  `);
+
+  const html = `
+    <div class="recibo-print">
+      <div class="rp-header">
+        <h1>${EMPRESA.NOME.toUpperCase()}</h1>
+        <div class="cnpj">CNPJ: ${EMPRESA.CNPJ}</div>
+      </div>
+
+      <div class="rp-title">Recibo de Pagamento</div>
+
+      <div class="rp-subtitle">
+        <b>Motoqueiro(a):</b> ${m.nome}
+      </div>
+
+      <div class="rp-corpo">
+        Declaro ter recebido de <b>${EMPRESA.NOME}</b>, CNPJ <b>${EMPRESA.CNPJ}</b>, a quantia
+        de <b>${formataMoeda(calc.totalReposicoes)}</b> a título de <b>reposição de combustível,
+        óleo e/ou pneu</b>, mediante apresentação de recibos ou de solicitação de baixa do saldo
+        acumulado, e também a quantia de <b>${formataMoeda(calc.aluguelLiquido)}</b> referente ao
+        <b>aluguel da moto</b> e <b>${formataMoeda(calc.deslocLiquido)}</b> de <b>ajuda de custo
+        para deslocamento</b>, totalizando <b>${formataMoeda(calc.totalGeral)}</b>.
+      </div>
+
+      <table class="rp-tabela">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th style="text-align:right; width:180px">Valor (R$)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${linhasTabela.join('')}
+        </tbody>
+      </table>
+
+      <div class="rp-periodo">
+        Valores referentes ao mês de ${periodoTexto}
+      </div>
+
+      <div class="rp-obs">
+        <div class="rp-obs-title">Observações Importantes</div>
+        Os valores excedentes de gasolina além do gasto efetivo para as entregas, a troca de óleo,
+        a troca de pneus e a ajuda de custo para deslocamento (destinada ao motoqueiro para buscar
+        itens próximos à loja) são <b>benefícios não obrigatórios</b> oferecidos pela empresa, que
+        <b>não compõem o salário</b> e podem, portanto, ser revogados a qualquer momento, sempre
+        seguindo a razoabilidade de uma prévia comunicação. O <b>aluguel da moto</b> acordado entre
+        as partes no ingresso do serviço segue também como valor que <b>não compõe a remuneração
+        salarial</b>.
+      </div>
+
+      <div class="rp-declaracao">
+        E por ser expressão da verdade, firmo o presente recibo para todos os fins de direito.
+      </div>
+
+      <div class="rp-assinatura">
+        <div class="linha"></div>
+        <div class="nome">${m.nome}</div>
+        <div class="cargo">Motoboy — CPF: ______________________</div>
+      </div>
+
+      <div class="rp-rodape">
+        ${EMPRESA.NOME} · CNPJ ${EMPRESA.CNPJ}<br>
+        Recibo gerado em ${new Date().toLocaleString('pt-BR')}
+      </div>
+    </div>
+  `;
+
+  const printArea = document.getElementById('print-area');
+  printArea.innerHTML = html;
+
+  // Espera 1 tick pra render, aí imprime
+  setTimeout(() => {
+    window.print();
+  }, 100);
+}
+
+/* ============================================================
    RECARREGAR
    ============================================================ */
 async function recarregar() {
@@ -820,6 +1432,8 @@ async function recarregar() {
     if (!motoAtual) {
       motoAtual = motoqueiros[0]?.id || 'TODOS';
     }
+
+    document.getElementById('btn-recibo').disabled = (motoAtual === 'TODOS');
 
     renderSeletor();
     renderizar();
